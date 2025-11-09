@@ -1,0 +1,846 @@
+What is React Native and how does it differ from React?
+
+React Native is a framework developed by Meta for building mobile 
+applications using JavaScript and React. It allows developers to create cross-platform 
+apps for both iOS and Android using a single codebase.
+
+While React is mainly used for building web applications with HTML and the DOM, 
+React Native uses native components like <View> and <Text> instead of web elements, 
+which are directly rendered using the platform’s native APIs. This approach gives 
+React Native apps a native look, feel, and performance similar to apps built in 
+Swift or Kotlin.
+
+
+
+
+2. Explain the concept of JSX in React Native.
+JSX (JavaScript XML) is a syntax extension in React Native that allows developers to 
+write UI components using an HTML-like syntax directly within JavaScript. 
+It makes the code more readable and intuitive by visually representing the component structure.
+
+Under the hood, JSX is transpiled into JavaScript function calls (like React.createElement) which 
+tell React Native how to construct and render native components such as <View> or <Text>
+instead of traditional HTML elements.
+
+
+
+
+What is React.createElement?
+
+React.createElement() is the core function that React uses to create a React element — the building 
+block of React’s virtual DOM.
+Whenever you write JSX, it’s transpiled (converted) into React.createElement() calls.
+
+So, this JSX:
+
+const element = <Text>Hello World</Text>;
+
+…is actually compiled into:
+
+const element = React.createElement(Text, null, "Hello World");
+
+ Function Signature
+React.createElement(
+  type,         // The type of element (string like 'div' or a React component)
+  props,        // An object containing properties and attributes
+  ...children   // Any nested elements or text nodes
+)
+
+Example:
+const button = React.createElement(
+  "Button",
+  { title: "Click me", onPress: () => alert("Pressed!") },
+  null
+);
+
+
+This creates a React element object, not an actual UI component yet.
+
+🧠 What Does It Return?
+
+React.createElement() returns a plain JavaScript object describing what should appear in the UI — it’s called a React Element.
+
+Example output (simplified):
+
+{
+  type: 'Text',
+  props: {
+    children: 'Hello World'
+  }
+}
+
+
+This object is then used by React’s reconciliation process (the Virtual DOM or Fabric Renderer in React Native) to decide:
+
+What to render initially
+
+What needs updating when state or props change
+
+⚙️ How It Works in React Native
+
+On web (React DOM): elements like <div> are turned into actual DOM nodes.
+
+On mobile (React Native): elements like <View> or <Text> are turned into native UI components via the React Native bridge or Fabric renderer.
+
+So React Native takes the same React element structure but maps it to platform-native widgets instead of HTML tags.
+
+🧠 Why JSX Uses It
+
+JSX is just syntactic sugar for React.createElement() — it’s easier to read and write.
+Without JSX, you’d have to manually write all elements like this:
+
+const app = React.createElement(View, { style: { flex: 1 } },
+  React.createElement(Text, null, "Hello World")
+);
+
+
+Instead of:
+
+<View style={{ flex: 1 }}>
+  <Text>Hello World</Text>
+</View>
+
+
+
+
+
+1️⃣ Developer writes JSX code
+--------------------------------
+<View style={{ padding: 10 }}>
+  <Text>Hello World</Text>
+</View>
+
+
+2️⃣ JSX gets compiled (by Babel) into React.createElement() calls
+-----------------------------------------------------------------
+React.createElement(
+  View,
+  { style: { padding: 10 } },
+  React.createElement(Text, null, "Hello World")
+)
+
+
+3️⃣ React.createElement() creates a "React Element"
+---------------------------------------------------
+{
+  type: View,
+  props: {
+    style: { padding: 10 },
+    children: [
+      {
+        type: Text,
+        props: { children: "Hello World" }
+      }
+    ]
+  }
+}
+
+
+4️⃣ React reconciler processes the React Element tree
+-----------------------------------------------------
+- Compares new tree with previous one (Virtual DOM diffing)
+- Finds what changed (if anything)
+- Prepares a minimal set of updates
+
+
+5️⃣ React Native Renderer (Fabric / Bridge)
+--------------------------------------------
+- Converts the React Element tree into native commands
+- Communicates with platform-specific UI APIs
+
+Example:
+  View → Android ViewGroup / iOS UIView
+  Text → Android TextView / iOS UILabel
+
+
+6️⃣ Final Output on Device
+--------------------------
+📱 Native UI displayed:
+[Hello World]
+
+
+
+
+
+JSX
+ ↓
+React.createElement()
+ ↓
+React Element (Virtual Representation)
+ ↓
+Reconciliation (diffing & updates)
+ ↓
+Native Renderer (Fabric / Bridge)
+ ↓
+Native UI (Actual Mobile Components)
+
+
+
+
+ What is the significance of the 'render' method in React Native components?
+The 'render' method in a React Native component is responsible for returning the JSX 
+representation of the component's UI. It defines what the component should render on the 
+screen based on its current state and props. React Native automatically updates the UI when the 
+state or props change, re-invoking the 'render' method to reflect those changes visually.
+
+
+
+ How do you create a component in React Native?
+
+import React from 'react';
+import { View, Text } from 'react-native';
+
+const Greeting = () => {
+  return (
+    <View style={{ padding: 10 }}>
+      <Text>Hello, Welcome to React Native!</Text>
+    </View>
+  );
+};
+
+export default Greeting;
+
+
+
+
+
+
+How to Style a React Native Component
+
+In React Native, styling is done using JavaScript objects rather than traditional CSS files.
+The framework provides a built-in utility called StyleSheet to create and organize styles in a structured and performant way.
+
+ 1. Using the StyleSheet API (Recommended)
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const StyledBox = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Hello, React Native!</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#4CAF50',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  text: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+});
+
+export default StyledBox;
+
+
+
+
+
+What are Props in React Native?
+
+‘Props’ (short for properties) are a mechanism for passing data and configuration from a parent component to a child component.
+They make components dynamic, reusable, and help maintain React’s unidirectional data flow (data flows from parent → child only).
+
+🧩 1. Purpose of Props
+
+Allow customization of child components.
+
+Enable data sharing between components without modifying them.
+
+Maintain component reusability — the same component can behave differently based on the props it receives.
+
+Help keep components pure — they depend only on their input (props) to render predictable output.
+
+📘 2. Example: Passing Props
+import React from 'react';
+import { View, Text } from 'react-native';
+
+const Greeting = ({ name }) => {
+  return (
+    <View>
+      <Text>Hello, {name}!</Text>
+    </View>
+  );
+};
+
+// Parent component
+const App = () => {
+  return (
+    <>
+      <Greeting name="Abhijit" />
+      <Greeting name="Test" />
+    </>
+  );
+};
+
+export default App;
+
+
+
+Property	Description
+Read-only	Props cannot be modified by the child component (immutable).
+Passed from parent	Defined in the parent component and used in the child.
+Dynamic	Can change when parent re-renders with new values.
+Support any data type	Can be strings, numbers, arrays, objects, or even functions.
+
+
+
+
+
+
+
+
+Read-only	Props cannot be modified by the child component (immutable).
+
+But we can modify it liek this and its works as well
+
+import React from 'react';
+import { View, Text } from 'react-native';
+
+const Greeting = ({ name }) => {
+name = 'test'
+  return (
+    <View>
+      <Text>Hello, {name}!</Text>
+    </View>
+  );
+};
+
+// Parent component
+const App = () => {
+  return (
+    <>
+      <Greeting name="Abhijit" />
+      <Greeting name="Priya" />
+    </>
+  );
+};
+
+export default App;
+
+
+
+
+React treats props as immutable data from the parent.
+That means:
+
+If you reassign or mutate them, React doesn’t track that change.
+
+React will still think the prop is whatever the parent last provided.
+
+So even though your reassignment “works” at runtime, React ignores it completely — it won’t
+ cause any re-render, won’t update the parent, and won’t persist.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Detailed Answer: What is ‘state’ in React Native and how it differs from ‘props’
+🧩 Definition:
+
+In React Native, state is an object that holds mutable, local data that influences how a component
+ renders.
+Unlike props, which are received from a parent, state is owned and controlled by the component 
+itself.
+
+When the state changes, React Native automatically re-renders the component to reflect the 
+updated data in the UI.
+
+🔧 Under the Hood (How State Works Internally)
+
+When you use a React hook like useState or a class-based this.setState, React uses an internal mechanism called the Fiber Reconciliation Algorithm to track and schedule updates efficiently.
+
+Let’s break it down step-by-step:
+
+1. Initial Render Phase
+
+When a component mounts:
+
+const [count, setCount] = useState(0);
+
+
+React Native stores this count value in an internal hook state cell associated with that component’s fiber node.
+
+The component is rendered based on count = 0.
+
+2. State Update
+
+When you call:
+
+setCount(count + 1);
+
+
+React does not immediately change the variable.
+Instead:
+
+It queues a state update inside the fiber node.
+
+It schedules the component to re-render in the next render cycle.
+
+3. Reconciliation and Re-rendering
+
+During the next render:
+
+React compares the new virtual component tree (with updated state) to the previous one using the Reconciliation algorithm.
+
+Only the parts of the UI that actually changed are re-rendered (not the whole app).
+
+In React Native, these virtual updates are translated to native UI changes through the React Native bridge (or the new Fabric renderer, which is more direct).
+
+4. Commit Phase
+
+React commits the updated UI to the screen:
+
+The new state is stored in the internal hook cell.
+
+The old state is discarded.
+
+The UI reflects the latest state.
+
+⚖️ Difference Between Props and State
+Feature	Props	State
+Definition	Data passed from parent to child.	Local data owned by the component.
+Mutability	Immutable (read-only).	Mutable (can change with setState / useState).
+Who Controls It?	Controlled by the parent component.	Controlled by the component itself.
+Purpose	Used for data communication between components.	Used to store dynamic, changeable data.
+Update Mechanism	Parent re-renders with new props.	Component updates itself using setState.
+Re-render Trigger	When parent’s props change.	When state changes via React update queue.
+
+
+
+
+
+
+
+
+
+
+
+
+Explain the React Native component lifecycle.
+1. Mounting Phase
+
+Component is created and added to the UI.
+→ Happens once when the component first appears.
+
+ 2. Updating Phase
+
+Triggered when props or state change.
+→ Component re-renders to reflect the latest data.
+
+ 3. Unmounting Phase
+
+Component is removed from the UI.
+→ Used to clean up resources like timers or listeners.
+
+
+
+
+
+
+
+
+How would you debug a React Native application?
+React Native provides tools like the in-app developer menu, logging using 'console.log', 
+and integration with debugging tools like React DevTools or Flipper.
+ You can also use Chrome Developer Tools for debugging by running your 
+ app in debug mode and accessing it from a web browser. Native Debugging Use Android Studio or Xcode for native code issues.
+→ Helps trace crashes or native module problems.
+
+
+
+
+
+What is StyleSheet in React Native and why is it used?
+
+StyleSheet is a React Native module used to define and manage component styles in a structured and optimized way.
+
+Instead of using inline styles directly in JSX, you can create a style object using StyleSheet.create().
+This approach helps validate, organize, and optimize styles for better performance.
+
+Example:
+import { StyleSheet, View, Text } from 'react-native';
+
+const App = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Hello React Native</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 20,
+    color: '#333',
+  },
+});
+
+Why use StyleSheet:
+
+⚡ Performance optimization:
+Styles are preprocessed and referenced by ID instead of passing full objects every render.
+
+✅ Validation:
+StyleSheet.create() warns you if you use invalid style properties.
+
+🧩 Maintainability:
+Keeps styles organized and reusable across components.
+
+🧠 Consistency:
+Encourages a single source of truth for component styling.
+
+
+
+
+
+How do you handle navigation between screens in React Native?
+
+In React Native, navigation between screens is commonly handled using React Navigation, which is a popular and flexible library for managing screen transitions and routing.
+
+Steps:
+
+Install React Navigation and dependencies
+
+npm install @react-navigation/native
+npm install @react-navigation/native-stack
+npx expo install react-native-screens react-native-safe-area-context
+
+
+Set up a Navigation Container
+
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './HomeScreen';
+import DetailsScreen from './DetailsScreen';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+
+Navigate between screens
+
+// Inside HomeScreen.js
+const HomeScreen = ({ navigation }) => {
+  return (
+    <Button
+      title="Go to Details"
+      onPress={() => navigation.navigate('Details')}
+    />
+  );
+};
+
+Common navigation methods:
+Method	Description
+navigate('ScreenName')	Go to a screen (doesn’t add duplicate if already on stack)
+push('ScreenName')	Always adds a new instance of the screen
+goBack()	Go to the previous screen
+replace('ScreenName')	Replace the current screen
+reset()	Reset the navigation state
+Types of Navigators in React Navigation:
+
+Stack Navigator → Standard push/pop screen transitions
+
+Tab Navigator → Bottom or top tab navigation
+
+Drawer Navigator → Side menu navigation
+
+Material Navigator → Material Design–style transitions
+
+
+
+
+
+
+
+What is Flexbox and its role in React Native layout?
+
+Flexbox (Flexible Box Layout) is a layout system used in React Native to design responsive and adaptive user interfaces.
+It helps in aligning, distributing, and sizing components within a container — even when their size is dynamic or unknown.
+
+React Native uses Flexbox as its primary layout system, just like CSS, but with a few property name differences and some defaults optimized for mobile.
+
+Key Properties of Flexbox:
+Property	Description
+flexDirection	Defines the main axis — row (horizontal) or column (vertical, default).
+justifyContent	Aligns children along the main axis (flex-start, center, space-between, etc.).
+alignItems	Aligns children along the cross axis (flex-start, center, stretch, etc.).
+flex	Defines how much space an item should take relative to others.
+alignSelf	Overrides alignItems for individual items.
+flexWrap	Allows items to wrap to the next line if space is insufficient.
+Example:
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const FlexExample = () => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.box1}><Text>Box 1</Text></View>
+      <View style={styles.box2}><Text>Box 2</Text></View>
+      <View style={styles.box3}><Text>Box 3</Text></View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row', // Layout items horizontally
+    justifyContent: 'space-around', // Distribute space evenly
+    alignItems: 'center', // Align items vertically in center
+  },
+  box1: { backgroundColor: 'skyblue', padding: 20 },
+  box2: { backgroundColor: 'orange', padding: 20 },
+  box3: { backgroundColor: 'lightgreen', padding: 20 },
+});
+
+export default FlexExample;
+
+Why Flexbox is important in React Native:
+
+📱 Responsive layouts: Adjusts automatically to various screen sizes and orientations.
+
+🧩 Simplified design: Reduces the need for manual positioning or fixed dimensions.
+
+⚡ Cross-platform consistency: Works the same on Android, iOS, and web.
+
+
+
+
+
+
+14. What are 'keys' in React Native and why are they important in lists?
+
+Keys are unique identifiers assigned to elements in a list.
+They help React Native track which items have changed, been added, or removed, allowing it to efficiently re-render only the necessary components.
+Without keys, React may re-render the entire list unnecessarily, leading to performance issues or incorrect UI updates.
+
+✅ Example:
+
+{data.map(item => <Text key={item.id}>{item.name}</Text>)}
+
+15. How can you make a network request in React Native?
+
+You can make network requests using:
+
+The fetch API (built-in)
+
+Or third-party libraries like Axios
+
+These allow you to fetch data from APIs asynchronously using Promises or async/await syntax.
+
+✅ Example:
+
+const fetchData = async () => {
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+  console.log(data);
+};
+
+16. Describe the purpose of 'AsyncStorage' in React Native.
+
+AsyncStorage provides persistent, asynchronous, key-value storage on the device.
+It’s typically used for storing user preferences, auth tokens, or small bits of app data locally.
+
+⚠️ Note: AsyncStorage has been moved to the community package:
+
+npm install @react-native-async-storage/async-storage
+
+
+✅ Example:
+
+await AsyncStorage.setItem('userToken', token);
+const value = await AsyncStorage.getItem('userToken');
+
+17. How can you integrate Redux with a React Native app?
+
+Redux is integrated by:
+
+Creating a store to hold global state.
+
+Wrapping your app in a <Provider> from react-redux.
+
+Defining reducers and actions to manage state changes.
+
+Connecting components using useSelector and useDispatch.
+
+✅ Example:
+
+import { Provider } from 'react-redux';
+import { store } from './store';
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <RootNavigator />
+    </Provider>
+  );
+}
+
+18. How do you optimize performance in a React Native application?
+
+Performance optimization involves:
+
+Using React.memo / PureComponent to prevent unnecessary re-renders
+
+Using FlatList instead of ScrollView for large lists
+
+Optimizing images with caching
+
+Avoiding anonymous functions and inline styles inside render
+
+Profiling with Flipper or React DevTools
+
+Reducing JS thread work and using native modules for heavy tasks
+
+19. Explain the concept of 'HOC' (Higher-Order Component) in React Native.
+
+A Higher-Order Component (HOC) is a function that takes a component and returns an enhanced component with additional functionality.
+It’s used to reuse logic such as authentication checks, data fetching, or logging.
+
+✅ Example:
+
+function withLogger(WrappedComponent) {
+  return (props) => {
+    console.log('Rendered:', WrappedComponent.name);
+    return <WrappedComponent {...props} />;
+  };
+}
+
+20. How can you integrate third-party libraries in a React Native app?
+
+You can integrate libraries using npm or yarn:
+
+npm install library-name
+
+
+Then import and use them in your components.
+For libraries with native code, link them automatically with:
+
+npx pod-install
+
+
+(For older RN versions, react-native link was used.)
+
+21. What are 'Touchable' components in React Native and how do they work?
+
+Touchable components provide press and gesture interaction for UI elements.
+Common types include:
+
+TouchableOpacity
+
+TouchableHighlight
+
+TouchableWithoutFeedback
+
+Pressable (modern and more flexible)
+
+They detect user touches (onPress, onLongPress) and provide visual feedback like opacity changes.
+
+✅ Example:
+
+<TouchableOpacity onPress={() => alert('Pressed!')}>
+  <Text>Click Me</Text>
+</TouchableOpacity>
+
+22. How do you handle form validation in React Native?
+
+You can validate forms by managing input values in state, checking them on submission, and showing error messages.
+You can also use libraries like Formik, Yup, or react-hook-form for robust validation.
+
+✅ Example (basic):
+
+if (!email.includes('@')) {
+  setError('Enter a valid email address');
+}
+
+23. Explain the architecture of a React Native app.
+
+A React Native app follows a component-based architecture, consisting of:
+
+UI Components – reusable building blocks
+
+State & Props – data flow management
+
+Business Logic – using Context API or Redux
+
+Navigation – handled by React Navigation
+
+Bridge – connects JavaScript with native Android/iOS modules
+
+🧩 JS Code → Bridge → Native Platform → UI
+
+24. What is the role of 'navigator' in React Navigation?
+
+A navigator is a component that defines the navigation structure of your app.
+It manages screen transitions, the navigation stack, and history.
+
+Types of navigators:
+
+StackNavigator
+
+TabNavigator
+
+DrawerNavigator
+
+✅ Example:
+
+const Stack = createNativeStackNavigator();
+<Stack.Navigator>
+  <Stack.Screen name="Home" component={HomeScreen} />
+</Stack.Navigator>
+
+25. How do you handle platform-specific code in React Native?
+
+You can handle platform-specific behavior in two ways:
+
+Using the Platform API:
+
+import { Platform } from 'react-native';
+
+const styles = StyleSheet.create({
+  text: {
+    color: Platform.OS === 'ios' ? 'blue' : 'green',
+  },
+});
+
+
+Platform-specific files:
+
+Component.ios.js
+
+Component.android.js
