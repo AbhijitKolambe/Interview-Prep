@@ -1,0 +1,1582 @@
+1. Your React app suddenly becomes slow after adding new features. How do you find and fix the issue?
+✅ How to Debug
+
+Chrome DevTools – Performance Tab
+
+Record performance to find long tasks, slow renders, memory leaks.
+
+React DevTools – Profiler
+
+Detect unnecessary re-renders and components causing slowdowns.
+
+Avoid Unnecessary Re-Renders
+
+Use:
+
+React.memo
+
+useMemo
+
+useCallback
+
+Virtualization for Large Lists
+
+Use react-window or react-virtualized to render only visible items.
+
+Avoid Inline Functions & Objects
+
+Inline props cause re-creation on every render, triggering child re-renders.
+
+✅ Real-world Example
+
+An e-commerce app showing 10,000 products without virtualization will lag. With virtualization, only visible items render → smooth performance.
+
+✅ 2. How do you prevent the login page from being accessible after the user is logged in?
+✅ Solution
+
+Use Protected Routes
+
+Restrict routes based on authentication status.
+
+Maintain Global Auth State
+
+Keep isAuthenticated flag using:
+
+Context API or
+
+Redux
+
+Conditional Routing
+
+{isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+
+
+Redirect After Login
+
+If already logged in → redirect user to dashboard.
+
+✅ Real-world Example
+
+Banking apps never allow access to the login page after login unless you log out.
+
+✅ 3. How do you handle API errors gracefully in the UI?
+✅ Best Practices
+
+Use try–catch or .catch()
+
+Show User-Friendly Messages
+
+Example:
+➤ “Something went wrong. Please try again.”
+
+Use Toast Notifications
+
+Show error/success messages non-intrusively.
+
+Show Fallback UI
+
+Error screen, retry button, skeleton loader.
+
+Retry Mechanism
+
+Allow user to retry failed requests.
+
+Use Error Boundaries
+
+Catch rendering errors at component level.
+
+Categorize Errors
+
+Network error
+
+Server error
+
+Unauthorized (401)
+
+Forbidden (403)
+
+✅ Real-world Example
+
+Food delivery app says
+“Restaurant is currently unavailable” instead of showing a blank screen or error stack.
+
+✅ 4. A component is fetching the same data multiple times unnecessarily. How would you fix it?
+✅ Solutions
+
+Use React Query / TanStack Query
+
+Built-in caching and background refetching.
+
+Store Data in Global State
+
+Use Context API or Redux to avoid duplicate fetching.
+
+Use useMemo for Derived Data
+
+Prevent expensive recalculations.
+
+Conditional Fetching
+
+if (!data) fetchData();
+
+✅ Real-world Example
+
+On a dashboard, if 5 charts fetch the same user profile, fetch once globally and reuse it.
+
+✅ 5. How do you optimize bundle size in a large React app?
+✅ Optimization Techniques
+
+Code Splitting
+
+const Dashboard = React.lazy(() => import("./Dashboard"));
+
+
+Tree Shaking
+
+Remove unused code via Webpack / Vite.
+
+Dynamic Imports
+
+import("chart-library").then(...)
+
+
+Asset Optimization
+
+Compress images, fonts, videos.
+
+Caching Static Files
+
+Use browser cache, CDN, service workers.
+
+Remove Unused Dependencies
+
+
+
+
+
+Step 1: Detect Unnecessary Re-renders
+
+Use React DevTools → Profiler.
+
+✅ Step 2: Fix with React.memo
+const ProductCard = React.memo(({ product }) => {
+  console.log("Rendered");
+  return <div>{product.name}</div>;
+});
+
+✅ Step 3: Fix Expensive Calculations using useMemo
+const totalPrice = useMemo(() => {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}, [cart]);
+
+✅ Step 4: Avoid Inline Functions using useCallback
+const handleClick = useCallback(() => {
+  setCount(prev => prev + 1);
+}, []);
+
+✅ Step 5: Virtualization for Large Lists
+import { FixedSizeList as List } from "react-window";
+
+<List
+  height={500}
+  itemCount={10000}
+  itemSize={35}
+  width={300}
+>
+  {({ index, style }) => <div style={style}>Item {index}</div>}
+</List>
+
+
+✅ Result: Only visible rows render → Massive performance boost.
+
+✅ 2. Prevent Login Page After User is Logged In (Protected Routes)
+✅ Auth Context
+export const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [isAuth, setIsAuth] = useState(false);
+
+  return (
+    <AuthContext.Provider value={{ isAuth, setIsAuth }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+✅ Protected Route
+const ProtectedRoute = ({ children }) => {
+  const { isAuth } = useContext(AuthContext);
+  return isAuth ? children : <Navigate to="/login" />;
+};
+
+✅ Route Setup
+<Route path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>
+
+✅ Redirect Logged-in Users from Login
+if (isAuth) return <Navigate to="/dashboard" />;
+
+
+✅ Used in Banking, E-commerce, SaaS Apps
+
+✅ 3. Handling API Errors Gracefully in React UI
+✅ API Call with Try–Catch
+const fetchData = async () => {
+  try {
+    const res = await fetch("/api/user");
+    if (!res.ok) throw new Error("Failed to fetch");
+    const data = await res.json();
+    setUser(data);
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
+✅ Show Toast Error
+{error && <Toast message="Something went wrong!" />}
+
+✅ Retry Button
+<button onClick={fetchData}>Retry</button>
+
+✅ Error Boundary
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h2>Something went wrong.</h2>;
+    }
+    return this.props.children;
+  }
+}
+
+
+✅ Why this matters: Prevents white screen of death in production.
+
+✅ 4. Prevent Multiple API Calls for Same Data
+✅ Using React Query (BEST PRACTICE)
+const { data, isLoading } = useQuery(
+  ["users"],
+  fetchUsers,
+  { staleTime: 60000 }
+);
+
+✅ Using Context Cache
+if (!users.length) fetchUsers();
+
+✅ Using Redux
+
+Store API result once → reuse everywhere.
+
+✅ Avoid Re-fetch with useEffect
+useEffect(() => {
+  fetchData();
+}, []); // ✅ avoids multiple calls
+
+
+✅ Real-world: Dashboards, Notifications, Profile APIs.
+
+✅ 5. Optimizing Bundle Size in Large React App
+✅ Code Splitting with Lazy + Suspense
+const Dashboard = React.lazy(() => import("./Dashboard"));
+
+<Suspense fallback={<Loader />}>
+  <Dashboard />
+</Suspense>
+
+✅ Dynamic Imports
+import("chart.js").then(chart => {
+  chart.render();
+});
+
+✅ Tree Shaking (Webpack/Vite default)
+import { debounce } from "lodash"; // ❌ BAD
+import debounce from "lodash/debounce"; // ✅ GOOD
+
+
+
+
+
+
+
+
+
+
+
+
+
+HTML & CSS INTERVIEW QUESTIONS (Extracted + Answers)
+1. What new tags were introduced in HTML5?
+
+Answer:
+HTML5 introduced semantic tags such as:
+<header>, <footer>, <nav>, <section>, <article>, <figure>, <figcaption>, <main>, <aside>, <video>, <audio>, <canvas>, <picture>.
+
+These improve SEO, accessibility, and code readability.
+
+2. What are Semantic Tags and why are they important?
+
+Answer:
+Semantic tags clearly describe the purpose of content.
+They help:
+
+Search engines understand page structure
+
+Improve SEO
+
+Improve screen-reader accessibility
+
+Make code more readable
+
+3. Difference between ID and Class
+
+Answer:
+
+ID	Class
+Unique	Can be reused
+Higher priority	Lower priority
+Used once	Used multiple times
+#id selector	.class selector
+
+✅ Prefer class for styling, id for unique JS access.
+
+4. Difference between Inline, Block, and Inline-Block
+
+Answer:
+
+Inline: No new line, no width/height (e.g. span)
+
+Block: Takes full width, starts new line (e.g. div, p)
+
+Inline-block: Inline + supports width & height
+
+5. Difference between Relative, Absolute, Fixed, Sticky
+
+Answer:
+
+Relative: Moves relative to itself
+
+Absolute: Relative to nearest positioned parent
+
+Fixed: Relative to viewport, never moves
+
+Sticky: Acts relative first, then fixed after scroll threshold
+
+6. Difference between LocalStorage, SessionStorage & Cookies
+
+Answer:
+
+Storage	Persistence	Server Access	Size
+LocalStorage	Permanent	No	~5MB
+SessionStorage	Until tab close	No	~5MB
+Cookies	Configurable	Yes	~4KB
+
+✅ Banking apps use Cookies (HTTP-Only, Secure) for tokens.
+
+7. Difference between visibility: hidden and display: none
+
+Answer:
+
+visibility: hidden → Element invisible but space remains
+
+display: none → Element removed completely from layout
+
+8. Pseudo-class vs Pseudo-element
+
+Answer:
+
+Pseudo-class: :hover, :focus, :active
+
+Pseudo-element: ::before, ::after
+
+✅ JAVASCRIPT INTERVIEW QUESTIONS
+9. Difference between var, let, const
+Feature	var	let	const
+Scope	Function	Block	Block
+Redeclare	Yes	No	No
+Reassign	Yes	Yes	No
+Hoisting	Yes (undefined)	TDZ	TDZ
+10. What is Closure?
+
+Answer:
+A closure is when a function remembers variables from its parent scope even after execution.
+
+function outer() {
+  let x = 10;
+  return function inner() {
+    console.log(x);
+  }
+}
+
+11. Find the Second Highest Number in an Array
+function secondLargest(arr){
+ let first = -Infinity, second = -Infinity;
+
+ for(let num of arr){
+   if(num > first){
+     second = first;
+     first = num;
+   } else if(num > second && num !== first){
+     second = num;
+   }
+ }
+ return second;
+}
+
+12. How to Reverse a String Without Built-in Function
+let str = "hello";
+let result = "";
+
+for(let i = str.length - 1; i >= 0; i--){
+  result += str[i];
+}
+console.log(result);
+
+13. Output Question with += on innerHTML
+p.innerHTML += " world";
+
+
+✅ Output: "hello world"
+
+14. Why Setting State Inside Render Causes Infinite Loop?
+
+Answer:
+Because:
+
+Render → setState → Re-render → setState → infinite cycle
+
+✅ State updates should be inside useEffect or event handlers.
+
+✅ REACT INTERVIEW QUESTIONS
+15. Difference between Functional and Class Components
+Functional	Class
+Uses Hooks	Uses lifecycle
+Simpler	More boilerplate
+Better Performance	Older approach
+Easy testing	Harder testing
+16. Why Industry Shifted from Class to Functional Components?
+
+Answer:
+
+Hooks provide lifecycle control
+
+Better readability
+
+Easier reusability
+
+Better performance
+
+Simpler testing
+
+17. What are React Hooks and Why Introduced?
+
+Answer:
+Hooks allow using state, lifecycle, and side-effects in functional components.
+They improve:
+
+Code reuse
+
+Cleanup
+
+Readability
+
+Composition
+
+18. Write a Custom Hook for API Fetching
+function useFetch(url){
+ const [data, setData] = useState(null);
+ const [loading, setLoading] = useState(true);
+ const [error, setError] = useState(null);
+
+ useEffect(()=>{
+  fetch(url)
+   .then(res => res.json())
+   .then(setData)
+   .catch(setError)
+   .finally(()=>setLoading(false));
+ }, [url]);
+
+ return { data, loading, error };
+}
+
+19. Difference between useEffect and useLayoutEffect
+useEffect	useLayoutEffect
+After paint	Before paint
+Async	Sync
+No UI blocking	Blocks UI
+For API calls	For layout/animation fixes
+20. Controlled vs Uncontrolled Components
+
+Controlled: State controlled by React
+
+Uncontrolled: State controlled by DOM using ref
+
+21. What is Redux?
+
+Answer:
+Redux is a global state management library used to:
+
+Avoid prop drilling
+
+Manage complex shared state
+
+Centralize application data
+
+22. Redux Architecture
+
+Flow:
+
+Component → Action → Reducer → Store → Component
+
+23. Which Part of Redux is Pure?
+
+✅ Reducer is a Pure Function
+
+24. What is React Router 7 Major Change?
+
+✅ react-router-dom is merged into react-router
+
+25. How to Improve Performance with Large API Data
+
+Answer:
+
+Virtualization (react-window)
+
+Pagination
+
+Memoization
+
+Caching
+
+26. How Do You Optimize React Applications?
+
+Code splitting (React.lazy)
+
+useMemo & useCallback
+
+Remove unnecessary states
+
+Use React Query instead of manual state
+
+Bundle optimization
+
+Asset compression
+
+27. How Do You Deploy React Apps?
+
+Answer:
+
+GitHub Actions CI/CD
+
+Automated build
+
+Deploy on Render/Vercel
+
+Monorepo pipeline
+
+28. Have You Used Unit Testing?
+
+✅ Basic exposure to Jest (not daily usage)
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. How to optimize large Redux datasets (10,000+ records)?
+✅ Best Practices
+
+Never store huge datasets at once
+
+Use server-side pagination or cursor-based pagination.
+
+Normalize Redux State
+
+{
+  users: { byId: {}, allIds: [] }
+}
+
+
+Prevents duplication and improves lookup speed.
+
+Use Selectors with Memoization
+
+import { createSelector } from '@reduxjs/toolkit';
+
+
+Avoids unnecessary recalculations.
+
+Virtualize Rendering
+
+Use react-window / react-virtualized
+
+Render only visible rows.
+
+Avoid Deeply Nested State
+
+Flat structure = faster updates.
+
+Use Redux Toolkit
+
+Faster, less boilerplate, better performance.
+
+✅ Interview One-Line:
+
+“I optimize large Redux datasets using server-side pagination, normalized state, memoized selectors, and list virtualization.”
+
+✅ 2. How to handle slow APIs in the UI? (5–10 sec delay)
+✅ UI/UX Improvements
+
+Skeleton Loaders / Shimmer
+
+Central Loader
+
+Optimistic UI (if applicable)
+
+React Query / Caching
+
+Lazy Loading Components
+
+Timeout + Retry Button
+
+Network Error Handling
+
+✅ Example
+const { data, isLoading } = useQuery("users", fetchUsers);
+
+✅ Interview One-Line:
+
+“For slow APIs, I use loaders, skeleton UI, caching, background refetch, and retry mechanisms for better UX.”
+
+✅ 3. How to secure JWT authentication in React?
+✅ Best Security Practices
+
+Store Access Token in HTTP-Only Secure Cookie
+
+Use Refresh Token Flow
+
+Short Expiry for Access Token
+
+Enable CORS, SameSite, Secure Flags
+
+Never store JWT in localStorage for banking apps
+
+Validate token on every API call using middleware
+
+✅ Token Flow
+Login → Access Token (short)
+      → Refresh Token (long)
+
+✅ Interview One-Line:
+
+“I secure JWT using HTTP-only cookies, refresh tokens, short expiry, and server-side validation middleware.”
+
+✅ 4. How to avoid dashboard re-rendering with multiple charts & filters?
+✅ Optimization Techniques
+
+Fetch API at Parent Only
+
+Pass Data via Props
+
+Use React.memo() for Charts
+
+Use useMemo for Computed Data
+
+Use useCallback for Filter Handlers
+
+Avoid Inline Objects & Functions
+
+Single Global Loader
+
+✅ Example
+const Chart = React.memo(({ data }) => { ... });
+
+✅ Interview One-Line:
+
+“I prevent dashboard re-renders by lifting data to parent, memoizing charts, and caching handlers and computed values.”
+
+✅ 5. How SSR improves SEO?
+✅ CSR vs SSR
+CSR (CRA)	SSR (Next.js)
+Empty HTML on load	Fully rendered HTML
+Google waits for JS	Google crawls instantly
+Poor SEO	Excellent SEO
+Slower first paint	Faster first paint
+✅ SSR Benefits
+
+Better Google indexing
+
+Faster First Contentful Paint (FCP)
+
+Social media preview works
+
+Better Lighthouse score
+
+✅ Interview One-Line:
+
+“SSR improves SEO because search engines receive fully rendered HTML instead of an empty JavaScript shell.”
+
+✅ 6. Why use Next.js instead of CRA?
+✅ Key Advantages of Next.js
+
+Built-in SSR & SSG
+
+File-based routing
+
+API routes (Backend + Frontend)
+
+Automatic code splitting
+
+Image optimization
+
+SEO-friendly out of the box
+
+Better performance
+
+✅ CRA Limitations
+
+Client-Side Rendering only
+
+Poor SEO
+
+Manual optimization required
+
+✅ Interview One-Line:
+
+“Next.js gives built-in SEO, SSR, API routes, and production-level performance which CRA lacks.”
+
+✅ 7. How debouncing improves search performance?
+✅ Without Debounce
+
+API called on every keystroke
+
+Server overload
+
+Poor UX
+
+✅ With Debounce
+
+API is called only after user stops typing
+
+✅ Working Logic
+setTimeout(() => callAPI(value), 500);
+
+✅ Benefits
+
+Fewer API calls
+
+Better performance
+
+Saves server cost
+
+Smooth UX
+
+✅ Interview One-Line:
+
+“Debouncing prevents unnecessary API calls by waiting until the user stops typing before firing the request.”
+
+✅ 8. How virtualization improves table performance?
+✅ Problem Without Virtualization
+
+10,000+ DOM nodes
+
+High memory usage
+
+Page lag & crashes
+
+✅ With Virtualization
+
+Only visible rows are rendered
+
+DOM size is minimal
+
+Smooth scrolling
+
+✅ Tools
+
+react-window
+
+react-virtualized
+
+✅ Example Use Case
+
+Large logs table
+
+CRM transactions
+
+Stock market dashboards
+
+✅ Interview One-Line:
+
+“Virtualization boosts performance by rendering only visible rows instead of the entire dataset.”
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Difference Between Block-Level and Inline Elements
+
+Answer:
+
+Block elements: Take full width and start on a new line
+Examples: div, p, section
+
+Inline elements: Take only required width
+Examples: span, a, strong
+
+2. What are Semantic HTML Tags?
+
+Answer:
+Semantic tags clearly describe the meaning of their content.
+Examples:
+header, footer, nav, article, section, main, aside
+
+3. Why Use Semantic Tags Instead of div?
+
+Answer:
+
+Better SEO ranking
+
+Better accessibility
+
+Clear document structure
+
+Easier for screen readers & search engine crawlers
+
+4. Difference Between Absolute and Fixed Position
+
+Answer:
+
+absolute → Positioned relative to nearest positioned parent
+
+fixed → Positioned relative to viewport and stays fixed on scroll
+
+5. Difference Between px, %, and em
+Unit	Meaning
+px	Fixed size
+%	Relative to parent
+em	Relative to parent font size
+6. How to Make a Website Mobile Friendly?
+
+Answer:
+
+Media queries
+
+Flexbox & Grid
+
+Relative units (%, em, rem)
+
+Responsive images
+
+7. Difference Between CSS Grid and Flexbox
+
+Answer:
+
+Flexbox → 1D layout (row or column)
+
+CSS Grid → 2D layout (row + column)
+
+8. How to Make Images Responsive
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+9. Difference Between LocalStorage, SessionStorage, and Cookies
+Feature	LocalStorage	SessionStorage	Cookies
+Lifetime	Until deleted	Until tab close	Expiry-based
+Size	~5 MB	~5 MB	~4 KB
+Server Access	No	No	Yes
+
+✅ Cookies are preferred for authentication.
+
+✅ JAVASCRIPT – Extracted Interview Questions with Correct Answers
+10. Difference Between var, let, and const
+Feature	var	let	const
+Scope	Function	Block	Block
+Reassign	Yes	Yes	No
+Redeclare	Yes	No	No
+Hoisting	Yes (undefined)	TDZ	TDZ
+11. What is Hoisting?
+
+Answer:
+JavaScript moves variable & function declarations to the top of the scope before execution.
+
+12. What is Event Delegation and Why Is It Used?
+
+Answer:
+Event delegation is attaching one event listener to a parent instead of many children using event.target.
+
+✅ Improves performance
+✅ Handles dynamically added elements
+
+13. Difference Between == and ===
+
+== → compares value only
+
+=== → compares value + type
+
+14. Why [] === [] is false?
+
+Because arrays are compared by reference, not by value.
+
+15. Difference Between Debouncing and Throttling
+Debouncing	Throttling
+Executes after delay	Executes at fixed interval
+Used in search	Used in scroll
+16. Floating Point Issue: 0.1 + 0.2 === 0.3
+
+✅ Output: false
+Because of floating-point precision error.
+
+17. Object Reference Example
+let obj = { a: 1 };
+let copy = obj;
+copy.a = 5;
+console.log(obj.a); // 5
+
+
+✅ Because object is copied by reference, not value.
+
+18. Reverse a String Without reverse()
+function reverseStr(str) {
+  let res = "";
+  for (let i = str.length - 1; i >= 0; i--) {
+    res += str[i];
+  }
+  return res;
+}
+
+19. Remove Duplicate Values from Array
+function removeDuplicates(arr) {
+  let result = [];
+  for (let i of arr) {
+    if (!result.includes(i)) result.push(i);
+  }
+  return result;
+}
+
+✅ REACT – Extracted Interview Questions with Correct Answers
+20. Difference Between Functional and Class Components
+Functional	Class
+Uses Hooks	Uses Lifecycle
+Less code	More boilerplate
+Easier testing	Harder testing
+21. What is Virtual DOM?
+
+Answer:
+Virtual DOM is a lightweight copy of the real DOM used to optimize performance by updating only changed elements.
+
+22. What is Reconciliation?
+
+Answer:
+Reconciliation is React’s process of comparing old and new Virtual DOM and updating only the changed nodes in the real DOM.
+
+23. Difference Between Controlled and Uncontrolled Components
+
+Controlled → State managed by React using useState
+
+Uncontrolled → State managed by DOM using useRef
+
+24. Why Do We Use useState and useEffect?
+
+useState → Manages component state
+
+useEffect → Handles side effects like API calls, subscriptions
+
+25. Relation Between useEffect and Class Lifecycle Methods
+useEffect	Class Lifecycle
+Empty deps	componentDidMount
+With deps	componentDidUpdate
+Cleanup	componentWillUnmount
+26. Other Ways to Manage State
+
+useReducer
+
+Context API
+
+Redux / Redux Toolkit
+
+27. Redux Toolkit vs Redux
+
+Redux Toolkit:
+
+Less boilerplate
+
+Faster development
+
+Official recommended approach
+
+28. How Context API Works
+
+Answer:
+Context allows passing global data without prop drilling using:
+
+createContext
+
+Provider
+
+useContext
+
+29. How to Optimize React App Performance
+
+Answer:
+
+Lazy loading
+
+Code splitting
+
+useMemo, useCallback
+
+CDN for assets
+
+Virtual DOM optimization
+
+30. Difference Between useMemo and useCallback
+
+useMemo → Memorizes values
+
+useCallback → Memorizes functions
+
+31. If API Takes 5 Seconds, How Do You Improve UX?
+
+Answer:
+
+Loader
+
+Skeleton UI
+
+Retry option
+
+Background fetch
+
+Pagination & caching
+
+32. How to Handle 10,000+ Rows in Dashboard
+
+Answer:
+
+Pagination
+
+Virtualization
+
+Infinite scrolling
+
+Server-side filtering
+
+
+
+
+1. Difference Between var, let, and const
+Feature	var	let	const
+Scope	Function / Global	Block	Block
+Re-declare	✅ Yes	❌ No	❌ No
+Re-assign	✅ Yes	✅ Yes	❌ No
+Hoisting	✅ Yes (undefined)	✅ TDZ	✅ TDZ
+
+✅ let and const are block-scoped
+✅ var is function-scoped
+✅ const must be initialized at declaration
+
+2. What is Hoisting?
+
+Answer:
+Hoisting is JavaScript’s behavior of moving variable and function declarations to the top of their scope before execution.
+
+Example:
+console.log(a); // undefined
+var a = 5;
+
+3. Difference Between Arrow Function and Normal Function
+Feature	Normal Function	Arrow Function
+Syntax	Longer	Shorter
+this	Dynamic	Lexical
+Constructor	✅ Yes	❌ No
+arguments object	✅ Yes	❌ No
+
+✅ Arrow functions don’t have their own this.
+
+4. Difference Between == and ===
+
+== → Compares value only
+
+=== → Compares value + type
+
+2 == "2"   // true
+2 === "2"  // false
+
+5. What is Closure?
+
+Answer:
+A closure gives access to an outer function’s variables even after the outer function has finished execution.
+
+Example:
+function outer() {
+  let count = 0;
+  return function() {
+    return count++;
+  };
+}
+
+const counter = outer();
+counter(); // 0
+counter(); // 1
+
+6. What is a Pure Function?
+
+Answer:
+A pure function:
+
+Always returns the same output for the same input
+
+Has no side effects
+
+function add(a, b) {
+  return a + b;
+}
+
+7. What is the Event Loop?
+
+Answer:
+The event loop continuously:
+
+Checks if the call stack is empty
+
+Moves tasks from:
+
+Callback Queue
+
+Microtask Queue
+into the call stack for execution.
+
+✅ Enables non-blocking asynchronous execution
+
+8. Difference Between Async/Await and Promises
+Promises	Async/Await
+Uses .then() & .catch()	Uses await
+Less readable	More readable
+Callback-style	Synchronous-looking
+9. Difference Between map, filter, and reduce
+Method	Returns	Purpose
+map	New array	Transform data
+filter	New array	Filter data
+reduce	Single value	Aggregate data
+10. map() Example
+const arr = [1, 2, 3];
+const doubled = arr.map(n => n * 2);
+
+11. filter() Example
+const even = arr.filter(n => n % 2 === 0);
+
+✅ REACT INTERVIEW QUESTIONS (Extracted & Polished)
+12. Difference Between Functional and Class Components
+Functional	Class
+Uses Hooks	Uses Lifecycle
+No render()	Needs render()
+Less boilerplate	More boilerplate
+Preferred now	Legacy use
+13. What are React Hooks?
+
+Answer:
+Hooks allow state, lifecycle, and side-effect handling in functional components.
+
+Common hooks:
+
+useState
+
+useEffect
+
+useMemo
+
+useCallback
+
+useRef
+
+14. Controlled vs Uncontrolled Components
+Controlled	Uncontrolled
+React manages state	DOM manages state
+Uses useState	Uses useRef
+Predictable	Less predictable
+15. What is Prop Drilling? How to Avoid It?
+
+Answer:
+Prop drilling is passing props through multiple intermediate components.
+
+✅ Avoid using:
+
+Context API
+
+Redux / Redux Toolkit
+
+16. How Does React.memo Work?
+
+Answer:
+React.memo prevents unnecessary re-rendering of a component if props don’t change.
+
+export default React.memo(MyComponent);
+
+
+✅ Works only for functional components
+
+17. Difference Between useMemo and useCallback
+useMemo	useCallback
+Memoizes values	Memoizes functions
+Optimizes heavy computation	Optimizes callback re-creation
+18. Why is key Important in Lists?
+
+Answer:
+
+Helps React track list items
+
+Improves reconciliation
+
+Prevents UI bugs
+
+❌ Without key → Bad rendering & performance issues
+
+19. Difference Between <a> Tag and <Link> in React
+<a>	<Link>
+Page reloads	No reload
+Server navigation	Client-side navigation
+Breaks SPA	Maintains SPA
+✅ LOGICAL CODING QUESTIONS (Extracted)
+20. Reverse a String Using reverse()
+str.split('').reverse().join('');
+
+21. Reverse a String Without reverse()
+function reverseStr(str) {
+  let res = "";
+  for (let i = str.length - 1; i >= 0; i--) {
+    res += str[i];
+  }
+  return res;
+}
+
+22. Find Second Largest Number in Array
+const arr = [10, 4, 25, 7];
+arr.sort((a,b) => b - a);
+console.log(arr[1]);
+
+23. Remove Duplicates from an Array
+const unique = [...new Set(arr)];
+
+
+Or without Set:
+
+const result = [];
+for (let n of arr) {
+  if (!result.includes(n)) result.push(n);
+}
+
+24. What is Debouncing?
+
+Answer:
+Debouncing delays function execution until the user stops triggering events for a specific time.
+
+✅ Used in:
+
+Search input
+
+API calls
+
+Resize events
+
+25. Basic Debounce Function
+function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
+26. Can Debouncing Work Without setTimeout?
+
+❌ No — setTimeout is required to control the delay.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. COUNTER WITH FUNCTIONAL UPDATE (Basic State Interview Question)
+import React, { useState } from "react";
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+
+      <button onClick={() => setCount(prev => prev + 1)}>+</button>
+      <button onClick={() => setCount(prev => prev - 1)}>-</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+
+👉 Tests:
+
+State update
+
+Functional update
+
+Re-render understanding
+
+✅ 2. API CALL WITH AXIOS + LOADER + ERROR
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const AxiosAPI = () => {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then(res => setUsers(res.data))
+      .catch(() => setError("API Failed"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <ul>
+      {users.map(u => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default AxiosAPI;
+
+✅ 3. FETCH + PROMISE API CALL
+useEffect(() => {
+  fetch("https://jsonplaceholder.typicode.com/posts")
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err));
+}, []);
+
+✅ 4. DEBOUNCED SEARCH (MOST COMMON INTERVIEW QUESTION)
+import React, { useState, useEffect } from "react";
+
+const DebounceSearch = () => {
+  const [text, setText] = useState("");
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(text);
+      console.log("API Call:", text);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [text]);
+
+  return (
+    <input
+      value={text}
+      onChange={e => setText(e.target.value)}
+      placeholder="Search..."
+    />
+  );
+};
+
+export default DebounceSearch;
+
+✅ 5. FILTER LIST WITH useMemo (PERFORMANCE QUESTION)
+import React, { useMemo, useState } from "react";
+
+const names = ["Apple", "Mango", "Banana", "Orange"];
+
+const FilterList = () => {
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    return names.filter(n =>
+      n.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]);
+
+  return (
+    <>
+      <input onChange={e => setSearch(e.target.value)} />
+      <ul>
+        {filtered.map(n => (
+          <li key={n}>{n}</li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+export default FilterList;
+
+✅ 6. CONTROLLED vs UNCONTROLLED INPUT
+✅ Controlled:
+const Controlled = () => {
+  const [name, setName] = useState("");
+
+  return <input value={name} onChange={e => setName(e.target.value)} />;
+};
+
+✅ Uncontrolled:
+const Uncontrolled = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const submit = () => alert(inputRef.current?.value);
+
+  return (
+    <>
+      <input ref={inputRef} />
+      <button onClick={submit}>Submit</button>
+    </>
+  );
+};
+
+✅ 7. PROTECTED ROUTE (AUTH INTERVIEW QUESTION)
+import { Navigate } from "react-router-dom";
+
+const ProtectedRoute = ({ isAuth, children }: any) => {
+  if (!isAuth) return <Navigate to="/login" />;
+  return children;
+};
+
+✅ 8. PREVENT UNNECESSARY RE-RENDER (React.memo)
+const Child = React.memo(({ value }: any) => {
+  console.log("Rendered");
+  return <p>{value}</p>;
+});
+
+✅ 9. VIRTUALIZATION EXAMPLE (10,000 ROWS PERFORMANCE)
+import { FixedSizeList as List } from "react-window";
+
+const BigList = () => (
+  <List height={400} itemCount={10000} itemSize={40} width={300}>
+    {({ index, style }) => (
+      <div style={style}>Row {index}</div>
+    )}
+  </List>
+);
+
+✅ 10. REDUX TOOLKIT BASIC SETUP (MOST ASKED)
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: state => { state.value++; }
+  }
+});
+
+export const { increment } = counterSlice.actions;
+
+export const store = configureStore({
+  reducer: { counter: counterSlice.reducer }
+});
+
+✅ 11. JWT TOKEN HANDLING (FRONT-END)
+localStorage.setItem("token", response.data.accessToken);
+
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  return config;
+});
+
+✅ 12. LAZY LOADING COMPONENT (OPTIMIZATION)
+const LazyComp = React.lazy(() => import("./Profile"));
+
+<Suspense fallback={<p>Loading...</p>}>
+  <LazyComp />
+</Suspense>
+
+✅ 13. ERROR BOUNDARY (GRACEFUL UI)
+class ErrorBoundary extends React.Component<any, any> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) return <h2>Something went wrong</h2>;
+    return this.props.children;
+  }
+}
+
+✅ 14. USE CALLBACK INTERVIEW EXAMPLE
+const handleClick = useCallback(() => {
+  console.log("Clicked");
+}, []);
+
+✅ 15. USE REDUCER INTERVIEW EXAMPLE
+const reducer = (state: number, action: any) => {
+  if (action.type === "INC") return state + 1;
+  return state;
+};
+
+const [count, dispatch] = useReducer(reducer, 0);
+
+
+
+
+
+
+
+
+
+
+
