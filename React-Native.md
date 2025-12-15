@@ -399,6 +399,8 @@ React Native compares the new JSX returned by `render` with the previous one and
 
 A component in React Native can be created using a **functional component**.
 
+### Basic Component Example:
+
 ```js
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -414,10 +416,86 @@ const Greeting = () => {
 export default Greeting;
 ```
 
+### Component with Hooks Example:
+
+Hooks can be used for state and lifecycle management. Here's a practical example using `useState` and `useEffect`:
+
+```js
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+const Counter = () => {
+  // useState hook for managing state
+  const [count, setCount] = useState(0);
+  const [message, setMessage] = useState('Welcome!');
+
+  // useEffect hook for lifecycle management
+  useEffect(() => {
+    console.log('Component mounted or count changed');
+    
+    // Cleanup function (runs when component unmounts or before re-running effect)
+    return () => {
+      console.log('Cleanup: count is now', count);
+    };
+  }, [count]); // Dependency array - runs when 'count' changes
+
+  const incrementCount = () => {
+    setCount(count + 1);
+    setMessage(`Count increased to ${count + 1}`);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Counter App</Text>
+      <Text style={styles.count}>{count}</Text>
+      <Text style={styles.message}>{message}</Text>
+      
+      <Button 
+        title="Increment" 
+        onPress={incrementCount}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  count: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 10,
+  },
+  message: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+  },
+});
+
+export default Counter;
+```
+
 ### Key Points:
 - Components are reusable UI blocks
 - Functional components are preferred over class components
-- Hooks can be used for state and lifecycle management
+- **Hooks can be used for state and lifecycle management**:
+  - `useState` – Manage component state
+  - `useEffect` – Handle side effects and lifecycle events (componentDidMount, componentDidUpdate, componentWillUnmount)
+  - `useCallback` – Memoize callback functions
+  - `useMemo` – Memoize expensive computations
+  - `useContext` – Access context values
+  - `useRef` – Create persistent references
 
 ---
 
@@ -584,18 +662,185 @@ When a component mounts:
 ```js
 const [count, setCount] = useState(0);
 
-
+```
 
 ## 18. How would you debug a React Native application?
 
-React Native provides tools like the in-app developer menu, logging using `console.log`,
-and integration with debugging tools like React DevTools or Flipper.  
-You can also use Chrome Developer Tools for debugging by running your
-app in debug mode and accessing it from a web browser.
+React Native provides multiple debugging tools and techniques to identify and fix issues. Here's a comprehensive guide to debugging:
 
-Native Debugging:  
-Use Android Studio or Xcode for native code issues.  
-→ Helps trace crashes or native module problems.
+### 1. In-App Developer Menu (Core Tool)
+
+**Access:**
+- **Android:** `Ctrl + M` / `Cmd + M` or shake device  
+- **iOS:** `Cmd + D` or shake device  
+
+**Features:**
+- Reload App  
+- Enable / Disable **Fast Refresh**  
+- Toggle **Debug JS Remotely**  
+- Enable **Performance Monitor**  
+- Show **Element Inspector**
+
+---
+
+### 2. React Developer Tools
+
+Used to inspect the **React component tree**.
+
+**Features:**
+- View component hierarchy  
+- Inspect **props and state**  
+- Debug hooks  
+- Detect unnecessary re-renders  
+
+**Usage:**
+```bash
+npx react-devtools
+```
+
+**Works with:**
+- React Native CLI
+- Expo
+- Flipper integration
+
+---
+
+### 3. React Profiler (Performance Debugging)
+
+Used to analyze render performance.
+
+**Capabilities:**
+- Measure component render time
+- Identify slow components
+- Detect unnecessary re-renders
+- Optimize using `React.memo`, `useMemo`, `useCallback`
+
+**Available via:**
+- React DevTools → Profiler tab
+- Flipper → React DevTools plugin
+
+---
+
+### 4. Flipper (All-in-One Debugging Tool)
+
+Flipper is the recommended all-in-one debugging tool for React Native.
+
+**Features:**
+- Logs viewer
+- React DevTools
+- React Profiler
+- Layout inspector
+- Network inspector (API calls)
+- Redux / Zustand debugging
+- Performance monitoring
+- Crash inspection
+
+**Supports:**
+- Android & iOS
+- Emulator & physical devices
+
+---
+
+### 5. API & Network Debugging
+
+#### A. Flipper Network Inspector
+- Inspect API requests and responses
+- View headers, payload, and status codes
+- Works automatically with `fetch` and `axios`
+
+#### B. React Native Network Logger (In-App)
+Used to log network calls inside the app.
+
+**Common libraries:**
+- `react-native-network-logger`
+- `reactotron-react-native`
+
+**Use Cases:**
+- Debug API calls in development builds
+- Useful when Flipper is not available
+
+#### C. Axios Interceptors (Manual API Logging)
+
+```js
+axios.interceptors.request.use(request => {
+  console.log('Request:', request);
+  return request;
+});
+
+axios.interceptors.response.use(response => {
+  console.log('Response:', response);
+  return response;
+});
+```
+
+---
+
+### 6. Reactotron (Debug Build Tool)
+
+Used for state, API, and network debugging.
+
+**Features:**
+- Track API requests
+- Inspect Redux / Zustand state
+- Log async actions
+- Custom debug logs
+
+**Typically used in:**
+- Development mode
+- Debug builds only
+
+---
+
+### 7. Performance Monitor (FPS & Memory)
+
+Enabled from the Developer Menu.
+
+**Shows:**
+- JS FPS
+- UI FPS
+- Memory usage
+
+**Helps identify:**
+- Frame drops
+- Heavy re-renders
+- Memory leaks
+
+---
+
+### 8. Element Inspector (UI Debugging)
+
+Used to inspect UI layout and touch handling.
+
+**Capabilities:**
+- Identify rendered components
+- Inspect styles
+- Debug touchable areas
+- Detect overlapping views
+
+---
+
+### 9. Native Network & Crash Debugging
+
+**Android (Android Studio):**
+- Logcat for logs and crashes
+- Network and native error inspection
+
+**iOS (Xcode):**
+- Console logs
+- Native crash traces
+- Memory graph debugger
+
+---
+
+### 10. Debug Builds (In-App Debugging)
+
+In debug builds you can:
+- Enable Flipper
+- Enable Reactotron
+- Log API and state changes
+- Add custom debug panels
+
+**Note:** Debug tools are disabled in release builds for performance and security.
 
 ---
 
