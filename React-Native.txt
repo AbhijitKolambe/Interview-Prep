@@ -3,7 +3,33 @@ useMemo – Memoize expensive computations
 useContext – Access context values
 useRef – Create persistent references
 
+compound compoent recat natigve recat js 
 
 which type of props cause rerdners and prevent how to
 pure impure component 
-context api
+context  api
+packge json and lock jsonpackge version names explain
+
+
+js
+this keyword 
+hosting 
+
+
+backweard compantibitlity
+vapt cases 
+hacking prottection and code ofscation
+ai intigartion with recan native jsjekins built
+ios xcode updagrade issues 
+new version update how to hadled in recat native js
+brotli compress
+16kb supoort
+edje to edje supoortliquid glass ui
+recanimatedfor smooth animation
+vreisoan update 79 to 82 chanlges
+
+battry usage oprmisation , keepawake, background task
+what is callstacck liraryies npm goot or bad 
+Single Responsibility Principle => solid principles
+lld
+sytem desgin
