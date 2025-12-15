@@ -18,6 +18,23 @@
 15. [Props Characteristics](#14-props-characteristics)
 16. [Props Read-Only](#15-are-props-really-read-only-common-confusion)
 17. [Why Props Are Immutable](#16-why-modifying-props-is-wrong-even-if-it-works)
+18. [State in React Native](#17-what-is-state-in-react-native-and-how-it-differs-from-props)
+19. [Debugging React Native](#18-how-would-you-debug-a-react-native-application)
+20. [StyleSheet](#19-what-is-stylesheet-in-react-native-and-why-is-it-used)
+21. [Navigation](#20-how-do-you-handle-navigation-between-screens-in-react-native)
+22. [Flexbox](#21-what-is-flexbox-and-its-role-in-react-native-layout)
+23. [Keys in Lists](#22-what-are-keys-in-react-native-and-why-are-they-important-in-lists)
+24. [Network Requests](#23-how-can-you-make-a-network-request-in-react-native)
+25. [AsyncStorage](#24-describe-the-purpose-of-asyncstorage-in-react-native)
+26. [Redux Integration](#25-how-can-you-integrate-redux-with-a-react-native-app)
+27. [Performance Optimization](#26-how-do-you-optimize-performance-in-a-react-native-application)
+28. [HOC Pattern](#27-explain-the-concept-of-hoc-higher-order-component-in-react-native)
+29. [Third-party Libraries](#28-how-can-you-integrate-third-party-libraries-in-a-react-native-app)
+30. [Touchable Components](#29-what-are-touchable-components-in-react-native-and-how-do-they-work)
+31. [Form Validation](#30-how-do-you-handle-form-validation-in-react-native)
+32. [App Architecture](#31-explain-the-architecture-of-a-react-native-app)
+33. [Navigator in React Navigation](#32-what-is-the-role-of-navigator-in-react-navigation)
+34. [Platform-specific Code](#33-how-do-you-handle-platform-specific-code-in-react-native)
 
 ---
 
@@ -359,7 +376,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   label: { fontSize: 20, marginBottom: 20, fontWeight: 'bold' },
 });
-
+```
 
 ## 8. What is the significance of the `render` method in React Native components?
 
@@ -535,7 +552,7 @@ React treats props as **immutable data from the parent**.
 ### What actually happens:
 - Reassigning props only changes the local variable
 - React does not track this change
-- No re-render is triggered
+- No re-render is triggere
 - Parent state remains unchanged
 - Change is not persistent
 
@@ -543,3 +560,438 @@ React treats props as **immutable data from the parent**.
 > Props should be treated as **read-only inputs**.  
 > If data needs to change, use **state** instead.
 
+
+## 17. What is 'state' in React Native and how it differs from 'props'?
+
+**Definition:**
+
+In React Native, state is an object that holds mutable, local data that influences how a component renders. Unlike props, which are received from a parent, state is owned and controlled by the component itself.
+
+When the state changes, React Native automatically re-renders the component to reflect the updated data in the UI.
+
+---
+
+### Under the Hood (How State Works Internally)
+
+When you use a React hook like `useState` or a class-based `this.setState`, React uses an internal mechanism called the **Fiber Reconciliation Algorithm** to track and schedule updates efficiently.
+
+Let’s break it down step-by-step:
+
+#### Initial Render Phase
+
+When a component mounts:
+
+```js
+const [count, setCount] = useState(0);
+
+
+
+## 18. How would you debug a React Native application?
+
+React Native provides tools like the in-app developer menu, logging using `console.log`,
+and integration with debugging tools like React DevTools or Flipper.  
+You can also use Chrome Developer Tools for debugging by running your
+app in debug mode and accessing it from a web browser.
+
+Native Debugging:  
+Use Android Studio or Xcode for native code issues.  
+→ Helps trace crashes or native module problems.
+
+---
+
+## 19. What is StyleSheet in React Native and why is it used?
+
+StyleSheet is a React Native module used to define and manage component styles in a structured and optimized way.
+
+Instead of using inline styles directly in JSX, you can create a style object using `StyleSheet.create()`.
+This approach helps validate, organize, and optimize styles for better performance.
+
+### Example:
+
+```js
+import { StyleSheet, View, Text } from 'react-native';
+
+const App = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Hello React Native</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 20,
+    color: '#333',
+  },
+});
+```
+
+### Why use StyleSheet:
+- **Performance optimization**: Styles are preprocessed and referenced by ID instead of passing full objects every render
+- **Validation**: StyleSheet.create() warns you if you use invalid style properties
+- **Maintainability**: Keeps styles organized and reusable across components
+- **Consistency**: Encourages a single source of truth for component styling
+
+
+
+
+---
+
+## 20. How do you handle navigation between screens in React Native?
+
+In React Native, navigation between screens is commonly handled using React Navigation, which is a popular and flexible library for managing screen transitions and routing.
+
+### Step 1: Install React Navigation and dependencies
+
+```bash
+npm install @react-navigation/native
+npm install @react-navigation/native-stack
+npx expo install react-native-screens react-native-safe-area-context
+```
+
+### Step 2: Set up a Navigation Container
+
+```js
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './HomeScreen';
+import DetailsScreen from './DetailsScreen';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+### Step 3: Navigate between screens
+
+```js
+// Inside HomeScreen.js
+const HomeScreen = ({ navigation }) => {
+  return (
+    <Button
+      title="Go to Details"
+      onPress={() => navigation.navigate('Details')}
+    />
+  );
+};
+```
+
+### Common Navigation Methods
+
+| Method | Description |
+|--------|-------------|
+| `navigate('ScreenName')` | Go to a screen (doesn't add duplicate if already on stack) |
+| `push('ScreenName')` | Always adds a new instance of the screen |
+| `goBack()` | Go to the previous screen |
+| `replace('ScreenName')` | Replace the current screen |
+| `reset()` | Reset the navigation state |
+
+### Types of Navigators in React Navigation
+
+- **Stack Navigator** → Standard push/pop screen transitions
+- **Tab Navigator** → Bottom or top tab navigation
+- **Drawer Navigator** → Side menu navigation
+- **Material Navigator** → Material Design–style transitions
+
+
+
+
+
+
+---
+
+## 21. What is Flexbox and its role in React Native layout?
+
+Flexbox (Flexible Box Layout) is a layout system used in React Native to design responsive and adaptive user interfaces. It helps in aligning, distributing, and sizing components within a container — even when their size is dynamic or unknown.
+
+React Native uses Flexbox as its primary layout system, just like CSS, but with a few property name differences and some defaults optimized for mobile.
+
+### Key Properties of Flexbox
+
+| Property | Description |
+|----------|-------------|
+| `flexDirection` | Defines the main axis — row (horizontal) or column (vertical, default) |
+| `justifyContent` | Aligns children along the main axis (flex-start, center, space-between, etc.) |
+| `alignItems` | Aligns children along the cross axis (flex-start, center, stretch, etc.) |
+| `flex` | Defines how much space an item should take relative to others |
+| `alignSelf` | Overrides alignItems for individual items |
+| `flexWrap` | Allows items to wrap to the next line if space is insufficient |
+
+### Example:
+
+```js
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const FlexExample = () => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.box1}><Text>Box 1</Text></View>
+      <View style={styles.box2}><Text>Box 2</Text></View>
+      <View style={styles.box3}><Text>Box 3</Text></View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row', // Layout items horizontally
+    justifyContent: 'space-around', // Distribute space evenly
+    alignItems: 'center', // Align items vertically in center
+  },
+  box1: { backgroundColor: 'skyblue', padding: 20 },
+  box2: { backgroundColor: 'orange', padding: 20 },
+  box3: { backgroundColor: 'lightgreen', padding: 20 },
+});
+
+export default FlexExample;
+```
+
+### Why Flexbox is important in React Native:
+- **Responsive layouts**: Adjusts automatically to various screen sizes and orientations
+- **Simplified design**: Reduces the need for manual positioning or fixed dimensions
+- **Cross-platform consistency**: Works the same on Android, iOS, and web
+
+---
+
+## 22. What are 'keys' in React Native and why are they important in lists?
+
+Keys are unique identifiers assigned to elements in a list. They help React Native track which items have changed, been added, or removed, allowing it to efficiently re-render only the necessary components.
+
+Without keys, React may re-render the entire list unnecessarily, leading to performance issues or incorrect UI updates.
+
+### Example:
+
+```js
+{data.map(item => <Text key={item.id}>{item.name}</Text>)}
+```
+
+---
+
+## 23. How can you make a network request in React Native?
+
+You can make network requests using:
+- **Fetch API** (built-in)
+- **Axios** or other third-party libraries
+
+These allow you to fetch data from APIs asynchronously using Promises or async/await syntax.
+
+### Example:
+
+```js
+const fetchData = async () => {
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+  console.log(data);
+};
+```
+
+---
+
+## 24. Describe the purpose of 'AsyncStorage' in React Native.
+
+AsyncStorage provides persistent, asynchronous, key-value storage on the device. It's typically used for storing user preferences, auth tokens, or small bits of app data locally.
+
+**Note:** AsyncStorage has been moved to a community package:
+
+```bash
+npm install @react-native-async-storage/async-storage
+```
+
+### Example:
+
+```js
+await AsyncStorage.setItem('userToken', token);
+const value = await AsyncStorage.getItem('userToken');
+```
+
+---
+
+## 25. How can you integrate Redux with a React Native app?
+
+Redux is integrated by:
+1. Creating a store to hold global state
+2. Wrapping your app in a `<Provider>` from react-redux
+3. Defining reducers and actions to manage state changes
+4. Connecting components using useSelector and useDispatch
+
+### Example:
+
+```js
+import { Provider } from 'react-redux';
+import { store } from './store';
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <RootNavigator />
+    </Provider>
+  );
+}
+```
+
+---
+
+## 26. How do you optimize performance in a React Native application?
+
+Performance optimization involves:
+- Using React.memo / PureComponent to prevent unnecessary re-renders
+- Using FlatList instead of ScrollView for large lists
+- Optimizing images with caching
+- Avoiding anonymous functions and inline styles inside render
+- Profiling with Flipper or React DevTools
+- Reducing JS thread work and using native modules for heavy tasks
+
+---
+
+## 27. Explain the concept of 'HOC' (Higher-Order Component) in React Native.
+
+A Higher-Order Component (HOC) is a function that takes a component and returns an enhanced component with additional functionality. It's used to reuse logic such as authentication checks, data fetching, or logging.
+
+### Example:
+
+```js
+function withLogger(WrappedComponent) {
+  return (props) => {
+    console.log('Rendered:', WrappedComponent.name);
+    return <WrappedComponent {...props} />;
+  };
+}
+```
+
+---
+
+## 28. How can you integrate third-party libraries in a React Native app?
+
+You can integrate libraries using npm or yarn:
+
+```bash
+npm install library-name
+```
+
+Then import and use them in your components. For libraries with native code, link them automatically with:
+
+```bash
+npx pod-install
+```
+
+**Note:** For older RN versions, `react-native link` was used.
+
+---
+
+## 29. What are 'Touchable' components in React Native and how do they work?
+
+Touchable components provide press and gesture interaction for UI elements. They detect user touches and provide visual feedback.
+
+**Common types include:**
+- **TouchableOpacity** – Reduces opacity on press
+- **TouchableHighlight** – Highlights on press
+- **TouchableWithoutFeedback** – No visual feedback
+- **Pressable** – Modern and more flexible alternative
+
+### Example:
+
+```js
+<TouchableOpacity onPress={() => alert('Pressed!')}>
+  <Text>Click Me</Text>
+</TouchableOpacity>
+```
+
+---
+
+## 30. How do you handle form validation in React Native?
+
+You can validate forms by:
+1. Managing input values in state
+2. Checking them on submission
+3. Showing error messages
+
+You can also use libraries like **Formik**, **Yup**, or **react-hook-form** for robust validation.
+
+### Example (basic):
+
+```js
+if (!email.includes('@')) {
+  setError('Enter a valid email address');
+}
+```
+
+---
+
+## 31. Explain the architecture of a React Native app.
+
+A React Native app follows a **component-based architecture**, consisting of:
+
+- **UI Components** – Reusable building blocks
+- **State & Props** – Data flow management
+- **Business Logic** – Using Context API or Redux
+- **Navigation** – Handled by React Navigation
+- **Bridge** – Connects JavaScript with native Android/iOS modules
+
+### Architecture Flow:
+
+```
+JS Code → Bridge → Native Platform → UI
+```
+
+---
+
+## 32. What is the role of 'navigator' in React Navigation?
+
+A navigator is a component that defines the navigation structure of your app. It manages screen transitions, the navigation stack, and navigation history.
+
+**Types of navigators:**
+- **StackNavigator** – Push/pop navigation
+- **TabNavigator** – Bottom or top tab navigation
+- **DrawerNavigator** – Side menu navigation
+
+### Example:
+
+```js
+const Stack = createNativeStackNavigator();
+<Stack.Navigator>
+  <Stack.Screen name="Home" component={HomeScreen} />
+</Stack.Navigator>
+```
+
+---
+
+## 33. How do you handle platform-specific code in React Native?
+
+You can handle platform-specific behavior in two ways:
+
+### Method 1: Using the Platform API
+
+```js
+import { Platform } from 'react-native';
+
+const styles = StyleSheet.create({
+  text: {
+    color: Platform.OS === 'ios' ? 'blue' : 'green',
+  },
+});
+```
+
+### Method 2: Platform-specific files
+
+Create separate files for each platform:
+- `Component.ios.js`
+- `Component.android.js`
