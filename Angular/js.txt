@@ -1,0 +1,212 @@
+1. Function Declaration (Named Function)
+
+A standard way to define a function using the function keyword.
+
+function add(a, b) {
+  return a + b;
+}
+
+
+Key Points
+
+Hoisted (can be used before definition)
+
+Has a name
+
+Commonly used
+
+2. Function Expression
+
+A function assigned to a variable.
+
+const subtract = function (a, b) {
+  return a - b;
+};
+
+
+Key Points
+
+Not hoisted
+
+Can be anonymous or named
+
+Treated as a value
+
+3. Arrow Function (ES6)
+
+A shorter syntax for function expressions.
+
+const multiply = (a, b) => a * b;
+
+
+Key Points
+
+Does not have its own this
+
+Cannot be used as a constructor
+
+Best for callbacks and short functions
+
+4. Anonymous Function
+
+A function without a name.
+
+setTimeout(function () {
+  console.log("Hello");
+}, 1000);
+
+
+Key Points
+
+Mostly used as callbacks
+
+Cannot be reused directly
+
+5. Named Function Expression
+
+A function expression with a name.
+
+const factorial = function fact(n) {
+  return n <= 1 ? 1 : n * fact(n - 1);
+};
+
+
+Key Points
+
+Name is accessible only inside the function
+
+Helpful for recursion and debugging
+
+6. Immediately Invoked Function Expression (IIFE)
+
+A function that runs immediately after being defined.
+
+(function () {
+  console.log("IIFE executed");
+})();
+
+
+Key Points
+
+Executes once
+
+Used to avoid polluting global scope
+
+7. Callback Function
+
+A function passed as an argument to another function.
+
+function greet(name, callback) {
+  callback(name);
+}
+
+greet("Abhijit", function (name) {
+  console.log("Hello " + name);
+});
+
+
+Key Points
+
+Common in async programming
+
+Used in events, promises, array methods
+
+8. Higher-Order Function
+
+A function that accepts another function or returns a function.
+
+function multiplier(factor) {
+  return function (num) {
+    return num * factor;
+  };
+}
+
+
+Key Points
+
+Core concept in functional programming
+
+Used in map, filter, reduce
+
+9. Generator Function
+
+A function that can pause and resume execution.
+
+function* generateNumbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+
+Key Points
+
+Uses function*
+
+Uses yield
+
+Returns an iterator
+
+10. Async Function
+
+Used to handle asynchronous operations.
+
+async function fetchData() {
+  const data = await fetch("/api/data");
+  return data;
+}
+
+
+Key Points
+
+Returns a Promise
+
+Uses async / await
+
+Cleaner than .then()
+
+11. Constructor Function
+
+Used to create objects using new.
+
+function Person(name) {
+  this.name = name;
+}
+
+const user = new Person("Abhijit");
+
+
+Key Points
+
+Capitalized by convention
+
+Uses this
+
+Before ES6 classes
+
+12. Recursive Function
+
+A function that calls itself.
+
+function sum(n) {
+  if (n === 0) return 0;
+  return n + sum(n - 1);
+}
+
+
+Key Points
+
+Must have a base condition
+
+Used in tree, graph, factorial problems
+
+🔹 Interview Tip (Quick Summary)
+Type	Key Feature
+Function Declaration	Hoisted
+Function Expression	Assigned to variable
+Arrow Function	No own this
+IIFE	Executes immediately
+Callback	Passed as argument
+Higher-Order	Works with functions
+Async	Handles async code
+Generator	Pausable execution

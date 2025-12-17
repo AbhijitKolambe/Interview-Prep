@@ -1,0 +1,304 @@
+1️⃣ JavaScript Basics & Functions
+
+What are the different types of functions in JavaScript?
+
+What is a callback function?
+
+What is a higher-order function?
+
+What is a first-class function?
+
+What is a self-executing / IIFE function?
+
+Difference between function declaration and function expression
+
+Difference between arrow function and normal function
+
+How does this work in arrow functions?
+
+What are anonymous functions?
+
+What are named functions?
+
+2️⃣ JavaScript Execution & Asynchronous Behavior
+
+Is JavaScript synchronous or asynchronous?
+
+How does JavaScript execute code?
+
+What is the Call Stack?
+
+What is the Event Loop?
+
+What is Callback Queue?
+
+What is Microtask Queue?
+
+Difference between microtasks and macrotasks
+
+How does setTimeout work internally?
+
+What is async/await?
+
+Difference between synchronous and asynchronous code
+
+3️⃣ Promises & API Handling
+
+What is a Promise?
+
+Promise states (pending, fulfilled, rejected)
+
+How do you handle errors in Promises?
+
+What is Promise.all()?
+
+What is Promise.allSettled()?
+
+What is Promise.race()?
+
+How do you make parallel API calls in JavaScript?
+
+Can you use .then() without async?
+
+How does fetch() work?
+
+Difference between Promise and async/await
+
+4️⃣ Hoisting, Scope & Variables
+
+What is hoisting?
+
+Difference between var, let, and const
+
+What is Temporal Dead Zone?
+
+What happens when you access variables before declaration?
+
+Block scope vs function scope
+
+5️⃣ Prototype & Inheritance
+
+What is prototype?
+
+What is prototypal inheritance?
+
+Why do we use prototype?
+
+What are polyfills?
+
+How do you write a polyfill?
+
+6️⃣ Arrays & Methods
+
+What are array properties?
+
+What is length property?
+
+Difference between map, filter, reduce
+
+Difference between find and filter
+
+When to use map vs reduce
+
+When does find stop execution?
+
+Real-world use case of map
+
+Real-world use case of reduce
+
+7️⃣ Objects
+
+How do you access object properties?
+
+Dot notation vs bracket notation
+
+When should you use bracket notation?
+
+How to access dynamic keys?
+
+How to clone objects?
+
+Difference between shallow copy and deep copy
+
+8️⃣ ES6+ Features
+
+List ES6 features
+
+What is destructuring?
+
+What is spread operator?
+
+What is rest operator?
+
+Use cases of spread operator
+
+Arrow functions benefits
+
+📌 UI / CSS / Responsive Design
+9️⃣ CSS & Layout
+
+What is responsive design?
+
+What is mobile-first approach?
+
+What are media queries?
+
+What is Flexbox?
+
+What is CSS Box Model?
+
+Order of box model
+
+Difference between margin and padding
+
+When to use margin vs padding
+
+How to design UI without frameworks?
+
+
+
+
+1️⃣1️⃣ Dependency Injection & Services
+
+What is dependency injection?
+
+What does @Injectable({ providedIn: 'root' }) mean?
+
+What are services in Angular?
+
+Why use services?
+
+1️⃣2️⃣ Change Detection & Performance
+
+What is change detection?
+
+Default change detection strategy
+
+What is OnPush change detection?
+
+When should you use OnPush?
+
+1️⃣3️⃣ Angular Signals (New)
+
+What are Angular Signals?
+
+Why were signals introduced?
+
+Difference between signals and observables
+
+Can Angular work without zone.js?
+
+How signals improve performance?
+
+1️⃣4️⃣ View & DOM Access
+
+What is @ViewChild?
+
+How does ViewChild work?
+
+What do you get from ViewChild?
+
+Difference between ViewChild and ngModel
+
+1️⃣5️⃣ Directives
+
+What are directives?
+
+Types of directives
+
+What are structural directives?
+
+What are attribute directives?
+
+What is a custom directive?
+
+When should you create a custom directive?
+
+1️⃣6️⃣ Pipes
+
+What is a pipe?
+
+What is a custom pipe?
+
+What is the transform() method?
+
+Can you use multiple pipes together?
+
+Difference between built-in and custom pipes
+
+📌 RxJS (Angular + JS)
+1️⃣7️⃣ RxJS Core
+
+What is RxJS?
+
+Why Angular uses RxJS?
+
+What is an Observable?
+
+Difference between Observable and Promise
+
+What is pipe()?
+
+1️⃣8️⃣ RxJS Operators
+
+What is map operator?
+
+What is filter operator?
+
+What is switchMap?
+
+What is mergeMap?
+
+What is concatMap?
+
+What is forkJoin?
+
+1️⃣9️⃣ Subjects
+
+What is Subject?
+
+What is BehaviorSubject?
+
+Difference between Subject and BehaviorSubject
+
+When should you use Subject?
+
+📌 Authentication & Authorization (Angular)
+2️⃣0️⃣ Security
+
+What is authentication?
+
+What is authorization?
+
+What are interceptors?
+
+What is JWT?
+
+What are route guards?
+
+Difference between CanActivate and CanDeactivate
+
+📌 Tools, Process & Real-World
+2️⃣1️⃣ Development Process & Tools
+
+What is Agile methodology?
+
+What is a sprint?
+
+Git branching strategy
+
+What is Pull Request (PR)?
+
+What is code review?
+
+What is SonarQube?
+
+Purpose of SonarQube
+
+What is code coverage?
+
+Why JavaScript fundamentals matter more than frameworks?
+
+Importance of GitHub projects
+
+Impact of AI tools on developers
