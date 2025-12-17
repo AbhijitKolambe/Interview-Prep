@@ -158,15 +158,6 @@ How to design UI without frameworks?
 
 
 
-1️⃣1️⃣ Dependency Injection & Services
-
-What is dependency injection?
-
-What does @Injectable({ providedIn: 'root' }) mean?
-
-What are services in Angular?
-
-Why use services?
 
 1️⃣2️⃣ Change Detection & Performance
 

@@ -101,3 +101,122 @@ Lazy loading with standalone components in Angular works by loading the componen
 ### Interview one-liner
 
 In standalone architecture, lazy loading is done using `loadComponent`, which loads the component on demand without NgModules.
+## What is dependency injection?
+
+Dependency Injection (DI) is a design pattern used in Angular where a class does not create its own dependencies, but instead receives them from an external source (the injector). This makes the code loosely coupled, easier to test, and more maintainable.
+
+In Angular, services or dependencies are typically registered with the injector using @Injectable() or provider configurations. When a component or another service needs that dependency, Angular automatically injects the required instance through the constructor.
+
+DI helps in:
+
+- Reusing services across the application
+- Improving unit testing by allowing mock dependencies
+- Separating business logic from UI logic
+
+Example:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  getData() {
+    return 'Data from service';
+  }
+}
+
+@Component({
+  selector: 'app-demo',
+  template: `{{ data }}`
+})
+export class DemoComponent {
+  data: string;
+
+  constructor(private apiService: ApiService) {
+    this.data = this.apiService.getData();
+  }
+}
+```
+ **Interview key point:**
+Dependency Injection allows Angular to manage and supply dependencies automatically instead of components creating them manually, leading to cleaner and more testable code.
+
+## What does @Injectable({ providedIn: 'root' }) mean?
+@Injectable({ providedIn: 'root' }) tells Angular to register the service with the root injector, making it available across the entire application as a singleton.
+
+This means:
+
+- Angular automatically creates one instance of the service
+- The same instance is shared by all components
+- No need to add the service in providers of a module or component
+
+Example:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  getUser() {
+    return 'User data';
+  }
+}
+```
+
+
+Why it's used:
+
+- Reduces boilerplate (no manual provider registration)
+- Ensures a single shared instance
+- Supports tree-shaking (service removed if not used)
+
+ **Interview one-liner:**
+providedIn: 'root' makes a service globally available as a singleton throughout the Angular application.
+
+## What are services in Angular?
+
+Services in Angular are classes used to handle business logic and shared data that should not live inside components. They help keep components clean, reusable, and focused on the UI.
+
+Services are commonly used for:
+
+- API / HTTP calls
+- Data sharing between components
+- Business logic
+- Utility functions
+
+They are created using @Injectable() and injected into components using Dependency Injection.
+
+Example:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  getMessage() {
+    return 'Hello from Service';
+  }
+}
+
+@Component({
+  selector: 'app-test',
+  template: `{{ message }}`
+})
+export class TestComponent {
+  message = '';
+
+  constructor(private dataService: DataService) {
+    this.message = this.dataService.getMessage();
+  }
+}
+```
+
+
+Interview one-liner:
+Services in Angular are used to share data and business logic across components using dependency injection.
+
+## Why use services?
+Services are used in Angular to separate business logic from UI logic. They help keep components clean, reusable, and easy to maintain by handling tasks like API calls, data sharing, and common utilities in one central place.
+
+Why they are important:
+
+- Avoids code duplication
+- Enables data sharing between components
+- Improves testability (easy to mock services)
+- Follows separation of concerns
+
+ **Interview one-liner:**
+Services are used to centralize business logic and share data across components, making Angular applications cleaner and more maintainable.
