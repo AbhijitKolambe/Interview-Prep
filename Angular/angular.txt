@@ -159,115 +159,11 @@ How to design UI without frameworks?
 
 
 
-1️⃣2️⃣ Change Detection & Performance
 
-What is change detection?
 
-Default change detection strategy
 
-What is OnPush change detection?
 
-When should you use OnPush?
 
-1️⃣3️⃣ Angular Signals (New)
-
-What are Angular Signals?
-
-Why were signals introduced?
-
-Difference between signals and observables
-
-Can Angular work without zone.js?
-
-How signals improve performance?
-
-1️⃣4️⃣ View & DOM Access
-
-What is @ViewChild?
-
-How does ViewChild work?
-
-What do you get from ViewChild?
-
-Difference between ViewChild and ngModel
-
-1️⃣5️⃣ Directives
-
-What are directives?
-
-Types of directives
-
-What are structural directives?
-
-What are attribute directives?
-
-What is a custom directive?
-
-When should you create a custom directive?
-
-1️⃣6️⃣ Pipes
-
-What is a pipe?
-
-What is a custom pipe?
-
-What is the transform() method?
-
-Can you use multiple pipes together?
-
-Difference between built-in and custom pipes
-
-📌 RxJS (Angular + JS)
-1️⃣7️⃣ RxJS Core
-
-What is RxJS?
-
-Why Angular uses RxJS?
-
-What is an Observable?
-
-Difference between Observable and Promise
-
-What is pipe()?
-
-1️⃣8️⃣ RxJS Operators
-
-What is map operator?
-
-What is filter operator?
-
-What is switchMap?
-
-What is mergeMap?
-
-What is concatMap?
-
-What is forkJoin?
-
-1️⃣9️⃣ Subjects
-
-What is Subject?
-
-What is BehaviorSubject?
-
-Difference between Subject and BehaviorSubject
-
-When should you use Subject?
-
-📌 Authentication & Authorization (Angular)
-2️⃣0️⃣ Security
-
-What is authentication?
-
-What is authorization?
-
-What are interceptors?
-
-What is JWT?
-
-What are route guards?
-
-Difference between CanActivate and CanDeactivate
 
 📌 Tools, Process & Real-World
 2️⃣1️⃣ Development Process & Tools
