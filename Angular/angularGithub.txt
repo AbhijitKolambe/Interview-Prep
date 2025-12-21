@@ -1,5 +1,3 @@
-https://github.com/sudheerj/angular-interview-questions?utm_source=chatgpt.com
-
 https://www.wecreateproblems.com/interview-questions/angular-interview-questions?utm_source=chatgpt.com
 
 https://www.turing.com/interview-questions/angular?utm_source=chatgpt.com
@@ -8,28 +6,6 @@ https://www.angularspace.com/senior-angular-interview-questions/?utm_source=chat
 
 https://flexiple.com/angular/interview-questions?utm_source=chatgpt.com
 
-
-
-
-what is rxjs 
-what is observable 
-httpclient api call
-ngmodule
-form handling
-signal
-subsibing 
-what is synaocnous opreatuion
-what is aysnchronous operation 
-intercetr
-routing authgurad
-useabe of matreial
-routing module and hnalde routing
-
-
-
-
-
-What is JIT?
 
 
 

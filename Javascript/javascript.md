@@ -10,7 +10,6 @@ The event loop is what allows Node.js to perform non-blocking I/O operations —
 - **Microtask Queue** (Promises)
 - **Macrotask Queue** (setTimeout, events)
 
-### Key Components:
 
 ## Call Stack (Synchronous code)
 

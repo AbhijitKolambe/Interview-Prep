@@ -1,4 +1,70 @@
 <div class="container">
+<app-virtual-list></app-virtual-list>
+  <h2>Angular New Control Flow Examples</h2>
+
+    <!-- ===================== -->
+    <!-- @if / @else -->
+    <!-- ===================== -->
+    <button (click)="toggleLogin()">Toggle Login</button>
+
+    @if (isLoggedIn) {
+      <p style="color: green;">Welcome, {{ username }} 👋</p>
+    } @else {
+      <p style="color: red;">Please log in</p>
+    }
+
+    <hr />
+
+    <!-- ===================== -->
+    <!-- @for -->
+    <!-- ===================== -->
+    <h3>User List</h3>
+
+    @for (user of users; track user.id) {
+      <p>{{ user.id }} - {{ user.name }}</p>
+    } @empty {
+      <p>No users found</p>
+    }
+
+    <hr />
+
+    <!-- ===================== -->
+    <!-- @switch / @case -->
+    <!-- ===================== -->
+    <h3>User Role</h3>
+
+    <select (change)="role = $any($event.target).value">
+      <option value="admin">Admin</option>
+      <option value="editor">Editor</option>
+      <option value="user">User</option>
+    </select>
+
+    @switch (role) {
+      @case ('admin') {
+        <p>🔑 Admin has full access</p>
+      }
+      @case ('editor') {
+        <p>✏️ Editor can modify content</p>
+      }
+      @default {
+        <p>👤 Regular user access</p>
+      }
+    }
+
+    <hr />
+
+    <!-- ===================== -->
+    <!-- @defer -->
+    <!-- ===================== -->
+    <h3>Deferred Content</h3>
+
+    @defer {
+      <p>🚀 Heavy component loaded!</p>
+    } @loading {
+      <p>Loading...</p>
+    } @error {
+      <p>Error loading content</p>
+    }
 
   <p>Hello, <strong>{{ title }}</strong></p>
  <button (click)="test()">hi</button>
