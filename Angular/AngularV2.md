@@ -688,6 +688,36 @@ Using `@Output()` decorator with `EventEmitter` to emit events.
 
 This is the most common and recommended way for tightly coupled components.
 
+Parent to Child: Using @Input()The parent component "owns" the data and passes it down to the child via property binding.Child Component (child.component.ts)TypeScriptimport { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<p>Message from parent: {{ childMessage }}</p>`
+})
+export class ChildComponent {
+  @Input() childMessage: string = ''; // Receives data
+}
+Parent Component (parent.component.html)HTML<app-child [childMessage]="parentData"></app-child>
+Child to Parent: Using @Output()The child component triggers an event that the parent listens for, often sending data back up.Child Component (child.component.ts)TypeScriptimport { Component, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<button (click)="sendMessage()">Send to Parent</button>`
+})
+export class ChildComponent {
+  @Output() messageEvent = new EventEmitter<string>();
+
+  sendMessage() {
+    this.messageEvent.emit('Hello from the Child!');
+  }
+}
+Parent Component (parent.component.ts & .html)TypeScript// Logic
+receiveMessage($event: string) {
+  console.log($event); // "Hello from the Child!"
+}
+HTML<app-child (messageEvent)="receiveMessage($event)"></app-child>
+Summary TableDirectionMechanismDecoratorParent → ChildProperty Binding@Input()Child → ParentEvent Binding@Output() & EventEmitter
+
 ---
 
 ### How do non-related components communicate? 
