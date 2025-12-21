@@ -134,6 +134,24 @@ Use cases of spread operator
 
 Arrow functions benefits
 
+
+
+Why JavaScript is important for Angular?
+
+What is a synchronous operation?
+
+What is an asynchronous operation?
+
+Difference between var, let, and const
+
+What is shallow copy vs deep copy?
+
+What is the JavaScript event loop?
+
+Why event loop matters in Angular apps?
+
+
+
 📌 UI / CSS / Responsive Design
 9️⃣ CSS & Layout
 
