@@ -680,15 +680,13 @@ Choosing the right method improves maintainability and performance.
 
 ### How do parent and child components communicate? 
 
-**Parent → Child:**
-Using `@Input()` decorator to pass data.
+**Parent → Child: Using @Input()**
 
-**Child → Parent:**
-Using `@Output()` decorator with `EventEmitter` to emit events.
+The parent component "owns" the data and passes it down to the child via property binding.
 
-This is the most common and recommended way for tightly coupled components.
-
-Parent to Child: Using @Input()The parent component "owns" the data and passes it down to the child via property binding.Child Component (child.component.ts)TypeScriptimport { Component, Input } from '@angular/core';
+Child Component (child.component.ts):
+```typescript
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -697,8 +695,20 @@ Parent to Child: Using @Input()The parent component "owns" the data and passes i
 export class ChildComponent {
   @Input() childMessage: string = ''; // Receives data
 }
-Parent Component (parent.component.html)HTML<app-child [childMessage]="parentData"></app-child>
-Child to Parent: Using @Output()The child component triggers an event that the parent listens for, often sending data back up.Child Component (child.component.ts)TypeScriptimport { Component, Output, EventEmitter } from '@angular/core';
+```
+
+Parent Component (parent.component.html):
+```html
+<app-child [childMessage]="parentData"></app-child>
+```
+
+**Child → Parent: Using @Output()**
+
+The child component triggers an event that the parent listens for, often sending data back up.
+
+Child Component (child.component.ts):
+```typescript
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -711,12 +721,31 @@ export class ChildComponent {
     this.messageEvent.emit('Hello from the Child!');
   }
 }
-Parent Component (parent.component.ts & .html)TypeScript// Logic
+```
+
+Parent Component (parent.component.ts & .html):
+
+TypeScript:
+```typescript
+// Logic
 receiveMessage($event: string) {
   console.log($event); // "Hello from the Child!"
 }
-HTML<app-child (messageEvent)="receiveMessage($event)"></app-child>
-Summary TableDirectionMechanismDecoratorParent → ChildProperty Binding@Input()Child → ParentEvent Binding@Output() & EventEmitter
+```
+
+HTML:
+```html
+<app-child (messageEvent)="receiveMessage($event)"></app-child>
+```
+
+**Summary Table**
+
+| Direction | Mechanism | Decorator |
+|-----------|-----------|-----------|
+| Parent → Child | Property Binding | `@Input()` |
+| Child → Parent | Event Binding | `@Output()` & `EventEmitter` |
+
+This is the most common and recommended way for tightly coupled components.
 
 ---
 
