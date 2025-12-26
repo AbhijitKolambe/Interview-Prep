@@ -33,8 +33,8 @@
 30. [Touchable Components](#29-what-are-touchable-components-in-react-native-and-how-do-they-work)
 31. [Form Validation](#30-how-do-you-handle-form-validation-in-react-native)
 32. [App Architecture](#31-explain-the-architecture-of-a-react-native-app)
-33. [Navigator in React Navigation](#32-what-is-the-role-of-navigator-in-react-navigation)
-34. [Platform-specific Code](#33-how-do-you-handle-platform-specific-code-in-react-native)
+33. [Platform-specific Code](#33-how-do-you-handle-platform-specific-code-in-react-native)
+34. [Avoid DOM / API Access in Render Phase (React Native)](#34-avoid-dom--api-access-in-render-phase-react-native)
 
 ---
 
@@ -85,7 +85,7 @@ const button = React.createElement(
 
 This creates a React element object, not an actual UI component yet.
 
-🧠 What Does It Return?
+### What Does It Return?
 
 React.createElement() returns a plain JavaScript object describing what should appear in the UI — it’s called a React Element.
 
@@ -105,7 +105,7 @@ What to render initially
 
 What needs updating when state or props change
 
-⚙️ How It Works in React Native
+How It Works in React Native
 
 On web (React DOM): elements like <div> are turned into actual DOM nodes.
 
@@ -113,7 +113,7 @@ On mobile (React Native): elements like <View> or <Text> are turned into native 
 
 So React Native takes the same React element structure but maps it to platform-native widgets instead of HTML tags.
 
-🧠 Why JSX Uses It
+### Why JSX Uses It
 
 JSX is just syntactic sugar for React.createElement() — it’s easier to read and write.
 Without JSX, you’d have to manually write all elements like this:
@@ -133,14 +133,14 @@ Instead of:
 
 
 
-1️⃣ Developer writes JSX code
+1. Developer writes JSX code
 --------------------------------
 <View style={{ padding: 10 }}>
   <Text>Hello World</Text>
 </View>
 
 
-2️⃣ JSX gets compiled (by Babel) into React.createElement() calls
+2. JSX gets compiled (by Babel) into React.createElement() calls
 -----------------------------------------------------------------
 React.createElement(
   View,
@@ -149,7 +149,7 @@ React.createElement(
 )
 
 
-3️⃣ React.createElement() creates a "React Element"
+3. React.createElement() creates a "React Element"
 ---------------------------------------------------
 {
   type: View,
@@ -165,14 +165,14 @@ React.createElement(
 }
 
 
-4️⃣ React reconciler processes the React Element tree
+4. React reconciler processes the React Element tree
 -----------------------------------------------------
 - Compares new tree with previous one (Virtual DOM diffing)
 - Finds what changed (if anything)
 - Prepares a minimal set of updates
 
 
-5️⃣ React Native Renderer (Fabric / Bridge)
+5. React Native Renderer (Fabric / Bridge)
 --------------------------------------------
 - Converts the React Element tree into native commands
 - Communicates with platform-specific UI APIs
@@ -182,26 +182,20 @@ Example:
   Text → Android TextView / iOS UILabel
 
 
-6️⃣ Final Output on Device
+6. Final Output on Device
 --------------------------
-📱 Native UI displayed:
+Native UI displayed:
 [Hello World]
 
 
 
 
 
-JSX
- ↓
-React.createElement()
- ↓
-React Element (Virtual Representation)
- ↓
-Reconciliation (diffing & updates)
- ↓
-Native Renderer (Fabric / Bridge)
- ↓
-Native UI (Actual Mobile Components)
+```
+
+JSX → React.createElement() → React Element (Virtual Representation) → Reconciliation (diffing & updates) → Native Renderer (Fabric / Bridge) → Native UI (Actual Mobile Components)
+
+```
 
 
 
@@ -269,10 +263,167 @@ Understanding these phases helps in writing **high‑performance React applicati
 
 **Best Practices:**
 
-- ✅ Keep render phase lightweight (avoid heavy computations).
-- ✅ Use `useMemo` and `useCallback` to reduce unnecessary renders.
-- ✅ Place side‑effect logic inside `useEffect`, not during render.
-- ❌ Avoid DOM access or API calls in the render phase.
+- Keep render phase lightweight (avoid heavy computations).
+- Use `useMemo` and `useCallback` to reduce unnecessary renders.
+- Place side‑effect logic inside `useEffect`, not during render.
+- Avoid DOM access or API calls in the render phase.
+
+
+##  Avoid DOM / API Access in Render Phase (React Native)
+
+In React Native, the **render phase must be pure**.
+You should **NOT perform side effects** such as API calls, native module access, ref usage, or state updates inside render.
+
+Below are **5 WRONG examples** and their **CORRECT solutions**.
+
+---
+
+## 1. Native API Call in Render
+
+### Wrong
+```js
+import { Text, Dimensions } from 'react-native';
+
+const Screen = () => {
+  const width = Dimensions.get('window').width; // native API in render
+
+  return <Text>{width}</Text>;
+};
+```
+
+### Correct
+```js
+import { Text, Dimensions } from 'react-native';
+import { useEffect, useState } from 'react';
+
+const Screen = () => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    setWidth(Dimensions.get('window').width);
+  }, []);
+
+  return <Text>{width}</Text>;
+};
+```
+
+## 2. API Call in Render
+
+### Wrong
+```js
+const Screen = () => {
+  fetch('https://api.example.com/data'); // API call in render
+
+  return <Text>Hello</Text>;
+};
+```
+
+### Correct
+```js
+import { useEffect, useState } from 'react';
+
+const Screen = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('https://api.example.com/data')
+      .then(res => res.json())
+      .then(setData);
+  }, []);
+
+  return <Text>{JSON.stringify(data)}</Text>;
+};
+```
+
+## 3. Ref (DOM-like) Access in Render
+
+### Wrong
+```js
+import { View } from 'react-native';
+import { useRef } from 'react';
+
+const Screen = () => {
+  const viewRef = useRef(null);
+
+  console.log(viewRef.current); // ref access in render
+
+  return <View ref={viewRef} />;
+};
+```
+
+### Correct
+```js
+import { View } from 'react-native';
+import { useRef, useEffect } from 'react';
+
+const Screen = () => {
+  const viewRef = useRef(null);
+
+  useEffect(() => {
+    console.log(viewRef.current); // safe after render
+  }, []);
+
+  return <View ref={viewRef} />;
+};
+```
+
+## 4. State Update in Render
+
+### Wrong
+```js
+import { useState } from 'react';
+
+const Screen = () => {
+  const [count, setCount] = useState(0);
+
+  setCount(count + 1); // state update in render
+
+  return <Text>{count}</Text>;
+};
+```
+
+### Correct
+```js
+import { useState } from 'react';
+import { Button, Text } from 'react-native';
+
+const Screen = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <Text>{count}</Text>
+      <Button title="Increment" onPress={() => setCount(count + 1)} />
+    </>
+  );
+};
+```
+
+## 5. Side Effects (Logs / Storage / Alerts) in Render
+
+### Wrong
+```js
+const Screen = () => {
+  console.log('Rendering'); // side effect in render
+
+  return <Text>Hello</Text>;
+};
+```
+
+### Correct
+```js
+import { useEffect } from 'react';
+
+const Screen = () => {
+  useEffect(() => {
+    console.log('Component mounted'); 
+  }, []);
+
+  return <Text>Hello</Text>;
+};
+```
+
+
 
 **Real‑World Impact:** Poorly optimized render logic can block UI updates, while correct separation ensures smoother user interactions and better performance.
 
@@ -289,7 +440,7 @@ In this scenario, we have a "heavy" function (simulating complex data filtering 
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-// 🔴 BAD: A heavy function that runs purely synchronously
+// BAD: A heavy function that runs purely synchronously
 const expensiveCalculation = (n) => {
   console.log('Calculating...');
   let total = 0;
@@ -303,7 +454,7 @@ const expensiveCalculation = (n) => {
 export default function UnoptimizedScreen() {
   const [count, setCount] = useState(0);
 
-  // 🔴 BLOCKING: This runs on EVERY render.
+  // BLOCKING: This runs on EVERY render.
   // When you press the button, the JS thread locks up here before it can
   // update the screen, making the button feel "stuck" or laggy.
   const heavyResult = expensiveCalculation(5); 
@@ -344,7 +495,7 @@ export default function OptimizedScreen() {
   const [count, setCount] = useState(0);
   const [baseNumber, setBaseNumber] = useState(5);
 
-  // 🟢 GOOD: The calculation is separated from unrelated updates.
+  // GOOD: The calculation is separated from unrelated updates.
   // This will ONLY run if 'baseNumber' changes.
   const heavyResult = useMemo(() => {
     return expensiveCalculation(baseNumber);
@@ -390,8 +541,6 @@ It returns a **JSX representation** of the component based on the current **stat
 - Should be **pure** (no side effects)
 - Does not directly manipulate the DOM or native UI
 
-### Explanation:
-React Native compares the new JSX returned by `render` with the previous one and updates **only the required parts of the UI**, improving performance.
 
 ---
 
@@ -541,17 +690,29 @@ export default StyledBox;
 - Cleaner and reusable styles
 
 ---
-
 ## 11. What are Props in React Native?
 
-**Props** (short for *properties*) are used to **pass data from a parent component to a child component**.
+**Props** (short for *properties*) are **read-only inputs** passed from a **parent component to a child component**.
+They allow components to receive data and configuration from outside, making them **dynamic, reusable, and predictable**.
 
-They make components:
-- Dynamic
-- Reusable
-- Predictable
+Props enforce **one-way data flow**:
+**Parent ➝ Child**
 
-Props follow **one-way data flow** (parent → child).
+---
+
+##  Key Characteristics of Props
+
+###  Props are **Immutable (Read-Only)**
+- A child component **cannot modify** the props it receives.
+- Props should never be changed directly inside a component.
+
+ **Wrong**
+```js
+const Child = (props) => {
+  props.title = 'New Title'; //  Not allowed
+  return <Text>{props.title}</Text>;
+};
+
 
 ---
 
@@ -619,7 +780,7 @@ const Greeting = ({ name }) => {
 };
 ```
 
-⚠️ **But this does NOT mean props are mutable.**
+**But this does NOT mean props are mutable.**
 
 ---
 
@@ -1033,21 +1194,150 @@ Without keys, React may re-render the entire list unnecessarily, leading to perf
 
 ## 23. How can you make a network request in React Native?
 
-You can make network requests using:
+In React Native, network requests are used to communicate with backend services
+to fetch or send data. React Native supports multiple ways to make network calls.
+
+The most commonly used approaches are:
 - **Fetch API** (built-in)
-- **Axios** or other third-party libraries
+- **Axios** (third-party library)
 
-These allow you to fetch data from APIs asynchronously using Promises or async/await syntax.
+Both support **Promises** and **async/await** syntax.
 
-### Example:
+---
 
+## 1. Using Fetch API (Built-in)
+
+The **Fetch API** is available by default in React Native and does not require
+any external dependency.
+
+### GET Request (Fetch)
 ```js
-const fetchData = async () => {
-  const response = await fetch('https://api.example.com/data');
-  const data = await response.json();
-  console.log(data);
+const fetchUsers = async () => {
+  try {
+    const response = await fetch('https://api.example.com/users');
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
 };
 ```
+
+### POST Request (Fetch)
+```js
+const createUser = async () => {
+  try {
+    const response = await fetch('https://api.example.com/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: 'Abhijit',
+        role: 'Developer',
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+```
+
+## 2. Using Axios (Third-Party Library)
+
+Axios is a popular HTTP client that simplifies request and response handling.
+
+### Install Axios
+```bash
+npm install axios
+```
+
+### GET Request (Axios)
+```js
+import axios from 'axios';
+
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get('https://api.example.com/users');
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+```
+
+### POST Request (Axios)
+```js
+import axios from 'axios';
+
+const createUser = async () => {
+  try {
+    const response = await axios.post('https://api.example.com/users', {
+      name: 'Abhijit',
+      role: 'Developer',
+    });
+
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+```
+
+## 3. Fetch vs Axios (Detailed Comparison)
+
+| Feature | Fetch API | Axios |
+|---------|-----------|-------|
+| Built-in | Yes | No (library) |
+| JSON Parsing | Manual (response.json()) | Automatic |
+| HTTP Error Handling | Manual | Automatic |
+| Request Interceptors | No | Yes |
+| Response Interceptors | No | Yes |
+| Request Cancellation | Hard | Easy |
+| Timeout Support | No | Yes |
+| Browser / RN Support | Yes | Yes |
+
+## 4. Error Handling Difference
+
+### Fetch Error Handling
+```js
+fetch(url).then(res => {
+  if (!res.ok) {
+    throw new Error('Request failed');
+  }
+});
+```
+
+### Axios Error Handling
+```js
+axios.get(url).catch(error => {
+  console.error(error.response.status);
+});
+```
+
+Axios automatically rejects the promise for non-2xx responses.
+
+## 5. Which One Is Better?
+
+### Use Fetch API When:
+- You want zero dependencies
+- Simple GET/POST requests
+- Lightweight apps
+
+### Use Axios When:
+- Large-scale applications
+- Need interceptors (auth tokens)
+- Centralized error handling
+- Request cancellation and timeouts
+- Cleaner and less boilerplate code
 
 ---
 
@@ -1072,26 +1362,173 @@ const value = await AsyncStorage.getItem('userToken');
 
 ## 25. How can you integrate Redux with a React Native app?
 
-Redux is integrated by:
-1. Creating a store to hold global state
-2. Wrapping your app in a `<Provider>` from react-redux
-3. Defining reducers and actions to manage state changes
-4. Connecting components using useSelector and useDispatch
+### Redux Toolkit Integration in a React Native App
 
-### Example:
+Redux Toolkit (RTK) is the **official, recommended way** to use Redux.
+It reduces boilerplate, enforces best practices, and makes Redux easier to use
+and maintain in React Native applications.
+
+---
+
+## Core Concepts Used in Redux Toolkit
+
+- `configureStore` → creates the Redux store
+- `createSlice` → generates reducer + actions together
+- `Provider` → makes the store available to the app
+- `useSelector` → reads state from the store
+- `useDispatch` → dispatches actions
+
+---
+
+## Step-by-Step Redux Toolkit Integration
+
+### 1. Install Required Packages
+
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+### 2. Create a Slice
+
+A slice contains:
+- Initial state
+- Reducers
+- Auto-generated actions
+
+**counterSlice.js**
 
 ```js
+import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    value: 0,
+  },
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
+    },
+  },
+});
+
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+### 3. Create the Store
+
+**store.js**
+
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './counterSlice';
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+  },
+});
+```
+
+### 4. Wrap the App with Provider
+
+**App.js**
+
+```js
+import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import CounterScreen from './CounterScreen';
 
 export default function App() {
   return (
     <Provider store={store}>
-      <RootNavigator />
+      <CounterScreen />
     </Provider>
   );
 }
 ```
+
+### 5. Use Redux Toolkit State in a Component
+
+**CounterScreen.js**
+
+```js
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  increment,
+  decrement,
+  incrementByAmount,
+} from './counterSlice';
+
+const CounterScreen = () => {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    <View>
+      <Text>Count: {count}</Text>
+
+      <Button
+        title="Increment"
+        onPress={() => dispatch(increment())}
+      />
+
+      <Button
+        title="Decrement"
+        onPress={() => dispatch(decrement())}
+      />
+
+      <Button
+        title="Add 5"
+        onPress={() => dispatch(incrementByAmount(5))}
+      />
+    </View>
+  );
+};
+
+export default CounterScreen;
+```
+
+## Data Flow with Redux Toolkit
+
+- UI dispatches an action
+- Slice reducer handles the action
+- State is updated immutably using Immer
+- Store notifies subscribers
+- UI re-renders using `useSelector`
+
+## Why Redux Toolkit is Better Than Classic Redux
+
+| Aspect | Classic Redux | Redux Toolkit |
+|--------|----------------|---------------|
+| Boilerplate | High | Minimal |
+| Reducer logic | Manual immutability | Automatic (Immer) |
+| Action creation | Separate files | Auto-generated |
+| Store setup | Verbose | Simple |
+| Best practices | Optional | Enforced |
+
+## When to Use Redux Toolkit
+
+### Use Redux Toolkit When:
+- App has shared global state
+- Multiple screens depend on the same data
+- State logic is complex
+
+### Avoid Redux Toolkit When:
+- State is local to one component
+- App is very small
+
+
 
 ---
 
@@ -1240,3 +1677,6 @@ const styles = StyleSheet.create({
 Create separate files for each platform:
 - `Component.ios.js`
 - `Component.android.js`
+
+---
+
