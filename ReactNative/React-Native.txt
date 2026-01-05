@@ -1,19 +1,15 @@
-useCallback – Memoize callback functions
-useMemo – Memoize expensive computations
-useContext – Access context values
-useRef – Create persistent references
-
-compound compoent recat natigve recat js 
-
-which type of props cause rerdners and prevent how to
-pure impure component 
-context  api
-packge json and lock jsonpackge version names explain
 
 
-js
-this keyword 
-hosting 
+
+
+
+
+
+
+
+
+
+Closures in React hooks
 
 
 backweard compantibitlity
@@ -33,3 +29,12 @@ what is callstacck liraryies npm goot or bad
 Single Responsibility Principle => solid principles
 lld
 sytem desgin
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+What you will be doing :
+
+In this position you will be working with the team to develop new Angular UI for Credit and Fail monitor solution.
+
+Analyzes, designs, programs, debugs and modifies software enhancements and/or new products used in local, networked or Internet-related computer programs. (Code must be used in core version of applications available for sale commercially.)
+Interacts with product managers and/or users to define system requirements and/or necessary modifications.
+Participates in software design meetings and analyzes user needs to determine technical requirements.
+Write technical specifications based on conceptual design and stated business requirements.
+Writes code, completes programming and performs testing and debugging of applications using current programming languages and technologies.
+Completes documentation and procedures for installation and maintenance.
+Develop concurrent, distributed, asynchronous enterprise real-time processing applications.
+Provide L3 support and key input to post-mortems / retrospectives of key events.
+Become subject matter expert on one or more of the key platforms, technology and integration points as part of the overall solutions
+Trains and communicates with internal Client Training, Client Relationship and Sales teams on systems application.
+May deliver informational and decision-seeking presentations to technical and business groups to internal and/or external audiences.
+Evaluate and identify new technologies and implement the same in product/solution
+Convert business requirement into executable code solution.
+Code, test, debug, document, implement and maintain software applications
+Other related duties assigned as needed.
+What you bring :
+
+3 to 6 Years Strong expertise in Angular (v17+ preferred) and TypeScript
+Experience with HTML5, CSS3, and responsive design
+Familiarity with state management libraries (e.g., NgRx, RxJS)
+Experience integrating with RESTful APIs
+Agile software methodology experience
+Excellent written and verbal communication skills
+Knowledge of testing frameworks (e.g., Jasmine, Karma) is a plus
+Experience with version control systems (e.g., Git)
+Experience in developing Java, JEE & Spring based applications.
+Expertise in building product /solution using Spring Framework and JPA (Hibernate)
+Experience in developing SOA/API based application using SOAP/REST WebServices
+Experience in developing application using any of the database like Oracle / MySQL / SQL Server / DB2 / PostgreSQL and writing SQL queries and PL/SQL programs is required. 
+Knowledge of data formats such as XML, JSON would be a plus.
+Experience with any of the JEE App Server e.g.: WebSphere Process Server, WebLogic, JBoss.
+Experience with build tools such as Maven, ANT and IDE like Eclipse & others
+Hands on knowledge of the Unix Shell scripting, Linux/Unix advanced level is required.
+Knowledge of software design patterns, integration patterns & enterprise architectural concepts.
+Nice to have:
+
+Experience budling application using Domain Driven Design and Event Driven Architecture.
+Familiarity with Python and other programming languages
+Working knowledge of Jira, Confluence, Experience with Agile and test-driven development
+Excellent verbal and written communication skills
+Experience in design and develop APIs using with Java & Spring.
+Knowledge of end-to-end systems development life cycles, e.g., waterfall, iterative and other modern approaches to software development
+Experience in developing and understanding sequence diagrams, class models, etc.
+Positive outlook, strong work ethic, & responsive to internal / external clients and contacts
+Knowledge of networking, computing platform, storage, database, security, middleware, network and systems management and related infrastructure technologies and practices
+Experience in developing enterprise application using software design patterns, integration patterns and enterprise architectural concepts.
+What we offer you:
+
+An exciting opportunity be a part of World’s Leading FinTech Product MNC
+A multifaceted job with a high degree of responsibility and a broad spectrum of opportunities
+A broad range of professional education and personal development possibilities – FIS is your final career step!
+A competitive salary and benefits
+A variety of career development tools, resources, and opportunities
+Privacy Statement
+
+FIS is committed to protecting the privacy and security of all personal information that we process in order to provide services to our clients. For specific inf
