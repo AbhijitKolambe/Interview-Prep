@@ -40,6 +40,10 @@
 37. [Pure vs Impure Components](#37-pure-vs-impure-components)
 38. [Context API Detailed Guide](#38-context-api-detailed-guide)
 39. [package.json vs package-lock.json](#39-understanding-packagejson-and-package-lockjson)
+40. [Advanced Performance Optimization](#40-advanced-performance-optimization-techniques)
+41. [React Hooks Interview Guide](#41-react-hooks-interview-guide)
+42. [Common React Native Hooks](#42-common-react-native-hooks)
+43. [React Native Lifecycle (Functional)](#43-react-native-lifecycle-functional-components)
 
 ---
 
@@ -765,3 +769,199 @@ An automatically generated file that locks the **exact versions** of every depen
 - **^ (Caret)**: Allows Minor + Patch updates (e.g., `^1.2.0` → `1.3.0`).
 - **~ (Tilde)**: Allows only Patch updates (e.g., `~1.2.0` → `1.2.1`).
 - **Exact**: Only installs that specific version.
+
+---
+
+## 40. Advanced Performance Optimization Techniques
+
+Performance optimization in a React Native application focuses on reducing unnecessary work on the **JavaScript thread**, minimizing **re-renders**, efficiently handling **lists and images**, and leveraging **native capabilities** wherever possible.
+
+---
+
+### 1. Prevent Unnecessary Re-renders
+
+Unnecessary re-renders are one of the most common causes of performance issues.
+
+#### a) Using `React.memo`
+Memoizes functional components to prevent re-rendering if props haven't changed.
+
+```javascript
+const MyComponent = React.memo(({ title }) => {
+  return <Text>{title}</Text>;
+});
+```
+
+#### b) Using PureComponent (Class Components)
+Automatically implements `shouldComponentUpdate` with a shallow prop/state comparison.
+
+#### c) `useCallback` and `useMemo`
+Prevents unstable references from triggering child re-renders.
+
+```javascript
+const onPress = useCallback(() => handlePress(), []);
+const computed = useMemo(() => heavyCalc(data), [data]);
+```
+
+---
+
+### 2. Use FlatList Instead of ScrollView
+
+**Problem:** `ScrollView` renders all children at once.
+**Solution:** `FlatList` renders only visible items (virtualization).
+
+```javascript
+<FlatList
+  data={data}
+  renderItem={renderItem}
+  initialNumToRender={10}
+  removeClippedSubviews={true}
+/>
+```
+
+---
+
+### 3. Optimize Images
+
+- **Resize on Server:** Don't download 4K images for a thumbnail.
+- **Caching:** Use `react-native-fast-image`.
+- **Formats:** Use WebP where possible.
+
+---
+
+### 4. Reduce JavaScript Thread Work
+
+The JS thread handles logic, API calls, and UI orchestration. If it's blocked, frames drop.
+
+- Avoid huge loops or complex calculations in `render`.
+- Move heavy logic to **Native Modules** (C++/Java/Obj-C) or use **JSI**.
+- Use `InteractionManager.runAfterInteractions()` for long tasks.
+
+---
+
+### 5. Optimize Animations
+
+**Always use native driver** for smooth 60fps animations.
+
+```javascript
+Animated.timing(value, {
+  toValue: 1,
+  useNativeDriver: true, // Key optimization
+}).start();
+```
+
+Or better yet, use **React Native Reanimated** which runs UI logic on the UI thread completely directly.
+
+---
+
+## 41. React Hooks Interview Guide
+
+### 1. `useState`
+**Purpose:** Manage local state.
+**Interview Line:** "Used to store and update component-level state asynchronously."
+
+### 2. `useEffect`
+**Purpose:** Side effects (API, subscriptions).
+**Interview Line:** "Replaces lifecycle methods like `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount`."
+
+### 3. `useContext`
+**Purpose:** Global state without prop drilling.
+**Interview Line:** "Helps share data globally (like theme/auth) without passing manual props."
+
+### 4. `useReducer`
+**Purpose:** Complex state logic.
+**Interview Line:** "Preferred over `useState` when state transitions are complex or depend on previous state (Redux-like)."
+
+### 5. `useCallback`
+**Purpose:** Memoize functions.
+**Interview Line:** "Prevents functions from being recreated on every render, optimizing child re-renders."
+
+### 6. `useMemo`
+**Purpose:** Memoize values.
+**Interview Line:** "Caches the result of an expensive calculation."
+
+### 7. `useRef`
+**Purpose:** Persistent values / DOM access.
+**Interview Line:** "Stores mutable values that do not trigger a re-render when changed."
+
+### 8. `useImperativeHandle`
+**Purpose:** Expose parent-controlled methods.
+**Interview Line:** "Customizes the instance value exposed to parent components when using refs."
+
+### 9. `useLayoutEffect`
+**Purpose:** Synchronous layout measurements.
+**Interview Line:** "Runs synchronously before the browser paints; useful for measuring layout size/position prevents flickering."
+
+---
+
+## 42. Common React Native Hooks
+
+### 1. `useWindowDimensions`
+**Purpose:** Responsive UI.
+**Usage:** `const { width, height } = useWindowDimensions();`
+**Note:** Automatically updates on rotation.
+
+### 2. `useColorScheme`
+**Purpose:** Dark Mode support.
+**Usage:** `const scheme = useColorScheme(); // 'light' | 'dark'`
+
+### 3. `useFocusEffect` (React Navigation)
+**Purpose:** Run effect when screen focuses.
+**Usage:** Good for refreshing data when returning to a screen.
+
+### 4. `useIsFocused` (React Navigation)
+**Purpose:** Boolean check for screen focus.
+**Usage:** `const isFocused = useIsFocused();`
+
+### 5. `useSafeAreaInsets`
+**Purpose:** Handle notches/home indicators.
+**Usage:** `const insets = useSafeAreaInsets();`
+
+---
+
+## 43. React Native Lifecycle (Functional Components)
+
+In functional components, we don't have `componentDidMount` etc., but we replicate the behavior with Hooks.
+
+### 1. Mounting (`componentDidMount`)
+Run once on mount.
+```javascript
+useEffect(() => {
+  console.log("Mounted");
+  // API Call here
+}, []); // Empty dependency array
+```
+
+### 2. Updating (`componentDidUpdate`)
+Run when specific prop/state changes.
+```javascript
+useEffect(() => {
+  console.log("Count changed");
+}, [count]); // Dependency array
+```
+
+### 3. Unmounting (`componentWillUnmount`)
+Cleanup function.
+```javascript
+useEffect(() => {
+  return () => {
+    console.log("Unmounted / Cleanup");
+    // Clear intervals, listeners
+  };
+}, []);
+```
+
+### 4. Pre-Paint Layout (`componentDidMount` blocking)
+Synchronous layout calculation.
+```javascript
+useLayoutEffect(() => {
+  // Measure UI here
+}, []);
+```
+
+### Lifecycle Mapping Summary
+
+| Class Method | Functional Equivalent |
+| :--- | :--- |
+| `componentDidMount` | `useEffect(..., [])` |
+| `componentDidUpdate` | `useEffect(..., [deps])` |
+| `componentWillUnmount` | `useEffect(() => { return cleanup }, [])` |
