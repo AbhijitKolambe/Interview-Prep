@@ -25,41 +25,25 @@
 
 ## 1. What is the Event Loop?
 
-The event loop is what allows Node.js to perform non-blocking I/O operations — despite the fact that a single JavaScript thread is used by default — by offloading operations to the system kernel whenever possible.
+Event Loop is a core JavaScript mechanism that allows asynchronous, non-blocking execution in a single-threaded language by continuously monitoring the Call Stack, Microtask Queue, and Callback (Task) Queue, and deciding when and what to execute next.
 
 ### Key Components
 
 - **Call Stack** (Synchronous code)
+  - Executes synchronous code
+  - LIFO (Last In, First Out)
 - **Microtask Queue** (Promises)
+  - `Promise.then`
+  - `catch`
+  - `finally`
+  - `MutationObserver`
+  - `queueMicrotask`
 - **Macrotask Queue** (setTimeout, events)
+  - `setTimeout`
+  - `setInterval`
+  - `setImmediate`
+  - UI events
 
-### Call Stack (Synchronous code)
-
-- Executes synchronous code
-- LIFO (Last In, First Out)
-
-### Web APIs (Browser / Node)
-
-Handles async tasks like:
-- `setTimeout`
-- `setInterval`
-- `fetch`
-- DOM events
-
-### Microtask Queue (High Priority)
-
-- `Promise.then`
-- `catch`
-- `finally`
-- `MutationObserver`
-- `queueMicrotask`
-
-### Macrotask Queue (Task Queue)
-
-- `setTimeout`
-- `setInterval`
-- `setImmediate`
-- UI events
 
 ### Event Loop
 
@@ -438,8 +422,6 @@ for (let i = 0; i < 3; i++) {
 - Closure is created at function creation, not execution.
 - Every function is not a closure, only those accessing outer variables.
 
-### One-Line Interview Summary
-A closure is a function that remembers and accesses variables from its outer lexical scope even after the outer function has executed.
 
 ### Closure Output-Based Questions
 
@@ -630,7 +612,7 @@ JavaScript uses the **Mark-and-Sweep** algorithm.
 ## 6. What is Event Propagation?
 
 Event propagation describes the order in which events travel through the DOM tree when an event occurs.
-
+![Event Propagation](./images/eventpropogation.png)
 There are three phases:
 1. **Capturing phase**
 2. **Target phase**
@@ -703,6 +685,8 @@ Prevents default browser behavior (e.g., submitting a form, following a link) bu
 
 Event delegation is a technique where a **single event listener** is attached to a **parent element** instead of adding listeners to multiple child elements. It leverages **event bubbling**.
 
+![Event Delegation](./images/eventDeligation.png)
+
 ### Why Event Delegation Is Used
 - Improves performance (fewer listeners).
 - Reduces memory usage.
@@ -772,6 +756,62 @@ greet('Abhi', sayBye);
 Hello Abhi
 Bye
 ```
+
+### Direct Function Call (Works, But Limited)
+
+```javascript
+function process() {
+  setTimeout(() => {
+    console.log("Done");
+    hello();
+  }, 1000);
+}
+
+function hello() {
+  console.log("Next step");
+}
+
+process();
+```
+
+* Works correctly
+* Hard-coded behavior
+* Not reusable
+* Tight coupling
+
+### Problem with Direct Calls
+
+* `process()` always calls the same function
+* You cannot change the next step dynamically
+* Not suitable for libraries, APIs, or scalable apps
+
+### Callback Solution (Preferred Design)
+
+```javascript
+function process(callback) {
+  setTimeout(() => {
+    console.log("Done");
+    callback();
+  }, 1000);
+}
+
+process(() => console.log("Save data"));
+process(() => console.log("Navigate user"));
+```
+
+* Reusable
+* Flexible
+* Clean separation of logic
+
+### Key Interview Comparison
+
+| Aspect | Direct Call | Callback |
+| :--- | :--- | :--- |
+| Works | Yes | Yes |
+| Reusable | No | Yes |
+| Flexible | No | Yes |
+| Decoupled | No | Yes |
+| Used in APIs | No | Yes |
 
 ### Why Callbacks Are Needed
 - JavaScript is single-threaded.
@@ -914,7 +954,6 @@ Promise.resolve().then(() => console.log('promise'));
 promise
 timeout
 ```
-**Why?** Microtasks run before the callback (macro-task) queue.
 
 ---
 <br>
