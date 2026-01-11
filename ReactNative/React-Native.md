@@ -313,7 +313,7 @@ Props enforce **one-way data flow**: **Parent ➝ Child**
 
 ---
 
-## 13. Purpose of Props
+### Purpose of Props
 
 - Customize child components
 - Share data between components
@@ -322,7 +322,7 @@ Props enforce **one-way data flow**: **Parent ➝ Child**
 
 ---
 
-## 14. Example: Passing Props
+###  Example: Passing Props
 
 ```js
 import React from 'react';
@@ -345,7 +345,7 @@ const App = () => (
 
 ---
 
-## 15. Props Characteristics
+### Props Characteristics
 
 | Property | Description |
 |--------|-------------|
@@ -356,7 +356,7 @@ const App = () => (
 
 ---
 
-## 16. Are Props Really Read-Only? (Common Confusion)
+##3 16. Are Props Really Read-Only? (Common Confusion)
 
 You can reassign a prop variable inside a component, and it may appear to work locally, but **this is wrong**.
 
@@ -369,7 +369,7 @@ const Greeting = ({ name }) => {
 
 ---
 
-## 17. Why Modifying Props Is Wrong (Even If It Works)
+### Why Modifying Props Is Wrong (Even If It Works)
 
 React treats props as **immutable data from the parent**.
 - Reassigning props only changes the local variable.

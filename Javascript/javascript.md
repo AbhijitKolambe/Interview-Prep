@@ -15,8 +15,13 @@
 12. [Spread Operator vs Rest Operator](#12-spread-operator-vs-rest-operator)
 13. [var vs let vs const](#13-var-vs-let-vs-const)
 14. [Promises in JavaScript](#14-promises-in-javascript)
+15. [Synchronous vs Asynchronous JavaScript (with Examples)](#15-synchronous-vs-asynchronous-javascript-with-examples)
+
 
 ---
+<br>
+<br>
+<br>
 
 ## 1. What is the Event Loop?
 
@@ -84,6 +89,9 @@ logD();
 For interactive learning, visit: [JS Visualizer](https://www.jsv9000.app/)
 
 ---
+<br>
+<br>
+<br>
 
 ## 2. What is "this" in JavaScript?
 
@@ -218,6 +226,9 @@ car.show(); // BMW
 - `bind()` returns a new function, it does not execute immediately.
 
 ---
+<br>
+<br>
+<br>
 
 ## 3. What is Hoisting?
 
@@ -318,6 +329,9 @@ Time between entering scope and variable declaration. Applies to `let`, `const`,
 - `let` and `const` prevent unsafe access via TDZ.
 
 ---
+<br>
+<br>
+<br>
 
 ## 4. What is a Closure?
 
@@ -429,6 +443,11 @@ A closure is a function that remembers and accesses variables from its outer lex
 
 ### Closure Output-Based Questions
 
+---
+<br>
+<br>
+<br>
+
 #### Question 1
 ```javascript
 function outer() {
@@ -443,6 +462,11 @@ fn();
 ```
 **Output:** `10`
 **Explanation:** `inner()` forms a closure over `x`.
+
+---
+<br>
+<br>
+<br>
 
 #### Question 2
 ```javascript
@@ -469,6 +493,11 @@ b();
 ```
 **Explanation:** Each call to `outer()` creates a separate closure with its own `count`.
 
+---
+<br>
+<br>
+<br>
+
 #### Question 3 (Common Trap)
 ```javascript
 for (var i = 0; i < 3; i++) {
@@ -478,6 +507,11 @@ for (var i = 0; i < 3; i++) {
 **Output:** `3 3 3`
 **Why:** `var` is function-scoped. All callbacks share the same `i` reference.
 
+---
+<br>
+<br>
+<br>
+
 #### Question 4 (Fix)
 ```javascript
 for (let i = 0; i < 3; i++) {
@@ -486,6 +520,11 @@ for (let i = 0; i < 3; i++) {
 ```
 **Output:** `0 1 2`
 **Why:** `let` creates a new binding per iteration.
+
+---
+<br>
+<br>
+<br>
 
 #### Question 5
 ```javascript
@@ -532,6 +571,9 @@ const fn = hugeData();
 | Purpose | Resolve identifiers | Preserve state |
 
 ---
+<br>
+<br>
+<br>
 
 ## 5. What is Memory Allocation?
 
@@ -581,6 +623,9 @@ JavaScript uses the **Mark-and-Sweep** algorithm.
 - Global Variables.
 
 ---
+<br>
+<br>
+<br>
 
 ## 6. What is Event Propagation?
 
@@ -650,6 +695,9 @@ Prevents default browser behavior (e.g., submitting a form, following a link) bu
 | Enable | `addEventListener(..., true)` | Default |
 
 ---
+<br>
+<br>
+<br>
 
 ## 7. What is Event Delegation?
 
@@ -696,6 +744,9 @@ list.addEventListener('click', (e) => {
 - `event.currentTarget`: Element with listener.
 
 ---
+<br>
+<br>
+<br>
 
 ## 8. What is a Callback Function?
 
@@ -751,6 +802,9 @@ setTimeout(() => {
 **Solution:** Use Promises or Async/Await.
 
 ---
+<br>
+<br>
+<br>
 
 ## 9. Callbacks vs Promises vs Async/Await
 
@@ -815,6 +869,9 @@ async function fetchData() {
 | Debugging | Hard | Medium | Easy |
 
 ---
+<br>
+<br>
+<br>
 
 ## 10. Event Loop with Callbacks
 
@@ -860,6 +917,9 @@ timeout
 **Why?** Microtasks run before the callback (macro-task) queue.
 
 ---
+<br>
+<br>
+<br>
 
 ## 11. ES6 Features
 
@@ -943,6 +1003,9 @@ import test from './test';
 ```
 
 ---
+<br>
+<br>
+<br>
 
 ## 12. Spread Operator vs Rest Operator
 
@@ -973,6 +1036,9 @@ Both use `...` but work in opposite directions.
 | Output | Individual elements | Array or object |
 
 ---
+<br>
+<br>
+<br>
 
 ## 13. var vs let vs const
 
@@ -1013,6 +1079,9 @@ function test() {
 - `let` is confined to loop block.
 
 ---
+<br>
+<br>
+<br>
 
 ## 14. Promises in JavaScript
 
@@ -1046,3 +1115,241 @@ Resolves with the **first fulfilled** promise. Rejects only if **all** fail.
 | `Promise.race` | First settles | First rejects | Timeout |
 | `Promise.any` | First resolves | All reject | Fallback APIs |
 | `Promise.allSettled` | All settle | Never | Show all results |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+<br>
+<br>
+<br>
+
+## 15. Synchronous vs Asynchronous JavaScript (with Examples)
+
+JavaScript is single-threaded, meaning it executes one task at a time.
+However, JavaScript can still handle non-blocking, asynchronous operations using the event loop, callback queue, and microtask queue.
+
+![Synchronous vs Asynchronous](./images/asyncandsync.webp)
+
+## Synchronous JavaScript (Blocking)
+
+**Definition:**
+Synchronous code executes line by line, in the exact order it appears.
+Each operation waits for the previous one to finish.
+
+### Key Characteristics
+
+* Blocking
+* Uses the call stack
+* Easy to read and debug
+* Can freeze UI if task is heavy
+
+### Example 1: Simple Synchronous Code
+
+```javascript
+console.log("First");
+console.log("Second");
+console.log("Third");
+```
+
+**Output:**
+
+```
+First
+Second
+Third
+```
+
+### Example 2: Synchronous with Functions (Call Stack)
+
+```javascript
+function printFirst() {
+  console.log("First");
+}
+
+function printSecond() {
+  console.log("Second");
+}
+
+function printThird() {
+  console.log("Third");
+}
+
+function printEverything() {
+  printFirst();
+  printSecond();
+  printThird();
+}
+
+printEverything();
+```
+
+**What happens internally?**
+
+1. `printEverything()` is pushed to the call stack
+2. `printFirst()` → executes → popped
+3. `printSecond()` → executes → popped
+4. `printThird()` → executes → popped
+
+**Output is still:**
+
+```
+First
+Second
+Third
+```
+
+**Call Stack Rule:**
+Last In, First Out (LIFO)
+
+### Problem with Synchronous Code
+
+```javascript
+fetchBigData(); // takes 2 minutes
+console.log("Done");
+```
+
+* The browser freezes until `fetchBigData()` finishes
+* Bad user experience
+
+## Asynchronous JavaScript (Non-Blocking)
+
+**Definition:**
+Asynchronous code allows long-running tasks to run in the background, so the main thread stays responsive.
+
+### Key Characteristics
+
+* Non-blocking
+* Uses Event Loop
+* Improves performance
+* Essential for web apps
+
+### Example 1: setTimeout (Callback)
+
+```javascript
+console.log("First");
+
+setTimeout(() => {
+  console.log("Hello World");
+}, 2000);
+
+console.log("Second");
+```
+
+**Output:**
+
+```
+First
+Second
+Hello World   (after 2 seconds)
+```
+
+**Why?**
+
+* `setTimeout` is sent to Web APIs
+* Callback waits in Callback Queue
+* Event loop pushes it to call stack after stack is empty
+
+### Example 2: Promises
+
+```javascript
+console.log("Start");
+
+fetchData()
+  .then(data => {
+    console.log("Data received");
+  });
+
+console.log("End");
+```
+
+**Output:**
+
+```
+Start
+End
+Data received
+```
+
+* Promise callbacks go to the Microtask Queue
+* Executed before callback queue tasks
+
+### Example 3: Async / Await
+
+```javascript
+async function getData() {
+  console.log("Fetching data...");
+  const data = await fetchData();
+  console.log("Data received");
+}
+
+console.log("Start");
+getData();
+console.log("End");
+```
+
+**Output:**
+
+```
+Start
+Fetching data...
+End
+Data received
+```
+
+* Looks synchronous
+* Internally still asynchronous
+* Clean & readable
+
+## Comparison Table
+
+| Feature | Synchronous | Asynchronous |
+| :--- | :--- | :--- |
+| Execution | One after another | Parallel (background) |
+| Blocking | Yes | No |
+| UI Freeze | Possible | Avoided |
+| Performance | Slower | Faster |
+| Examples | Normal functions | `setTimeout`, `fetch` |
+| Complexity | Simple | Slightly complex |
+
+### Common Asynchronous Triggers (from the article)
+
+1. **Event Loop**
+    * Manages execution between:
+    * Call Stack
+    * Callback Queue
+    * Microtask Queue
+
+2. **Callbacks**
+    ```javascript
+    setTimeout(() => {
+      console.log("Callback");
+    }, 1000);
+    ```
+
+3. **Promises**
+    ```javascript
+    fetch(url).then(res => res.json());
+    ```
+
+4. **Async / Await**
+    ```javascript
+    await fetch(url);
+    ```
+
+### Why Asynchronous JavaScript Is Important
+
+* Prevents UI freezing
+* Handles API calls smoothly
+* Improves user experience
+* Enables modern dynamic web apps

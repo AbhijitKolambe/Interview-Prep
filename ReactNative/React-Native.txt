@@ -1,7 +1,53 @@
+react hooks=> 
+
+React Hooks
+
+useState
+
+useEffect
+
+useContext
+
+useReducer
+
+useCallback
+
+useMemo
+
+useRef
+
+useImperativeHandle
+
+useLayoutEffect
+
+useDebugValue
+
+React Native–Specific / Commonly Used Hooks
+
+useWindowDimensions
+
+useColorScheme
+
+useFocusEffect (React Navigation)
+
+useIsFocused (React Navigation)
+
+useSafeAreaInsets
 
 
+Today Interview questions=> 
 
+React Native Redux lifecycle
+React Native lifecycle methods and hooks
+React Native responsive design
+How are you handling databases and deployments for 50 clients
 
+Closure
+Null vs undefined
+Login handling for clients
+
+How do you secure your data
+How do you ensure data is highly secure and protected
 
 
 
