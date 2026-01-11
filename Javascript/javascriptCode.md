@@ -12,7 +12,17 @@
 9. [Find Second Largest Number](#9-find-second-largest-number)
 10. [Find Smallest Number](#10-find-smallest-number)
 11. [Find Second Smallest Number](#11-find-second-smallest-number)
-12. [Find Largest and Smallest Numbers](#12-find-largest-and-smallest-numbers)
+13. [Sort String (Manual Array Sort)](#13-sort-string-manual-array-sort)
+14. [Sort String (Manual String Sort with substring)](#14-sort-string-manual-string-sort-with-substring)
+15. [Sort String (Manual Sort with Custom Substring)](#15-sort-string-manual-sort-with-custom-substring)
+16. [Check if Object is Empty](#16-check-if-object-is-empty)
+17. [setTimeout Loop (Closure Trap)](#17-settimeout-loop-closure-trap)
+18. [Scope and Hoisting (Global Variable)](#18-scope-and-hoisting-global-variable)
+19. [Sort Array (Bubble Sort)](#19-sort-array-bubble-sort)
+20. [Count Character Occurrence in String](#20-count-character-occurrence-in-string)
+21. [Find Frequency of Elements in Array](#21-find-frequency-of-elements-in-array)
+22. [Check Prime and Even Number](#22-check-prime-and-even-number)
+23. [Remove Falsy Values from Array](#23-remove-falsy-values-from-array)
 
 ---
 <br>
@@ -282,6 +292,8 @@ for (let i = 0; i < arr.length; i++) {
 }
 
 console.log("Largest:", largest); // 25
+
+ 
 ```
 
 ---
@@ -395,4 +407,315 @@ for (let i = 0; i < arr.length; i++) {
 
 console.log("Largest:", largest);   // -3
 console.log("Smallest:", smallest); // -20
+```
+
+
+
+
+
+
+
+
+
+
+
+---
+<br>
+<br>
+<br>
+
+## 13. Sort String (Manual Array Sort)
+
+**Description:**
+Sorting a string by first converting it to an array, performing a manual Bubble Sort, and then joining it back.
+
+```javascript
+let str = "bca";
+let arr = [];
+
+for (let i = 0; i < str.length; i++) {
+    arr.push(str[i]);
+}
+
+for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+            let temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+        }
+    }
+}
+
+let sortedStr = "";
+for (let i = 0; i < arr.length; i++) {
+    sortedStr += arr[i];
+}
+
+console.log("Ascending order:", sortedStr);
+```
+
+---
+<br>
+<br>
+<br>
+
+## 14. Sort String (Manual String Sort with substring)
+
+**Description:**
+Sorting a string manually without converting to an array, using `substring` to handle character swaps.
+
+```javascript
+let str = "bca";
+
+for (let i = 0; i < str.length; i++) {
+    for (let j = 0; j < str.length - 1; j++) {
+        if (str[j] > str[j + 1]) {
+            // Swap characters using substring
+            let temp = str[j];
+            str = str.substring(0, j) + str[j + 1] + str[j] + str.substring(j + 2);
+        }
+    }
+}
+
+console.log("Ascending order:", str);
+```
+
+---
+<br>
+<br>
+<br>
+
+## 15. Sort String (Manual Sort with Custom Substring)
+
+**Description:**
+Sorting a string manually using a custom `substring` function implementation to avoid built-in methods entirely.
+
+```javascript
+function customSubstring(str, start, end) {
+    let result = '';
+    for (let i = start; i < end; i++) {
+        result += str[i];
+    }
+    return result;
+}
+
+let str = "bca";
+
+for (let i = 0; i < str.length; i++) {
+    for (let j = 0; j < str.length - 1; j++) {
+        if (str[j] > str[j + 1]) {
+            // Swap characters using custom substring function
+            let temp = str[j];
+            str = customSubstring(str, 0, j) + str[j + 1] + str[j] + customSubstring(str, j + 2, str.length);
+        }
+    }
+}
+
+console.log("Ascending order:", str);
+```
+
+---
+<br>
+<br>
+<br>
+
+## 16. Check if Object is Empty
+
+**Description:**
+Checking if an object has no own enumerable properties.
+
+```javascript
+function isObjEmpty (obj) {
+    return Object.keys(obj).length === 0;
+}
+
+var emptyObject = {};
+var object = {"foo": "bar"};
+
+console.log(isObjEmpty(emptyObject)); // true
+console.log(isObjEmpty(object));      // false
+```
+
+---
+<br>
+<br>
+<br>
+
+## 17. setTimeout Loop (Closure Trap)
+
+**Description:**
+The classic interview question demonstrating the difference between `let` (block scope) and `var` (function scope) in asynchronous loops.
+
+```javascript
+// Using let (Block Scope) - Works as expected
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+        console.log(i); // Outputs: 0, 1, 2
+    }, 100);
+}
+
+// Using var (Function Scope) - Closure trap
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => {
+        console.log(i); // Outputs: 3, 3, 3
+    }, 100);
+}
+```
+
+---
+<br>
+<br>
+<br>
+
+## 18. Scope and Hoisting (Global Variable)
+
+**Description:**
+Understanding how implicit global variables differ from declared variables.
+
+```javascript
+function fetch() {
+    a = 5; // Reassigns the outer 'a'
+    console.log(a);
+}
+
+let a; // Declared in outer scope
+fetch(); // 5
+```
+
+
+
+
+
+
+
+---
+<br>
+<br>
+<br>
+
+## 19. Sort Array (Bubble Sort)
+
+**Description:**
+Sorting an array of numbers using the Bubble Sort algorithm.
+
+```javascript
+let arr = [5, 2, 9, 1, 6];
+
+for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr.length - i - 1; j++) {
+    if (arr[j] > arr[j + 1]) {
+      
+      let temp = arr[j];
+      arr[j] = arr[j + 1];
+      arr[j + 1] = temp;
+    }
+  }
+}
+
+console.log(arr); // [1, 2, 5, 6, 9]
+```
+
+---
+<br>
+<br>
+<br>
+
+## 20. Count Character Occurrence in String
+
+**Description:**
+Counting the frequency of each character in a string.
+
+```javascript
+function charCount(str) {
+  var obj = {};
+
+  for (var i = 0; i < str.length; i++) {
+    var ch = str[i];
+    obj[ch] = obj[ch] ? obj[ch] + 1 : 1;
+  }
+
+  return obj;
+}
+
+console.log(charCount("hello")); // { h: 1, e: 1, l: 2, o: 1 }
+```
+
+---
+<br>
+<br>
+<br>
+
+## 21. Find Frequency of Elements in Array
+
+**Description:**
+Counting the frequency of each element (numbers, strings, etc.) in an array.
+
+```javascript
+function frequency(arr) {
+  var obj = {};
+
+  for (var i = 0; i < arr.length; i++) {
+    obj[arr[i]] = obj[arr[i]] ? obj[arr[i]] + 1 : 1;
+  }
+
+  return obj;
+}
+
+console.log(frequency([1, 2, 2, 3, 3, 3])); // { '1': 1, '2': 2, '3': 3 }
+```
+
+---
+<br>
+<br>
+<br>
+
+## 22. Check Prime and Even Number
+
+**Description:**
+Standard utility functions to check if a number is Prime or Even.
+
+```javascript
+// Check Prime
+function isPrime(n) {
+  if (n <= 1) return false;
+
+  for (var i = 2; i * i <= n; i++) {
+    if (n % i === 0) return false;
+  }
+
+  return true;
+}
+
+// Check Even
+function isEven(n) {
+  return n % 2 === 0;
+}
+
+console.log(isPrime(7)); // true
+console.log(isEven(4));  // true
+```
+
+---
+<br>
+<br>
+<br>
+
+## 23. Remove Falsy Values from Array
+
+**Description:**
+Manually filtering out falsy values (like `false`, `0`, `""`, `null`, `undefined`, `NaN`) from an array without using `filter()`.
+
+```javascript
+function removeFalsy(arr) {
+  var result = [];
+
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i]) result.push(arr[i]);
+  }
+
+  return result;
+}
+
+console.log(removeFalsy([0, 1, false, 2, "", 3])); // [1, 2, 3]
 ```
