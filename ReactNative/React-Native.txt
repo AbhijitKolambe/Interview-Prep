@@ -42,8 +42,7 @@ React Native lifecycle methods and hooks
 React Native responsive design
 How are you handling databases and deployments for 50 clients
 
-Closure
-Null vs undefined
+
 Login handling for clients
 
 How do you secure your data

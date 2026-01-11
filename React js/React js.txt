@@ -432,14 +432,7 @@ function secondLargest(arr){
  return second;
 }
 
-12. How to Reverse a String Without Built-in Function
-let str = "hello";
-let result = "";
 
-for(let i = str.length - 1; i >= 0; i--){
-  result += str[i];
-}
-console.log(result);
 
 13. Output Question with += on innerHTML
 p.innerHTML += " world";
@@ -965,23 +958,6 @@ console.log(obj.a); // 5
 
 ✅ Because object is copied by reference, not value.
 
-18. Reverse a String Without reverse()
-function reverseStr(str) {
-  let res = "";
-  for (let i = str.length - 1; i >= 0; i--) {
-    res += str[i];
-  }
-  return res;
-}
-
-19. Remove Duplicate Values from Array
-function removeDuplicates(arr) {
-  let result = [];
-  for (let i of arr) {
-    if (!result.includes(i)) result.push(i);
-  }
-  return result;
-}
 
 ✅ REACT – Extracted Interview Questions with Correct Answers
 20. Difference Between Functional and Class Components
@@ -1270,30 +1246,10 @@ Breaks SPA	Maintains SPA
 20. Reverse a String Using reverse()
 str.split('').reverse().join('');
 
-21. Reverse a String Without reverse()
-function reverseStr(str) {
-  let res = "";
-  for (let i = str.length - 1; i >= 0; i--) {
-    res += str[i];
-  }
-  return res;
-}
-
-22. Find Second Largest Number in Array
-const arr = [10, 4, 25, 7];
-arr.sort((a,b) => b - a);
-console.log(arr[1]);
-
-23. Remove Duplicates from an Array
-const unique = [...new Set(arr)];
 
 
-Or without Set:
 
-const result = [];
-for (let n of arr) {
-  if (!result.includes(n)) result.push(n);
-}
+
 
 24. What is Debouncing?
 
