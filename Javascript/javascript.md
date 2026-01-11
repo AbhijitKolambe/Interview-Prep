@@ -1,21 +1,23 @@
 # JavaScript Interview Guide
 
 ## Table of Contents
-1. [What is the Event Loop?](#1-what-is-the-event-loop)
-2. [What is "this" in JavaScript?](#2-what-is-this-in-javascript)
+1. [Synchronous vs Asynchronous JavaScript (with Examples)](#1-synchronous-vs-asynchronous-javascript-with-examples)
+2. [var vs let vs const](#2-var-vs-let-vs-const)
 3. [What is Hoisting?](#3-what-is-hoisting)
-4. [What is a Closure?](#4-what-is-a-closure)
-5. [What is Memory Allocation?](#5-what-is-memory-allocation)
-6. [What is Event Propagation?](#6-what-is-event-propagation)
-7. [What is Event Delegation?](#7-what-is-event-delegation)
+4. [What is Memory Allocation?](#4-what-is-memory-allocation)
+5. [What is "this" in JavaScript?](#5-what-is-this-in-javascript)
+6. [What is a Closure?](#6-what-is-a-closure)
+7. [What is the Event Loop?](#7-what-is-the-event-loop)
 8. [What is a Callback Function?](#8-what-is-a-callback-function)
-9. [Callbacks vs Promises vs Async/Await](#9-callbacks-vs-promises-vs-asyncawait)
-10. [Event Loop with Callbacks](#10-event-loop-with-callbacks)
-11. [ES6 Features](#11-es6-features)
-12. [Spread Operator vs Rest Operator](#12-spread-operator-vs-rest-operator)
-13. [var vs let vs const](#13-var-vs-let-vs-const)
-14. [Promises in JavaScript](#14-promises-in-javascript)
-15. [Synchronous vs Asynchronous JavaScript (with Examples)](#15-synchronous-vs-asynchronous-javascript-with-examples)
+9. [Promises in JavaScript](#9-promises-in-javascript)
+10. [Callbacks vs Promises vs Async/Await](#10-callbacks-vs-promises-vs-asyncawait)
+11. [Event Loop with Callbacks](#11-event-loop-with-callbacks)
+12. [What is Event Propagation?](#12-what-is-event-propagation)
+13. [What is Event Delegation?](#13-what-is-event-delegation)
+14. [ES6 Features](#14-es6-features)
+15. [Spread Operator vs Rest Operator](#15-spread-operator-vs-rest-operator)
+
+
 
 
 ---
@@ -23,61 +25,430 @@
 <br>
 <br>
 
-## 1. What is the Event Loop?
+## 1. Synchronous vs Asynchronous JavaScript (with Examples)
 
-Event Loop is a core JavaScript mechanism that allows asynchronous, non-blocking execution in a single-threaded language by continuously monitoring the Call Stack, Microtask Queue, and Callback (Task) Queue, and deciding when and what to execute next.
+JavaScript is single-threaded, meaning it executes one task at a time.
+However, JavaScript can still handle non-blocking, asynchronous operations using the event loop, callback queue, and microtask queue.
 
-### Key Components
+![Synchronous vs Asynchronous](./images/asyncandsync.webp)
 
-- **Call Stack** (Synchronous code)
-  - Executes synchronous code
-  - LIFO (Last In, First Out)
-- **Microtask Queue** (Promises)
-  - `Promise.then`
-  - `catch`
-  - `finally`
-  - `MutationObserver`
-  - `queueMicrotask`
-- **Macrotask Queue** (setTimeout, events)
-  - `setTimeout`
-  - `setInterval`
-  - `setImmediate`
-  - UI events
+## Synchronous JavaScript (Blocking)
 
+**Definition:**
+Synchronous code executes line by line, in the exact order it appears.
+Each operation waits for the previous one to finish.
 
-### Event Loop
+### Key Characteristics
 
-- Watches Call Stack
-- Pushes tasks when stack is empty
+* Blocking
+* Uses the call stack
+* Easy to read and debug
+* Can freeze UI if task is heavy
 
-### Example
+### Example 1: Simple Synchronous Code
 
 ```javascript
-function logA() { console.log('A') }
-function logB() { console.log('B') }
-function logC() { console.log('C') }
-function logD() { console.log('D') }
-
-logA();
-setTimeout(logB, 0);
-Promise.resolve().then(logC);
-logD();
+console.log("First");
+console.log("Second");
+console.log("Third");
 ```
 
-**Output:** `A D C B`
+**Output:**
 
-### Visual Reference
+```
+First
+Second
+Third
+```
 
-![Event Loop Diagram](./images/eventLoop.png)
+### Example 2: Synchronous with Functions (Call Stack)
 
-For interactive learning, visit: [JS Visualizer](https://www.jsv9000.app/)
+```javascript
+function printFirst() {
+  console.log("First");
+}
+
+function printSecond() {
+  console.log("Second");
+}
+
+function printThird() {
+  console.log("Third");
+}
+
+function printEverything() {
+  printFirst();
+  printSecond();
+  printThird();
+}
+
+printEverything();
+```
+
+**What happens internally?**
+
+1. `printEverything()` is pushed to the call stack
+2. `printFirst()` → executes → popped
+3. `printSecond()` → executes → popped
+4. `printThird()` → executes → popped
+
+**Output is still:**
+
+```
+First
+Second
+Third
+```
+
+**Call Stack Rule:**
+Last In, First Out (LIFO)
+
+### Problem with Synchronous Code
+
+```javascript
+fetchBigData(); // takes 2 minutes
+console.log("Done");
+```
+
+* The browser freezes until `fetchBigData()` finishes
+* Bad user experience
+
+## Asynchronous JavaScript (Non-Blocking)
+
+**Definition:**
+Asynchronous code allows long-running tasks to run in the background, so the main thread stays responsive.
+
+### Key Characteristics
+
+* Non-blocking
+* Uses Event Loop
+* Improves performance
+* Essential for web apps
+
+### Example 1: setTimeout (Callback)
+
+```javascript
+console.log("First");
+
+setTimeout(() => {
+  console.log("Hello World");
+}, 2000);
+
+console.log("Second");
+```
+
+**Output:**
+
+```
+First
+Second
+Hello World   (after 2 seconds)
+```
+
+**Why?**
+
+* `setTimeout` is sent to Web APIs
+* Callback waits in Callback Queue
+* Event loop pushes it to call stack after stack is empty
+
+### Example 2: Promises
+
+```javascript
+console.log("Start");
+
+fetchData()
+  .then(data => {
+    console.log("Data received");
+  });
+
+console.log("End");
+```
+
+**Output:**
+
+```
+Start
+End
+Data received
+```
+
+* Promise callbacks go to the Microtask Queue
+* Executed before callback queue tasks
+
+### Example 3: Async / Await
+
+```javascript
+async function getData() {
+  console.log("Fetching data...");
+  const data = await fetchData();
+  console.log("Data received");
+}
+
+console.log("Start");
+getData();
+console.log("End");
+```
+
+**Output:**
+
+```
+Start
+Fetching data...
+End
+Data received
+```
+
+* Looks synchronous
+* Internally still asynchronous
+* Clean & readable
+
+## Comparison Table
+
+| Feature | Synchronous | Asynchronous |
+| :--- | :--- | :--- |
+| Execution | One after another | Parallel (background) |
+| Blocking | Yes | No |
+| UI Freeze | Possible | Avoided |
+| Performance | Slower | Faster |
+| Examples | Normal functions | `setTimeout`, `fetch` |
+| Complexity | Simple | Slightly complex |
+
+### Common Asynchronous Triggers (from the article)
+
+1. **Event Loop**
+    * Manages execution between:
+    * Call Stack
+    * Callback Queue
+    * Microtask Queue
+
+2. **Callbacks**
+    ```javascript
+    setTimeout(() => {
+      console.log("Callback");
+    }, 1000);
+    ```
+
+3. **Promises**
+    ```javascript
+    fetch(url).then(res => res.json());
+    ```
+
+4. **Async / Await**
+    ```javascript
+    await fetch(url);
+    ```
+
+### Why Asynchronous JavaScript Is Important
+
+* Prevents UI freezing
+* Handles API calls smoothly
+* Improves user experience
+* Enables modern dynamic web apps
 
 ---
 <br>
 <br>
 <br>
 
-## 2. What is "this" in JavaScript?
+## 2. var vs let vs const
+
+### Scope Differences
+
+| Feature | var | let | const |
+| :--- | :--- | :--- | :--- |
+| Scope | Function-scoped | Block-scoped | Block-scoped |
+| Hoisting | Yes (initialized `undefined`) | Yes (TDZ) | Yes (TDZ) |
+| Redeclare | Allowed | Not allowed | Not allowed |
+| Reassign | Allowed | Allowed | Not allowed |
+| Global object | Becomes window property | No | No |
+
+### Examples
+
+#### Function Scope (var)
+```javascript
+function test() {
+  if (true) {
+    var x = 10;
+  }
+  console.log(x); // 10 (Accessible outside block)
+}
+```
+
+#### Block Scope (let/const)
+```javascript
+function test() {
+  if (true) {
+    let y = 20;
+  }
+  console.log(y); // Error
+}
+```
+
+#### Loop Scope
+- `var` leaks outside loop.
+- `let` is confined to loop block.
+
+---
+<br>
+<br>
+<br>
+
+## 3. What is Hoisting?
+
+Hoisting is a JavaScript behavior where variable and function declarations are moved to the top of their scope during the compilation phase, before code execution.
+
+Hoisting is JavaScript’s default behavior of moving declarations to the top of their scope before execution, allowing functions and `var` variables to be used **before** they are defined.
+
+**Note:** Only declarations are hoisted, not initializations.
+
+### How Hoisting Works Internally
+
+JavaScript code runs in two phases:
+1. **Memory Creation Phase**: JS engine scans the code and allocates memory for variables and functions.
+2. **Execution Phase**: Code runs line by line.
+
+During the memory phase:
+- `var` is initialized as `undefined`.
+- `let` and `const` are hoisted but not initialized (Temporal Dead Zone).
+- Function declarations are fully hoisted.
+
+### Variable Hoisting
+
+#### var
+Hoisted and initialized with `undefined`.
+
+```javascript
+console.log(a); // undefined
+var a = 10;
+```
+
+#### let
+Hoisted but kept in the **Temporal Dead Zone (TDZ)**.
+Accessing before declaration throws an error.
+
+```javascript
+console.log(b); // ReferenceError
+let b = 20;
+```
+
+#### const
+Same as `let`. Must be initialized at declaration.
+
+```javascript
+console.log(c); // ReferenceError
+const c = 30;
+```
+
+### Function Hoisting
+
+#### Function Declaration
+Fully hoisted (can be called before definition).
+
+```javascript
+sayHello(); // Hello
+
+function sayHello() {
+  console.log('Hello');
+}
+```
+
+#### Function Expression
+Depends on variable type.
+
+```javascript
+sayHi(); // TypeError: sayHi is not a function
+
+var sayHi = function () {
+  console.log('Hi');
+};
+```
+
+With `let` / `const`:
+
+```javascript
+sayHi(); // ReferenceError
+
+const sayHi = () => {
+  console.log('Hi');
+};
+```
+
+### Class Hoisting
+Classes are hoisted but remain in TDZ. Cannot be used before declaration.
+
+```javascript
+const obj = new Car(); // ReferenceError
+
+class Car {}
+```
+
+### Temporal Dead Zone (TDZ)
+Time between entering scope and variable declaration. Applies to `let`, `const`, and `class`.
+
+### Common Interview Mistakes
+- Hoisting does not move code physically.
+- Only declarations are hoisted.
+- Arrow functions are not hoisted like function declarations.
+- `let` and `const` prevent unsafe access via TDZ.
+
+---
+<br>
+<br>
+<br>
+
+## 4. What is Memory Allocation?
+
+Memory allocation in JavaScript is the process of reserving memory for variables, functions, and objects, and later releasing it when no longer needed.
+JavaScript handles memory automatically using a garbage collector.
+
+### JavaScript Memory Lifecycle
+1. **Allocate memory**
+2. **Use memory**
+3. **Release memory (Garbage Collection)**
+
+### 1. Memory Allocation Phase (Creation Phase)
+Before code executes, the JavaScript engine creates memory.
+
+```javascript
+let a = 10;
+let b = { x: 20 };
+```
+- `a` (primitive) → stored in **stack**.
+- `b` (object reference) → reference in **stack**, object in **heap**.
+
+### 2. Stack vs Heap Memory
+
+**Stack Memory**
+- Stores: Primitive values, Function call frames, References to heap objects.
+- Fast & fixed size.
+
+**Heap Memory**
+- Stores: Objects, Arrays, Functions, Closures.
+- Dynamic & slower than stack.
+
+### 3. Execution Context & Memory
+Each function call creates an **Execution Context** containing Variable Environment, Lexical Environment, and Scope Chain reference.
+
+### 4. Memory Allocation in Closures
+Variables captured by closures stay in the **heap** and are not garbage collected as long as the closure exists.
+
+### 5. Garbage Collection (GC)
+JavaScript uses the **Mark-and-Sweep** algorithm.
+- Start from root objects.
+- Mark all reachable objects.
+- Unreachable objects are removed.
+
+### 6. Memory Leaks in JavaScript
+- Closures holding large objects.
+- Unremoved Event Listeners.
+- Global Variables.
+
+---
+<br>
+<br>
+<br>
+
+## 5. What is "this" in JavaScript?
 
 `this` is a special keyword in JavaScript that refers to the execution context of a function.
 Its value is not fixed at definition time; it is determined at runtime, based on how a function is called.
@@ -214,110 +585,7 @@ car.show(); // BMW
 <br>
 <br>
 
-## 3. What is Hoisting?
-
-Hoisting is a JavaScript behavior where variable and function declarations are moved to the top of their scope during the compilation phase, before code execution.
-
-Hoisting is JavaScript’s default behavior of moving declarations to the top of their scope before execution, allowing functions and `var` variables to be used **before** they are defined.
-
-**Note:** Only declarations are hoisted, not initializations.
-
-### How Hoisting Works Internally
-
-JavaScript code runs in two phases:
-1. **Memory Creation Phase**: JS engine scans the code and allocates memory for variables and functions.
-2. **Execution Phase**: Code runs line by line.
-
-During the memory phase:
-- `var` is initialized as `undefined`.
-- `let` and `const` are hoisted but not initialized (Temporal Dead Zone).
-- Function declarations are fully hoisted.
-
-### Variable Hoisting
-
-#### var
-Hoisted and initialized with `undefined`.
-
-```javascript
-console.log(a); // undefined
-var a = 10;
-```
-
-#### let
-Hoisted but kept in the **Temporal Dead Zone (TDZ)**.
-Accessing before declaration throws an error.
-
-```javascript
-console.log(b); // ReferenceError
-let b = 20;
-```
-
-#### const
-Same as `let`. Must be initialized at declaration.
-
-```javascript
-console.log(c); // ReferenceError
-const c = 30;
-```
-
-### Function Hoisting
-
-#### Function Declaration
-Fully hoisted (can be called before definition).
-
-```javascript
-sayHello(); // Hello
-
-function sayHello() {
-  console.log('Hello');
-}
-```
-
-#### Function Expression
-Depends on variable type.
-
-```javascript
-sayHi(); // TypeError: sayHi is not a function
-
-var sayHi = function () {
-  console.log('Hi');
-};
-```
-
-With `let` / `const`:
-
-```javascript
-sayHi(); // ReferenceError
-
-const sayHi = () => {
-  console.log('Hi');
-};
-```
-
-### Class Hoisting
-Classes are hoisted but remain in TDZ. Cannot be used before declaration.
-
-```javascript
-const obj = new Car(); // ReferenceError
-
-class Car {}
-```
-
-### Temporal Dead Zone (TDZ)
-Time between entering scope and variable declaration. Applies to `let`, `const`, and `class`.
-
-### Common Interview Mistakes
-- Hoisting does not move code physically.
-- Only declarations are hoisted.
-- Arrow functions are not hoisted like function declarations.
-- `let` and `const` prevent unsafe access via TDZ.
-
----
-<br>
-<br>
-<br>
-
-## 4. What is a Closure?
+## 6. What is a Closure?
 
 A closure is created when a function remembers and continues to access variables from its lexical scope, even after the outer function has finished execution.
 
@@ -552,180 +820,54 @@ const fn = hugeData();
 | Memory | Temporary | Persistent |
 | Purpose | Resolve identifiers | Preserve state |
 
----
-<br>
-<br>
-<br>
+## 7. What is the Event Loop?
 
-## 5. What is Memory Allocation?
+Event Loop is a core JavaScript mechanism that allows asynchronous, non-blocking execution in a single-threaded language by continuously monitoring the Call Stack, Microtask Queue, and Callback (Task) Queue, and deciding when and what to execute next.
 
-Memory allocation in JavaScript is the process of reserving memory for variables, functions, and objects, and later releasing it when no longer needed.
-JavaScript handles memory automatically using a garbage collector.
+### Key Components
 
-### JavaScript Memory Lifecycle
-1. **Allocate memory**
-2. **Use memory**
-3. **Release memory (Garbage Collection)**
+- **Call Stack** (Synchronous code)
+  - Executes synchronous code
+  - LIFO (Last In, First Out)
+- **Microtask Queue** (Promises)
+  - `Promise.then`
+  - `catch`
+  - `finally`
+  - `MutationObserver`
+  - `queueMicrotask`
+- **Macrotask Queue** (setTimeout, events)
+  - `setTimeout`
+  - `setInterval`
+  - `setImmediate`
+  - UI events
 
-### 1. Memory Allocation Phase (Creation Phase)
-Before code executes, the JavaScript engine creates memory.
 
-```javascript
-let a = 10;
-let b = { x: 20 };
-```
-- `a` (primitive) → stored in **stack**.
-- `b` (object reference) → reference in **stack**, object in **heap**.
+### Event Loop
 
-### 2. Stack vs Heap Memory
+- Watches Call Stack
+- Pushes tasks when stack is empty
 
-**Stack Memory**
-- Stores: Primitive values, Function call frames, References to heap objects.
-- Fast & fixed size.
-
-**Heap Memory**
-- Stores: Objects, Arrays, Functions, Closures.
-- Dynamic & slower than stack.
-
-### 3. Execution Context & Memory
-Each function call creates an **Execution Context** containing Variable Environment, Lexical Environment, and Scope Chain reference.
-
-### 4. Memory Allocation in Closures
-Variables captured by closures stay in the **heap** and are not garbage collected as long as the closure exists.
-
-### 5. Garbage Collection (GC)
-JavaScript uses the **Mark-and-Sweep** algorithm.
-- Start from root objects.
-- Mark all reachable objects.
-- Unreachable objects are removed.
-
-### 6. Memory Leaks in JavaScript
-- Closures holding large objects.
-- Unremoved Event Listeners.
-- Global Variables.
-
----
-<br>
-<br>
-<br>
-
-## 6. What is Event Propagation?
-
-Event propagation describes the order in which events travel through the DOM tree when an event occurs.
-![Event Propagation](./images/eventpropogation.png)
-There are three phases:
-1. **Capturing phase**
-2. **Target phase**
-3. **Bubbling phase**
-
-### 1. Event Capturing (Trickling Phase)
-Event starts from the root (document) and moves **downward** to the target element. Rarely used in practice.
+### Example
 
 ```javascript
-parent.addEventListener('click', handler, true); // capture = true
+function logA() { console.log('A') }
+function logB() { console.log('B') }
+function logC() { console.log('C') }
+function logD() { console.log('D') }
+
+logA();
+setTimeout(logB, 0);
+Promise.resolve().then(logC);
+logD();
 ```
 
-### 2. Event Bubbling
-Event starts from the target element and moves **upward** to ancestors. This is the **default behavior**.
+**Output:** `A D C B`
 
-```javascript
-child.addEventListener('click', handler);
-```
+### Visual Reference
 
-### Example Showing Both
+![Event Loop Diagram](./images/eventLoop.png)
 
-```javascript
-parent.addEventListener('click', () => console.log('Parent'));
-child.addEventListener('click', () => console.log('Child'));
-```
-
-**Output when clicking button:**
-1. Child
-2. Parent
-
-**Order:**
-Document ↓ (capturing) Parent ↓ Target ↑ Parent ↑ (bubbling) Document
-
-### 3. Target Phase
-The event reaches the actual element where the action occurred.
-
-### How to Prevent Event Bubbling / Capturing
-
-#### `event.stopPropagation()`
-Stops event from moving further up or down the DOM.
-
-```javascript
-child.addEventListener('click', (e) => {
-  e.stopPropagation();
-  console.log('Child only');
-});
-```
-
-#### `event.stopImmediatePropagation()`
-Stops bubbling AND stops other listeners on the same element.
-
-#### `event.preventDefault()`
-Prevents default browser behavior (e.g., submitting a form, following a link) but **does NOT stop propagation**.
-
-### Capturing vs Bubbling
-
-| Feature | Capturing | Bubbling |
-| :--- | :--- | :--- |
-| Direction | Top → Bottom | Bottom → Top |
-| Default | No | Yes |
-| Use case | Rare | Common |
-| Enable | `addEventListener(..., true)` | Default |
-
----
-<br>
-<br>
-<br>
-
-## 7. What is Event Delegation?
-
-Event delegation is a technique where a **single event listener** is attached to a **parent element** instead of adding listeners to multiple child elements. It leverages **event bubbling**.
-
-![Event Delegation](./images/eventDeligation.png)
-
-### Why Event Delegation Is Used
-- Improves performance (fewer listeners).
-- Reduces memory usage.
-- Handles dynamically added elements.
-- Cleaner code.
-
-### Bad Practice (Without Delegation)
-```javascript
-const items = document.querySelectorAll('li');
-
-items.forEach(item => {
-  item.addEventListener('click', () => {
-    console.log(item.textContent);
-  });
-});
-```
-- **Wrong:** Multiple listeners, doesn't work for new items.
-
-### Best Practice (With Delegation)
-```javascript
-const list = document.querySelector('ul');
-
-list.addEventListener('click', (e) => {
-  if (e.target.tagName === 'LI') {
-    console.log(e.target.textContent);
-  }
-});
-```
-- **Correct:** Single listener, works for dynamic elements.
-
-### How it Works
-1. Event occurs on child.
-2. Event bubbles up to parent.
-3. Parent listener catches it.
-4. `event.target` identifies the actual element.
-
-### Key Properties
-- `event.target`: Element that triggered event.
-- `event.currentTarget`: Element with listener.
+For interactive learning, visit: [JS Visualizer](https://www.jsv9000.app/)
 
 ---
 <br>
@@ -846,7 +988,45 @@ setTimeout(() => {
 <br>
 <br>
 
-## 9. Callbacks vs Promises vs Async/Await
+## 9. Promises in JavaScript
+
+A **Promise** is an object representing the eventual completion or failure of an asynchronous operation.
+
+### Promise Methods
+
+#### 1. Promise.all()
+Runs multiple promises in parallel. Resolves when **all** resolve, rejects if **any** reject.
+
+```javascript
+Promise.all([p1, p2, p3])
+  .then(results => console.log(results))
+  .catch(err => console.error(err));
+```
+
+#### 2. Promise.race()
+Returns the result of the **first** promise that settles (resolve or reject).
+
+#### 3. Promise.allSettled()
+Waits for **all** promises to settle. Never rejects. Returns status array.
+
+#### 4. Promise.any()
+Resolves with the **first fulfilled** promise. Rejects only if **all** fail.
+
+### Comparison Table
+
+| Method | Resolves When | Rejects When | Use Case |
+| :--- | :--- | :--- | :--- |
+| `Promise.all` | All resolve | Any rejects | Dependent tasks |
+| `Promise.race` | First settles | First rejects | Timeout |
+| `Promise.any` | First resolves | All reject | Fallback APIs |
+| `Promise.allSettled` | All settle | Never | Show all results |
+
+---
+<br>
+<br>
+<br>
+
+## 10. Callbacks vs Promises vs Async/Await
 
 ### Callback
 **Definition:** A function passed to another function and executed later.
@@ -913,7 +1093,7 @@ async function fetchData() {
 <br>
 <br>
 
-## 10. Event Loop with Callbacks
+## 11. Event Loop with Callbacks
 
 The event loop allows JavaScript to perform non-blocking asynchronous operations.
 
@@ -960,7 +1140,130 @@ timeout
 <br>
 <br>
 
-## 11. ES6 Features
+## 12. What is Event Propagation?
+
+Event propagation describes the order in which events travel through the DOM tree when an event occurs.
+![Event Propagation](./images/eventpropogation.png)
+There are three phases:
+1. **Capturing phase**
+2. **Target phase**
+3. **Bubbling phase**
+
+### 1. Event Capturing (Trickling Phase)
+Event starts from the root (document) and moves **downward** to the target element. Rarely used in practice.
+
+```javascript
+parent.addEventListener('click', handler, true); // capture = true
+```
+
+### 2. Event Bubbling
+Event starts from the target element and moves **upward** to ancestors. This is the **default behavior**.
+
+```javascript
+child.addEventListener('click', handler);
+```
+
+### Example Showing Both
+
+```javascript
+parent.addEventListener('click', () => console.log('Parent'));
+child.addEventListener('click', () => console.log('Child'));
+```
+
+**Output when clicking button:**
+1. Child
+2. Parent
+
+**Order:**
+Document ↓ (capturing) Parent ↓ Target ↑ Parent ↑ (bubbling) Document
+
+### 3. Target Phase
+The event reaches the actual element where the action occurred.
+
+### How to Prevent Event Bubbling / Capturing
+
+#### `event.stopPropagation()`
+Stops event from moving further up or down the DOM.
+
+```javascript
+child.addEventListener('click', (e) => {
+  e.stopPropagation();
+  console.log('Child only');
+});
+```
+
+#### `event.stopImmediatePropagation()`
+Stops bubbling AND stops other listeners on the same element.
+
+#### `event.preventDefault()`
+Prevents default browser behavior (e.g., submitting a form, following a link) but **does NOT stop propagation**.
+
+### Capturing vs Bubbling
+
+| Feature | Capturing | Bubbling |
+| :--- | :--- | :--- |
+| Direction | Top → Bottom | Bottom → Top |
+| Default | No | Yes |
+| Use case | Rare | Common |
+| Enable | `addEventListener(..., true)` | Default |
+
+---
+<br>
+<br>
+<br>
+
+## 13. What is Event Delegation?
+
+Event delegation is a technique where a **single event listener** is attached to a **parent element** instead of adding listeners to multiple child elements. It leverages **event bubbling**.
+
+![Event Delegation](./images/eventDeligation.png)
+
+### Why Event Delegation Is Used
+- Improves performance (fewer listeners).
+- Reduces memory usage.
+- Handles dynamically added elements.
+- Cleaner code.
+
+### Bad Practice (Without Delegation)
+```javascript
+const items = document.querySelectorAll('li');
+
+items.forEach(item => {
+  item.addEventListener('click', () => {
+    console.log(item.textContent);
+  });
+});
+```
+- **Wrong:** Multiple listeners, doesn't work for new items.
+
+### Best Practice (With Delegation)
+```javascript
+const list = document.querySelector('ul');
+
+list.addEventListener('click', (e) => {
+  if (e.target.tagName === 'LI') {
+    console.log(e.target.textContent);
+  }
+});
+```
+- **Correct:** Single listener, works for dynamic elements.
+
+### How it Works
+1. Event occurs on child.
+2. Event bubbles up to parent.
+3. Parent listener catches it.
+4. `event.target` identifies the actual element.
+
+### Key Properties
+- `event.target`: Element that triggered event.
+- `event.currentTarget`: Element with listener.
+
+---
+<br>
+<br>
+<br>
+
+## 14. ES6 Features
 
 Major features introduced in ECMAScript 2015 (ES6).
 
@@ -1046,7 +1349,7 @@ import test from './test';
 <br>
 <br>
 
-## 12. Spread Operator vs Rest Operator
+## 15. Spread Operator vs Rest Operator
 
 Both use `...` but work in opposite directions.
 
@@ -1073,322 +1376,3 @@ Both use `...` but work in opposite directions.
 | Used in | Function calls, arrays, objects | Function params, destructuring |
 | Direction | Unpacking | Packing |
 | Output | Individual elements | Array or object |
-
----
-<br>
-<br>
-<br>
-
-## 13. var vs let vs const
-
-### Scope Differences
-
-| Feature | var | let | const |
-| :--- | :--- | :--- | :--- |
-| Scope | Function-scoped | Block-scoped | Block-scoped |
-| Hoisting | Yes (initialized `undefined`) | Yes (TDZ) | Yes (TDZ) |
-| Redeclare | Allowed | Not allowed | Not allowed |
-| Reassign | Allowed | Allowed | Not allowed |
-| Global object | Becomes window property | No | No |
-
-### Examples
-
-#### Function Scope (var)
-```javascript
-function test() {
-  if (true) {
-    var x = 10;
-  }
-  console.log(x); // 10 (Accessible outside block)
-}
-```
-
-#### Block Scope (let/const)
-```javascript
-function test() {
-  if (true) {
-    let y = 20;
-  }
-  console.log(y); // Error
-}
-```
-
-#### Loop Scope
-- `var` leaks outside loop.
-- `let` is confined to loop block.
-
----
-<br>
-<br>
-<br>
-
-## 14. Promises in JavaScript
-
-A **Promise** is an object representing the eventual completion or failure of an asynchronous operation.
-
-### Promise Methods
-
-#### 1. Promise.all()
-Runs multiple promises in parallel. Resolves when **all** resolve, rejects if **any** reject.
-
-```javascript
-Promise.all([p1, p2, p3])
-  .then(results => console.log(results))
-  .catch(err => console.error(err));
-```
-
-#### 2. Promise.race()
-Returns the result of the **first** promise that settles (resolve or reject).
-
-#### 3. Promise.allSettled()
-Waits for **all** promises to settle. Never rejects. Returns status array.
-
-#### 4. Promise.any()
-Resolves with the **first fulfilled** promise. Rejects only if **all** fail.
-
-### Comparison Table
-
-| Method | Resolves When | Rejects When | Use Case |
-| :--- | :--- | :--- | :--- |
-| `Promise.all` | All resolve | Any rejects | Dependent tasks |
-| `Promise.race` | First settles | First rejects | Timeout |
-| `Promise.any` | First resolves | All reject | Fallback APIs |
-| `Promise.allSettled` | All settle | Never | Show all results |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
-<br>
-<br>
-<br>
-
-## 15. Synchronous vs Asynchronous JavaScript (with Examples)
-
-JavaScript is single-threaded, meaning it executes one task at a time.
-However, JavaScript can still handle non-blocking, asynchronous operations using the event loop, callback queue, and microtask queue.
-
-![Synchronous vs Asynchronous](./images/asyncandsync.webp)
-
-## Synchronous JavaScript (Blocking)
-
-**Definition:**
-Synchronous code executes line by line, in the exact order it appears.
-Each operation waits for the previous one to finish.
-
-### Key Characteristics
-
-* Blocking
-* Uses the call stack
-* Easy to read and debug
-* Can freeze UI if task is heavy
-
-### Example 1: Simple Synchronous Code
-
-```javascript
-console.log("First");
-console.log("Second");
-console.log("Third");
-```
-
-**Output:**
-
-```
-First
-Second
-Third
-```
-
-### Example 2: Synchronous with Functions (Call Stack)
-
-```javascript
-function printFirst() {
-  console.log("First");
-}
-
-function printSecond() {
-  console.log("Second");
-}
-
-function printThird() {
-  console.log("Third");
-}
-
-function printEverything() {
-  printFirst();
-  printSecond();
-  printThird();
-}
-
-printEverything();
-```
-
-**What happens internally?**
-
-1. `printEverything()` is pushed to the call stack
-2. `printFirst()` → executes → popped
-3. `printSecond()` → executes → popped
-4. `printThird()` → executes → popped
-
-**Output is still:**
-
-```
-First
-Second
-Third
-```
-
-**Call Stack Rule:**
-Last In, First Out (LIFO)
-
-### Problem with Synchronous Code
-
-```javascript
-fetchBigData(); // takes 2 minutes
-console.log("Done");
-```
-
-* The browser freezes until `fetchBigData()` finishes
-* Bad user experience
-
-## Asynchronous JavaScript (Non-Blocking)
-
-**Definition:**
-Asynchronous code allows long-running tasks to run in the background, so the main thread stays responsive.
-
-### Key Characteristics
-
-* Non-blocking
-* Uses Event Loop
-* Improves performance
-* Essential for web apps
-
-### Example 1: setTimeout (Callback)
-
-```javascript
-console.log("First");
-
-setTimeout(() => {
-  console.log("Hello World");
-}, 2000);
-
-console.log("Second");
-```
-
-**Output:**
-
-```
-First
-Second
-Hello World   (after 2 seconds)
-```
-
-**Why?**
-
-* `setTimeout` is sent to Web APIs
-* Callback waits in Callback Queue
-* Event loop pushes it to call stack after stack is empty
-
-### Example 2: Promises
-
-```javascript
-console.log("Start");
-
-fetchData()
-  .then(data => {
-    console.log("Data received");
-  });
-
-console.log("End");
-```
-
-**Output:**
-
-```
-Start
-End
-Data received
-```
-
-* Promise callbacks go to the Microtask Queue
-* Executed before callback queue tasks
-
-### Example 3: Async / Await
-
-```javascript
-async function getData() {
-  console.log("Fetching data...");
-  const data = await fetchData();
-  console.log("Data received");
-}
-
-console.log("Start");
-getData();
-console.log("End");
-```
-
-**Output:**
-
-```
-Start
-Fetching data...
-End
-Data received
-```
-
-* Looks synchronous
-* Internally still asynchronous
-* Clean & readable
-
-## Comparison Table
-
-| Feature | Synchronous | Asynchronous |
-| :--- | :--- | :--- |
-| Execution | One after another | Parallel (background) |
-| Blocking | Yes | No |
-| UI Freeze | Possible | Avoided |
-| Performance | Slower | Faster |
-| Examples | Normal functions | `setTimeout`, `fetch` |
-| Complexity | Simple | Slightly complex |
-
-### Common Asynchronous Triggers (from the article)
-
-1. **Event Loop**
-    * Manages execution between:
-    * Call Stack
-    * Callback Queue
-    * Microtask Queue
-
-2. **Callbacks**
-    ```javascript
-    setTimeout(() => {
-      console.log("Callback");
-    }, 1000);
-    ```
-
-3. **Promises**
-    ```javascript
-    fetch(url).then(res => res.json());
-    ```
-
-4. **Async / Await**
-    ```javascript
-    await fetch(url);
-    ```
-
-### Why Asynchronous JavaScript Is Important
-
-* Prevents UI freezing
-* Handles API calls smoothly
-* Improves user experience
-* Enables modern dynamic web apps
