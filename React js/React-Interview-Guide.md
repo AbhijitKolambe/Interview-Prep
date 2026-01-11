@@ -1,737 +1,376 @@
 # React Interview Guide - Complete Questions & Answers
 
 ## Table of Contents
-1. [React Performance & Debugging](#react-performance--debugging)
-2. [Authentication & Protected Routes](#authentication--protected-routes)
-3. [API Error Handling](#api-error-handling)
-4. [State Management](#state-management)
-5. [Performance Optimization](#performance-optimization)
-6. [Advanced React Concepts](#advanced-react-concepts)
-7. [JavaScript Fundamentals](#javascript-fundamentals)
-8. [HTML & CSS Basics](#html--css-basics)
-9. [Coding Problems](#coding-problems)
-10. [Code Examples](#code-examples)
+- [Question 1: What is React?](#question-1-what-is-react)
+- [Question 2: What are the features of React JS?](#question-2-what-are-the-features-of-react-js)
+- [Question 3: Difference Between Block-Level and Inline Elements](#question-3-difference-between-block-level-and-inline-elements)
+- [Question 4: Difference between ID and Class](#question-4-difference-between-id-and-class)
+- [Question 5: What are Semantic Tags and why are they important?](#question-5-what-are-semantic-tags-and-why-are-they-important)
+- [Question 6: Difference between `visibility: hidden` and `display: none`](#question-6-difference-between-visibility-hidden-and-display-none)
+- [Question 7: Box Model (Margin vs Padding)](#question-7-box-model-margin-vs-padding)
+- [Question 8: Difference Between CSS Grid and Flexbox](#question-8-difference-between-css-grid-and-flexbox)
+- [Question 9: Difference Between var, let, and const](#question-9-difference-between-var-let-and-const)
+- [Question 10: What is the Event Loop?](#question-10-what-is-the-event-loop)
+- [Question 11: Async/Await vs Promises](#question-11-asyncawait-vs-promises)
+- [Question 12: Difference Between `==` and `===`](#question-12-difference-between--and-)
+- [Question 13: What is Closure?](#question-13-what-is-closure)
+- [Question 14: Map vs Filter vs Reduce](#question-14-map-vs-filter-vs-reduce)
+- [Question 15: Primitive vs Reference Types (e.g. `[] === []` is false)](#question-15-primitive-vs-reference-types-eg---is-false)
+- [Question 16: What is JSX?](#question-16-what-is-jsx)
+- [Question 17: What is the Virtual DOM?](#question-17-what-is-the-virtual-dom)
+- [Question 18: What is Reconciliation?](#question-18-what-is-reconciliation)
+- [Question 19: One-Way Data Binding](#question-19-one-way-data-binding)
+- [Question 20: Functional vs Class Components](#question-20-functional-vs-class-components)
+- [Question 21: What are Props?](#question-21-what-are-props)
+- [Question 22: What is Prop Drilling and how to avoid it?](#question-22-what-is-prop-drilling-and-how-to-avoid-it)
+- [Question 23: What is `children` prop?](#question-23-what-is-children-prop)
+- [Question 24: What is State?](#question-24-what-is-state)
+- [Question 25: Controlled vs Uncontrolled Components](#question-25-controlled-vs-uncontrolled-components)
+- [Question 26: Why setting state inside `render` causes an infinite loop?](#question-26-why-setting-state-inside-render-causes-an-infinite-loop)
+- [Question 27: What are React Hooks?](#question-27-what-are-react-hooks)
+- [Question 28: Common Hooks](#question-28-common-hooks)
+- [Question 29: `useEffect` vs Lifecycle Methods](#question-29-useeffect-vs-lifecycle-methods)
+- [Question 30: `useMemo` vs `useCallback`](#question-30-usememo-vs-usecallback)
+- [Question 31: What are Custom Hooks?](#question-31-what-are-custom-hooks)
+- [Question 32: How Lists work and why Keys are important?](#question-32-how-lists-work-and-why-keys-are-important)
+- [Question 33: Ways to style React Components](#question-33-ways-to-style-react-components)
+- [Question 34: What is React Router and why use it?](#question-34-what-is-react-router-and-why-use-it)
+- [Question 35: `<Link>` vs `<a>` tag](#question-35-link-vs-a-tag)
+- [Question 36: Protected Routes](#question-36-protected-routes)
+- [Question 37: Context API vs Redux](#question-37-context-api-vs-redux)
+- [Question 38: What is Redux?](#question-38-what-is-redux)
+- [Question 39: Redux Toolkit (RRT) vs Redux](#question-39-redux-toolkit-rrt-vs-redux)
+- [Question 40: Axios vs Fetch](#question-40-axios-vs-fetch)
+- [Question 41: How to handle API errors gracefully?](#question-41-how-to-handle-api-errors-gracefully)
+- [Question 42: How to prevent unnecessary re-renders?](#question-42-how-to-prevent-unnecessary-re-renders)
+- [Question 43: Code Splitting & Lazy Loading](#question-43-code-splitting--lazy-loading)
+- [Question 44: Debouncing vs Throttling](#question-44-debouncing-vs-throttling)
+- [Question 45: Server-Side Rendering (SSR) vs Client-Side Rendering (CSR)](#question-45-server-side-rendering-ssr-vs-client-side-rendering-csr)
+- [Question 46: What are Error Boundaries?](#question-46-what-are-error-boundaries)
+- [Question 47: What are Higher-Order Components (HOC)?](#question-47-what-are-higher-order-components-hoc)
+- [Question 48: React Server Components (RSC)](#question-48-react-server-components-rsc)
+- [Question 49: Reverse a string without `reverse()`](#question-49-reverse-a-string-without-reverse)
+- [Question 50: Remove Duplicates from Loop](#question-50-remove-duplicates-from-loop)
+- [Question 51: Implementation of a simple Debounce function](#question-51-implementation-of-a-simple-debounce-function)
 
 ---
 
-## React Performance & Debugging
+## Getting Started
 
-### Question 1: Your React app suddenly becomes slow after adding new features. How do you find and fix the issue?
+### Question 1: What is React?
+**Answer:** React is a free and open-source front-end JavaScript library for building user interfaces based on components. It is maintained by Meta (Facebook). React can be used to develop single-page or server-rendered applications with frameworks like Next.js. React uses one-way data binding and a virtual DOM. It is often faster than other frameworks due to its lightweight nature.
 
-**How to Debug:**
-
-1. **Chrome DevTools - Performance Tab**
-   - Record performance to find long tasks, slow renders, memory leaks
-
-2. **React DevTools - Profiler**
-   - Detect unnecessary re-renders and components causing slowdowns
-
-3. **Avoid Unnecessary Re-Renders**
-   - Use React.memo
-   - Use useMemo
-   - Use useCallback
-
-4. **Virtualization for Large Lists**
-   - Use react-window or react-virtualized to render only visible items
-
-5. **Avoid Inline Functions & Objects**
-   - Inline props cause re-creation on every render, triggering child re-renders
-
-**Real-world Example:**
-An e-commerce app showing 10,000 products without virtualization will lag. With virtualization, only visible items render and performance improves dramatically.
+### Question 2: What are the features of React JS?
+**Answer:**
+1. **Components**: The building blocks of UI, reusable and manageable.
+2. **JSX**: Syntax extension allowing HTML-like code in JavaScript.
+3. **Virtual DOM**: Lightweight copy of the DOM for efficient updates.
+4. **One-Way Data Binding**: Data flows down from parent to child.
+5. **Declarative UI**: React updates and renders components when data changes.
 
 ---
 
-## Authentication & Protected Routes
-
-### Question 2: How do you prevent the login page from being accessible after the user is logged in?
-
-**Solution:**
-
-1. **Use Protected Routes**
-   - Restrict routes based on authentication status
-
-2. **Maintain Global Auth State**
-   - Keep isAuthenticated flag using Context API or Redux
-
-3. **Conditional Routing**
-   ```jsx
-   {isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
-   ```
-
-4. **Redirect After Login**
-   - If already logged in, redirect user to dashboard
-
-**Real-world Example:**
-Banking apps never allow access to the login page after login unless you log out.
-
----
-
-## API Error Handling
-
-### Question 3: How do you handle API errors gracefully in the UI?
-
-**Best Practices:**
-
-1. **Use try-catch or .catch()**
-   - Handle errors appropriately
-
-2. **Show User-Friendly Messages**
-   - Example: "Something went wrong. Please try again."
-
-3. **Use Toast Notifications**
-   - Show error/success messages non-intrusively
-
-4. **Show Fallback UI**
-   - Error screen, retry button, skeleton loader
-
-5. **Retry Mechanism**
-   - Allow user to retry failed requests
-
-6. **Use Error Boundaries**
-   - Catch rendering errors at component level
-
-7. **Categorize Errors**
-   - Network error
-   - Server error
-   - Unauthorized (401)
-   - Forbidden (403)
-
-**Real-world Example:**
-Food delivery app says "Restaurant is currently unavailable" instead of showing a blank screen or error stack.
-
----
-
-## State Management
-
-### Question 4: A component is fetching the same data multiple times unnecessarily. How would you fix it?
-
-**Solutions:**
-
-1. **Use React Query / TanStack Query**
-   - Built-in caching and background refetching
-
-2. **Store Data in Global State**
-   - Use Context API or Redux to avoid duplicate fetching
-
-3. **Use useMemo for Derived Data**
-   - Prevent expensive recalculations
-
-4. **Conditional Fetching**
-   - Only fetch if data doesn't exist: `if (!data) fetchData();`
-
-**Real-world Example:**
-On a dashboard, if 5 charts fetch the same user profile, fetch once globally and reuse it.
-
----
-
-## Performance Optimization
-
-### Question 5: How do you optimize bundle size in a large React app?
-
-**Optimization Techniques:**
-
-1. **Code Splitting**
-   ```javascript
-   const Dashboard = React.lazy(() => import("./Dashboard"));
-   ```
-
-2. **Tree Shaking**
-   - Remove unused code via Webpack / Vite
-
-3. **Dynamic Imports**
-   ```javascript
-   import("chart-library").then(...)
-   ```
-
-4. **Asset Optimization**
-   - Compress images, fonts, videos
-
-5. **Caching Static Files**
-   - Use browser cache, CDN, service workers
-
-6. **Remove Unused Dependencies**
-   - Regularly audit and clean dependencies
-
----
-
-## Advanced React Concepts
-
-### Question 6: How to detect and fix unnecessary re-renders?
-
-**Step 1: Detect Unnecessary Re-renders**
-- Use React DevTools → Profiler
-
-**Step 2: Fix with React.memo**
-```javascript
-const ProductCard = React.memo(({ product }) => {
-  console.log("Rendered");
-  return <div>{product.name}</div>;
-});
-```
-
-**Step 3: Fix Expensive Calculations using useMemo**
-```javascript
-const totalPrice = useMemo(() => {
-  return cart.reduce((sum, item) => sum + item.price, 0);
-}, [cart]);
-```
-
-**Step 4: Avoid Inline Functions using useCallback**
-```javascript
-const handleClick = useCallback(() => {
-  setCount(prev => prev + 1);
-}, []);
-```
-
-**Step 5: Virtualization for Large Lists**
-```javascript
-import { FixedSizeList as List } from "react-window";
-
-<List
-  height={500}
-  itemCount={10000}
-  itemSize={35}
-  width={300}
->
-  {({ index, style }) => <div style={style}>Item {index}</div>}
-</List>
-```
-
-**Result:** Only visible rows render, leading to massive performance boost.
-
----
-
-### Question 7: Prevent Login Page After User is Logged In (Protected Routes)
-
-**Auth Context:**
-```javascript
-export const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(false);
-
-  return (
-    <AuthContext.Provider value={{ isAuth, setIsAuth }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-```
-
-**Protected Route:**
-```javascript
-const ProtectedRoute = ({ children }) => {
-  const { isAuth } = useContext(AuthContext);
-  return isAuth ? children : <Navigate to="/login" />;
-};
-```
-
-**Route Setup:**
-```jsx
-<Route path="/dashboard"
-  element={
-    <ProtectedRoute>
-      <Dashboard />
-    </ProtectedRoute>
-  }
-/>
-```
-
-**Redirect Logged-in Users from Login:**
-```javascript
-if (isAuth) return <Navigate to="/dashboard" />;
-```
-
-Used in: Banking, E-commerce, SaaS Apps
-
----
-
-### Question 8: Handling API Errors Gracefully in React UI
-
-**API Call with Try-Catch:**
-```javascript
-const fetchData = async () => {
-  try {
-    const res = await fetch("/api/user");
-    if (!res.ok) throw new Error("Failed to fetch");
-    const data = await res.json();
-    setUser(data);
-  } catch (err) {
-    setError(err.message);
-  }
-};
-```
-
-**Show Toast Error:**
-```jsx
-{error && <Toast message="Something went wrong!" />}
-```
-
-**Retry Button:**
-```jsx
-<button onClick={fetchData}>Retry</button>
-```
-
-**Error Boundary:**
-```javascript
-class ErrorBoundary extends React.Component {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <h2>Something went wrong.</h2>;
-    }
-    return this.props.children;
-  }
-}
-```
-
-**Why this matters:** Prevents white screen of death in production.
-
----
-
-### Question 9: Prevent Multiple API Calls for Same Data
-
-**Using React Query (BEST PRACTICE):**
-```javascript
-const { data, isLoading } = useQuery(
-  ["users"],
-  fetchUsers,
-  { staleTime: 60000 }
-);
-```
-
-**Using Context Cache:**
-```javascript
-if (!users.length) fetchUsers();
-```
-
-**Using Redux:**
-- Store API result once → reuse everywhere
-
-**Avoid Re-fetch with useEffect:**
-```javascript
-useEffect(() => {
-  fetchData();
-}, []); // Avoids multiple calls
-```
-
-**Real-world Use:** Dashboards, Notifications, Profile APIs
-
----
-
-### Question 10: Optimizing Bundle Size in Large React App
-
-**Code Splitting with Lazy + Suspense:**
-```javascript
-const Dashboard = React.lazy(() => import("./Dashboard"));
-
-<Suspense fallback={<Loader />}>
-  <Dashboard />
-</Suspense>
-```
-
-**Dynamic Imports:**
-```javascript
-import("chart.js").then(chart => {
-  chart.render();
-});
-```
-
-**Tree Shaking (Webpack/Vite default):**
-```javascript
-import { debounce } from "lodash"; // BAD
-import debounce from "lodash/debounce"; // GOOD
-```
-
----
-
-### Question 11: How to optimize large Redux datasets (10,000+ records)?
-
-**Best Practices:**
-
-1. **Never store huge datasets at once**
-   - Use server-side pagination or cursor-based pagination
-
-2. **Normalize Redux State**
-   ```javascript
-   {
-     users: { byId: {}, allIds: [] }
-   }
-   ```
-   - Prevents duplication and improves lookup speed
-
-3. **Use Selectors with Memoization**
-   ```javascript
-   import { createSelector } from '@reduxjs/toolkit';
-   ```
-   - Avoids unnecessary recalculations
-
-4. **Virtualize Rendering**
-   - Use react-window or react-virtualized
-   - Render only visible rows
-
-5. **Avoid Deeply Nested State**
-   - Flat structure equals faster updates
-
-6. **Use Redux Toolkit**
-   - Faster, less boilerplate, better performance
-
-**Interview One-Line:**
-"I optimize large Redux datasets using server-side pagination, normalized state, memoized selectors, and list virtualization."
-
----
-
-### Question 12: How to handle slow APIs in the UI? (5-10 sec delay)
-
-**UI/UX Improvements:**
-
-1. Skeleton Loaders / Shimmer
-2. Central Loader
-3. Optimistic UI (if applicable)
-4. React Query / Caching
-5. Lazy Loading Components
-6. Timeout + Retry Button
-7. Network Error Handling
-
-**Example:**
-```javascript
-const { data, isLoading } = useQuery("users", fetchUsers);
-```
-
-**Interview One-Line:**
-"For slow APIs, I use loaders, skeleton UI, caching, background refetch, and retry mechanisms for better UX."
-
----
-
-### Question 13: How to secure JWT authentication in React?
-
-**Best Security Practices:**
-
-1. Store Access Token in HTTP-Only Secure Cookie
-2. Use Refresh Token Flow
-3. Short Expiry for Access Token
-4. Enable CORS, SameSite, Secure Flags
-5. Never store JWT in localStorage for banking apps
-6. Validate token on every API call using middleware
-
-**Token Flow:**
-```
-Login → Access Token (short expiry)
-     → Refresh Token (long expiry)
-```
-
-**Interview One-Line:**
-"I secure JWT using HTTP-only cookies, refresh tokens, short expiry, and server-side validation middleware."
-
----
-
-### Question 14: How to avoid dashboard re-rendering with multiple charts & filters?
-
-**Optimization Techniques:**
-
-1. Fetch API at Parent Only
-2. Pass Data via Props
-3. Use React.memo() for Charts
-4. Use useMemo for Computed Data
-5. Use useCallback for Filter Handlers
-6. Avoid Inline Objects & Functions
-7. Single Global Loader
-
-**Example:**
-```javascript
-const Chart = React.memo(({ data }) => { ... });
-```
-
-**Interview One-Line:**
-"I prevent dashboard re-renders by lifting data to parent, memoizing charts, and caching handlers and computed values."
-
----
-
-### Question 15: How SSR improves SEO?
-
-**CSR vs SSR Comparison:**
-
-| Aspect | CSR (CRA) | SSR (Next.js) |
-|--------|-----------|---------------|
-| HTML on load | Empty | Fully rendered |
-| Google crawling | Waits for JS | Crawls instantly |
-| SEO | Poor | Excellent |
-| First paint | Slower | Faster |
-
-**SSR Benefits:**
-
-1. Better Google indexing
-2. Faster First Contentful Paint (FCP)
-3. Social media preview works
-4. Better Lighthouse score
-
-**Interview One-Line:**
-"SSR improves SEO because search engines receive fully rendered HTML instead of an empty JavaScript shell."
-
----
-
-### Question 16: Why use Next.js instead of CRA?
-
-**Key Advantages of Next.js:**
-
-1. Built-in SSR & SSG
-2. File-based routing
-3. API routes (Backend + Frontend)
-4. Automatic code splitting
-5. Image optimization
-6. SEO-friendly out of the box
-7. Better performance
-
-**CRA Limitations:**
-
-1. Client-Side Rendering only
-2. Poor SEO
-3. Manual optimization required
-
-**Interview One-Line:**
-"Next.js gives built-in SEO, SSR, API routes, and production-level performance which CRA lacks."
-
----
-
-### Question 17: How debouncing improves search performance?
-
-**Without Debounce:**
-- API called on every keystroke
-- Server overload
-- Poor UX
-
-**With Debounce:**
-- API is called only after user stops typing
-
-**Working Logic:**
-```javascript
-setTimeout(() => callAPI(value), 500);
-```
-
+## HTML & CSS Basics
+
+### Question 3: Difference Between Block-Level and Inline Elements
+**Answer:**
+- **Block elements:** Take full width, start on a new line (e.g., `div`, `p`, `section`).
+- **Inline elements:** Take only required width, do not start new line (e.g., `span`, `a`, `strong`).
+
+### Question 4: Difference between ID and Class
+| Aspect | ID | Class |
+|--------|----|-------|
+| Uniqueness | Unique per page | Can be reused |
+| CSS Selector | `#id` | `.class` |
+| Priority | High | Low |
+
+### Question 5: What are Semantic Tags and why are they important?
+**Answer:** Semantic tags (e.g., `<header>`, `<footer>`, `<article>`) clearly describe their content.
 **Benefits:**
+- Better SEO (Search engines understand structure).
+- Improved Accessibility (Screen readers).
+- Cleaner, more readable code.
 
-1. Fewer API calls
-2. Better performance
-3. Saves server cost
-4. Smooth UX
+### Question 6: Difference between `visibility: hidden` and `display: none`
+**Answer:**
+- **`visibility: hidden`**: The element is invisible, but it **still takes up space** in the layout.
+- **`display: none`**: The element is removed from the layout; it takes up **no space**.
 
-**Interview One-Line:**
-"Debouncing prevents unnecessary API calls by waiting until the user stops typing before firing the request."
+### Question 7: Box Model (Margin vs Padding)
+**Answer:**
+- **Padding**: Space *inside* the border (between content and border).
+- **Margin**: Space *outside* the border (between element and others).
 
----
-
-### Question 18: How virtualization improves table performance?
-
-**Problem Without Virtualization:**
-- 10,000+ DOM nodes
-- High memory usage
-- Page lag & crashes
-
-**With Virtualization:**
-- Only visible rows are rendered
-- DOM size is minimal
-- Smooth scrolling
-
-**Tools:**
-- react-window
-- react-virtualized
-
-**Example Use Cases:**
-- Large logs table
-- CRM transactions
-- Stock market dashboards
-
-**Interview One-Line:**
-"Virtualization boosts performance by rendering only visible rows instead of the entire dataset."
+### Question 8: Difference Between CSS Grid and Flexbox
+**Answer:**
+- **Flexbox**: 1D layout (Row OR Column). Best for aligning items in a single direction.
+- **CSS Grid**: 2D layout (Rows AND Columns). Best for complex page layouts.
 
 ---
 
 ## JavaScript Fundamentals
 
-### Question 19: Difference Between Block-Level and Inline Elements
-
-**Answer:**
-
-- **Block elements:** Take full width and start on a new line
-  - Examples: div, p, section
-
-- **Inline elements:** Take only required width
-  - Examples: span, a, strong
-
----
-
-### Question 20: Difference Between var, let, and const
-
-| Feature | var | let | const |
-|---------|-----|-----|-------|
-| Scope | Function / Global | Block | Block |
-| Re-declare | Yes | No | No |
+### Question 9: Difference Between var, let, and const
+| Feature | `var` | `let` | `const` |
+|---------|-------|-------|---------|
+| Scope | Function | Block | Block |
 | Re-assign | Yes | Yes | No |
-| Hoisting | Yes (undefined) | TDZ | TDZ |
+| Hoisting | Yes (undefined) | Yes (TDZ) | Yes (TDZ) |
 
-Notes:
-- let and const are block-scoped
-- var is function-scoped
-- const must be initialized at declaration
+### Question 10: What is the Event Loop?
+**Answer:** The Event Loop handles asynchronous callbacks in JavaScript. It continuously checks if the **Call Stack** is empty. If it is, it moves tasks from the **Callback Queue** (or Microtask Queue) to the Call Stack to be executed.
 
----
-
-### Question 21: What is Hoisting?
-
+### Question 11: Async/Await vs Promises
 **Answer:**
-Hoisting is JavaScript's behavior of moving variable and function declarations to the top of their scope before execution.
+- **Promises**: `.then()` chaining. Can lead to "callback hell" if nested.
+- **Async/Await**: Syntactic sugar over Promises. Makes asynchronous code look and behave like synchronous code, improving readability.
 
-**Example:**
-```javascript
-console.log(a); // undefined
-var a = 5;
-```
-
----
-
-### Question 22: Difference Between Arrow Function and Normal Function
-
-| Feature | Normal Function | Arrow Function |
-|---------|-----------------|----------------|
-| Syntax | Longer | Shorter |
-| this | Dynamic | Lexical |
-| Constructor | Yes | No |
-| arguments object | Yes | No |
-
-Note: Arrow functions don't have their own this.
-
----
-
-### Question 23: Difference Between == and ===
-
-- `==` → Compares value only
-- `===` → Compares value + type
-
-**Example:**
-```javascript
-2 == "2"   // true
-2 === "2"  // false
-```
-
----
-
-### Question 24: What is Closure?
-
+### Question 12: Difference Between `==` and `===`
 **Answer:**
-A closure gives access to an outer function's variables even after the outer function has finished execution.
+- `==`: Checks value (performs type coercion). `5 == "5"` is true.
+- `===`: Checks value AND type (strict equality). `5 === "5"` is false.
 
-**Example:**
+### Question 13: What is Closure?
+**Answer:** A closure is a function that "remembers" its lexical scope even when the function is executed outside that scope.
 ```javascript
 function outer() {
   let count = 0;
-  return function() {
-    return count++;
+  return function inner() {
+    count++;
+    return count;
   };
 }
+```
 
-const counter = outer();
-counter(); // 0
-counter(); // 1
+### Question 14: Map vs Filter vs Reduce
+- **map()**: Transforms each element and returns a new array.
+- **filter()**: Returns a new array with elements that pass a condition.
+- **reduce()**: Accumulates the array into a single value.
+
+### Question 15: Primitive vs Reference Types (e.g. `[] === []` is false)
+**Answer:** Objects and Arrays are reference types in JS. `[] === []` returns `false` because they compare memory addresses (references), not the content inside.
+
+---
+
+## React Fundamentals
+
+### Question 16: What is JSX?
+**Answer:** JSX (JavaScript XML) allows writing HTML elements in JavaScript and placing them in the DOM without using `createElement()` or `appendChild()` methods. Browsers can't read it directly; it must be transpiled (e.g., by Babel) into standard JavaScript objects.
+
+### Question 17: What is the Virtual DOM?
+**Answer:** The Virtual DOM is a lightweight, in-memory representation of the real DOM. When state changes:
+1. React creates a new Virtual DOM tree.
+2. It compares ("diffs") it with the previous tree.
+3. It updates strictly individual nodes in the real DOM (Reconciliation), making it efficient.
+
+### Question 18: What is Reconciliation?
+**Answer:** Reconciliation is the process through which React updates the DOM. It compares the Virtual DOM with the real DOM and updates only the text/attributes that have changed.
+
+### Question 19: One-Way Data Binding
+**Answer:** In React, data flows in one direction: from Parent to Child via **props**. This makes applications easier to debug and data flow more predictable.
+
+---
+
+## Components & Props
+
+### Question 20: Functional vs Class Components
+| Feature | Functional | Class |
+|---------|------------|-------|
+| Syntax | Function returning JSX | Class extending `React.Component` |
+| State | `useState` Hook | `this.state` |
+| Lifecycle | `useEffect` Hook | `componentDidMount`, etc. |
+| Boilerplate | Low | High |
+| Best Practice | Preferred Modern Approach | Legacy / specific use cases |
+
+### Question 21: What are Props?
+**Answer:** Props (short for Properties) are read-only inputs passed from a parent component to a child component. They make components reusable.
+```jsx
+<Welcome name="Alice" /> // Accessed as props.name
+```
+
+### Question 22: What is Prop Drilling and how to avoid it?
+**Answer:** Prop drilling happens when you pass data through many layers of components just to reach a deeply nested child.
+**Solutions:**
+1. **Context API**: For global state like themes or auth.
+2. **State Management Libraries**: Redux, Zustand, Recoil.
+
+### Question 23: What is `children` prop?
+**Answer:** `children` is a special prop that allows you to pass elements *inside* the opening and closing tags of a component.
+```jsx
+<Card> <h1>Title</h1> </Card>
 ```
 
 ---
 
-### Question 25: What is a Pure Function?
+## State & Lifecycle
 
+### Question 24: What is State?
+**Answer:** State is a built-in object/hook used to contain data or information about the component. Unlike props, **state is mutable** and managed within the component. When state changes, the component re-renders.
+
+### Question 25: Controlled vs Uncontrolled Components
 **Answer:**
-A pure function:
-- Always returns the same output for the same input
-- Has no side effects
+- **Controlled**: Form data is handled by the React component state. (`value` prop + `onChange` handler).
+- **Uncontrolled**: Form data is handled by the DOM itself. Access values using **Refs** (`useRef`).
 
-**Example:**
-```javascript
-function add(a, b) {
-  return a + b;
+### Question 26: Why setting state inside `render` causes an infinite loop?
+**Answer:** `render` (or the function body) runs when state updates. If you set state *inside* it, it triggers a re-render, which sets state again, creating an infinite loop. Always set state in efficient handlers or `useEffect`.
+
+---
+
+## React Hooks
+
+### Question 27: What are React Hooks?
+**Answer:** Hooks are functions introduced in React 16.8 that allow you to use State and Lifecycle features in functional components.
+
+### Question 28: Common Hooks
+1. **`useState`**: Manages local state.
+2. **`useEffect`**: Manages side effects (API calls, subscriptions).
+3. **`useContext`**: Accesses global Context data.
+4. **`useRef`**: Persists values between renders without causing re-renders; accesses DOM.
+5. **`useReducer`**: Advanced state management (Redux-like).
+
+### Question 29: `useEffect` vs Lifecycle Methods
+| Lifecycle Method | `useEffect` Equivalent |
+|------------------|------------------------|
+| `componentDidMount` | `useEffect(() => { ... }, [])` |
+| `componentDidUpdate` | `useEffect(() => { ... }, [dependencies])` |
+| `componentWillUnmount` | `useEffect(() => { return () => cleanup }, [])` |
+
+### Question 30: `useMemo` vs `useCallback`
+- **`useMemo`**: Memoizes a **computed value**. Re-computes only when dependencies change. (Optimization for expensive calculations).
+- **`useCallback`**: Memoizes a **function definition**. Prevents function recreation on re-renders. (Useful when passing functions to child components).
+
+### Question 31: What are Custom Hooks?
+**Answer:** Custom hooks are user-defined hooks (starting with `use`, e.g., `useFetch`) that encapsulate reusable logic. They can call other hooks.
+
+---
+
+## Lists & Keys
+
+### Question 32: How Lists work and why Keys are important?
+**Answer:** Lists are rendered using `.map()`.
+**Keys:**
+- Unique string/number identifying items.
+- Crucial for React's reconciliation process to know which items were added, changed, or removed.
+- **Avoid** using array index as keys if the list order can change.
+
+---
+
+## Styling in React
+
+### Question 33: Ways to style React Components
+1. **Inline Styles**: `<div style={{ color: 'red' }}>`
+2. **CSS Stylesheets**: `import './App.css'`
+3. **CSS Modules**: `import styles from './App.module.css'` (Scoped locally).
+4. **Styled Components** (CSS-in-JS).
+5. **Utility Frameworks**: Tailwind CSS.
+
+---
+
+## Routing
+
+### Question 34: What is React Router and why use it?
+**Answer:** React Router is a standard library for routing in React. It enables navigation among views/components in a Single Page Application (SPA), allows the URL to change, and keeps the UI in sync with the URL without a full page reload.
+
+### Question 35: `<Link>` vs `<a>` tag
+- **`<a>` tag**: Causes a full page refresh (server request).
+- **`<Link>` component**: Handles navigation internally (Client-side routing), preserving state and avoiding refresh.
+
+### Question 36: Protected Routes
+**Answer:** Protected routes restrict access to certain pages based on authentication status.
+```jsx
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" />;
 }
 ```
 
 ---
 
-### Question 26: What is the Event Loop?
+## State Management
 
-**Answer:**
-The event loop continuously:
-1. Checks if the call stack is empty
-2. Moves tasks from Callback Queue and Microtask Queue into the call stack for execution
+### Question 37: Context API vs Redux
+| Feature | Context API | Redux |
+|---------|-------------|-------|
+| Complexity | Low (Built-in) | High (Requires setup/libs) |
+| Use Case | Theme, Auth, simple global state | Complex state, heavy data flow |
+| Performance | Can cause extra re-renders if not careful | Optimized for frequent updates |
 
-This enables non-blocking asynchronous execution.
+### Question 38: What is Redux?
+**Answer:** Redux is a predictable state container for JavaScript apps. It helps write applications that behave consistently across environments.
+**Core Principles:**
+1. **Store**: Single source of truth.
+2. **Actions**: Events that describe "what happened".
+3. **Reducers**: Pure functions determining "how state changes".
+
+### Question 39: Redux Toolkit (RRT) vs Redux
+**Answer:** Redux Toolkit is the official, recommended way to write Redux.
+- Reduces boilerplate (no manual actions/types).
+- `createSlice` automatically generates action creators.
+- Built-in Thunk support and Immer (mutable syntax).
 
 ---
 
-### Question 27: Difference Between Async/Await and Promises
+## API Handling
 
-| Feature | Promises | Async/Await |
-|---------|----------|------------|
-| Syntax | Uses .then() & .catch() | Uses await |
-| Readability | Less readable | More readable |
-| Style | Callback-style | Synchronous-looking |
+### Question 40: Axios vs Fetch
+| Feature | Fetch (Native) | Axios (Library) |
+|---------|----------------|-----------------|
+| Syntax | Verbose (needs `.json()`) | Clean (auto JSON parsing) |
+| Error Handling | Only rejects on network error | Rejects on HTTP errors (4xx, 5xx) |
+| Interceptors | No | Yes (request/response interception) |
+
+### Question 41: How to handle API errors gracefully?
+**Best Practices:**
+1. **Try/Catch blocks**: Handle failures.
+2. **Status Checks**: Handle 401 (Auth), 404 (Not Found), 500.
+3. **UI Feedback**: Show Toast notifications or Error Boundary screens.
 
 ---
 
-### Question 28: Difference Between map, filter, and reduce
 
-| Method | Returns | Purpose |
-|--------|---------|---------|
-| map | New array | Transform data |
-| filter | New array | Filter data |
-| reduce | Single value | Aggregate data |
+### Question 42: How to prevent unnecessary re-renders?
+1. **`React.memo`**: Wraps components to only re-render if props change.
+2. **`useMemo`**: Caches expensive calculations.
+3. **`useCallback`**: Caches function references.
+4. **Virtualization**: Use `react-window` for large lists.
 
-**map() Example:**
-```javascript
-const arr = [1, 2, 3];
-const doubled = arr.map(n => n * 2);
+### Question 43: Code Splitting & Lazy Loading
+**Answer:** Break up the bundle so users only load what they need.
+```jsx
+const Dashboard = React.lazy(() => import('./Dashboard'));
+// Usage
+<Suspense fallback={<Spinner />}>
+  <Dashboard />
+</Suspense>
 ```
 
-**filter() Example:**
-```javascript
-const even = arr.filter(n => n % 2 === 0);
-```
+### Question 44: Debouncing vs Throttling
+- **Debouncing**: Delays execution until 'X' ms have passed since the last event (e.g., Search bar type-ahead).
+- **Throttling**: Limits execution to once every 'X' ms (e.g., Scroll listeners).
 
 ---
 
-### Question 29: Difference Between Debouncing and Throttling
+## Advanced React Concepts
 
-| Aspect | Debouncing | Throttling |
-|--------|-----------|-----------|
-| Execution | After delay | At fixed interval |
-| Used in | Search | Scroll |
+### Question 45: Server-Side Rendering (SSR) vs Client-Side Rendering (CSR)
+- **CSR (Create-React-App)**: Browser downloads empty HTML + JS. JS builds UI. Slower initial load, bad SEO.
+- **SSR (Next.js)**: Server sends fully rendered HTML. Faster initial content, great SEO.
 
----
+### Question 46: What are Error Boundaries?
+**Answer:** Class components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI. (Does not work for event handlers or async code).
 
-### Question 30: Floating Point Issue: 0.1 + 0.2 === 0.3
+### Question 47: What are Higher-Order Components (HOC)?
+**Answer:** A function that takes a component and returns a new component, adding additional functionality or data (e.g., `withRouter`, `connect(Redux)`).
 
-**Output:** false
-
-**Reason:** Floating-point precision error in JavaScript
-
----
-
-### Question 31: Object Reference Example
-
-```javascript
-let obj = { a: 1 };
-let copy = obj;
-copy.a = 5;
-console.log(obj.a); // 5
-```
-
-**Reason:** Objects are copied by reference, not by value.
+### Question 48: React Server Components (RSC)
+**Answer:** new feature allowing components to render exclusively on the server, resulting in zero bundle size for those components on the client.
 
 ---
 
-### Question 32: Reverse a String Without reverse()
+## Coding Problems
 
+### Question 49: Reverse a string without `reverse()`
 ```javascript
 function reverseStr(str) {
   let res = "";
@@ -742,738 +381,65 @@ function reverseStr(str) {
 }
 ```
 
----
-
-### Question 33: Remove Duplicate Values from Array
-
+### Question 50: Remove Duplicates from Loop
 ```javascript
-function removeDuplicates(arr) {
-  let result = [];
-  for (let i of arr) {
-    if (!result.includes(i)) result.push(i);
-  }
-  return result;
-}
-```
-
----
-
-### Question 34: What is Event Delegation and Why Is It Used?
-
-**Answer:**
-Event delegation is attaching one event listener to a parent instead of many children using event.target.
-
-**Benefits:**
-- Improves performance
-- Handles dynamically added elements
-
----
-
-### Question 35: Why [] === [] is false?
-
-**Answer:** Arrays are compared by reference, not by value.
-
----
-
-## HTML & CSS Basics
-
-### Question 36: What new tags were introduced in HTML5?
-
-**Answer:**
-HTML5 introduced semantic tags such as:
-- header, footer, nav, section, article, figure, figcaption, main, aside, video, audio, canvas, picture
-
-These improve SEO, accessibility, and code readability.
-
----
-
-### Question 37: What are Semantic Tags and why are they important?
-
-**Answer:**
-Semantic tags clearly describe the purpose of content.
-
-**Benefits:**
-1. Search engines understand page structure
-2. Improve SEO
-3. Improve screen-reader accessibility
-4. Make code more readable
-
----
-
-### Question 38: Difference between ID and Class
-
-| Aspect | ID | Class |
-|--------|----|----|
-| Uniqueness | Unique | Can be reused |
-| Priority | Higher | Lower |
-| Usage | Used once | Used multiple times |
-| Selector | #id | .class |
-
-Note: Prefer class for styling, id for unique JS access.
-
----
-
-### Question 39: Difference between Inline, Block, and Inline-Block
-
-**Answer:**
-
-- **Inline:** No new line, no width/height
-  - Examples: span, a, strong
-
-- **Block:** Takes full width, starts new line
-  - Examples: div, p, section
-
-- **Inline-block:** Inline + supports width & height
-
----
-
-### Question 40: Difference between Relative, Absolute, Fixed, Sticky
-
-**Answer:**
-
-- **Relative:** Moves relative to itself
-- **Absolute:** Relative to nearest positioned parent
-- **Fixed:** Relative to viewport, never moves
-- **Sticky:** Acts relative first, then fixed after scroll threshold
-
----
-
-### Question 41: Difference between LocalStorage, SessionStorage & Cookies
-
-| Storage | Persistence | Server Access | Size |
-|---------|-------------|---------------|------|
-| LocalStorage | Permanent | No | ~5MB |
-| SessionStorage | Until tab close | No | ~5MB |
-| Cookies | Configurable | Yes | ~4KB |
-
-Note: Banking apps use Cookies (HTTP-Only, Secure) for tokens.
-
----
-
-### Question 42: Difference between visibility: hidden and display: none
-
-**Answer:**
-
-- **visibility: hidden** → Element invisible but space remains
-- **display: none** → Element removed completely from layout
-
----
-
-### Question 43: Pseudo-class vs Pseudo-element
-
-**Answer:**
-
-- **Pseudo-class:** :hover, :focus, :active
-- **Pseudo-element:** ::before, ::after
-
----
-
-### Question 44: Difference Between px, %, and em
-
-| Unit | Meaning |
-|------|---------|
-| px | Fixed size |
-| % | Relative to parent |
-| em | Relative to parent font size |
-
----
-
-### Question 45: How to Make a Website Mobile Friendly?
-
-**Answer:**
-
-1. Media queries
-2. Flexbox & Grid
-3. Relative units (%, em, rem)
-4. Responsive images
-
----
-
-### Question 46: Difference Between CSS Grid and Flexbox
-
-**Answer:**
-
-- **Flexbox** → 1D layout (row or column)
-- **CSS Grid** → 2D layout (row + column)
-
----
-
-### Question 47: How to Make Images Responsive
-
-```css
-img {
-  max-width: 100%;
-  height: auto;
-}
-```
-
----
-
-## React Fundamentals
-
-### Question 48: Difference Between Functional and Class Components
-
-| Feature | Functional | Class |
-|---------|-----------|-------|
-| Uses | Hooks | Lifecycle |
-| Syntax | render() not needed | Needs render() |
-| Boilerplate | Less | More |
-| Modern Status | Preferred now | Legacy use |
-
----
-
-### Question 49: What are React Hooks?
-
-**Answer:**
-Hooks allow state, lifecycle, and side-effect handling in functional components.
-
-**Common hooks:**
-- useState
-- useEffect
-- useMemo
-- useCallback
-- useRef
-
----
-
-### Question 50: Controlled vs Uncontrolled Components
-
-| Aspect | Controlled | Uncontrolled |
-|--------|-----------|-------------|
-| State Management | React manages | DOM manages |
-| Implementation | Uses useState | Uses useRef |
-| Predictability | Predictable | Less predictable |
-
----
-
-### Question 51: What is Prop Drilling? How to Avoid It?
-
-**Answer:**
-Prop drilling is passing props through multiple intermediate components.
-
-**Solutions:**
-1. Context API
-2. Redux / Redux Toolkit
-
----
-
-### Question 52: How Does React.memo Work?
-
-**Answer:**
-React.memo prevents unnecessary re-rendering of a component if props don't change.
-
-**Usage:**
-```javascript
-export default React.memo(MyComponent);
-```
-
-Note: Works only for functional components
-
----
-
-### Question 53: Difference Between useMemo and useCallback
-
-| Aspect | useMemo | useCallback |
-|--------|---------|-----------|
-| Memoizes | Values | Functions |
-| Use Case | Heavy computation | Callback re-creation |
-
----
-
-### Question 54: Why is key Important in Lists?
-
-**Answer:**
-- Helps React track list items
-- Improves reconciliation
-- Prevents UI bugs
-
-Without key, rendering and performance issues occur.
-
----
-
-### Question 55: Difference Between <a> Tag and <Link> in React
-
-| Aspect | <a> Tag | <Link> |
-|--------|---------|--------|
-| Page reload | Yes | No |
-| Navigation | Server-side | Client-side |
-| SPA Impact | Breaks SPA | Maintains SPA |
-
----
-
-### Question 56: What is Virtual DOM?
-
-**Answer:**
-Virtual DOM is a lightweight copy of the real DOM used to optimize performance by updating only changed elements.
-
----
-
-### Question 57: What is Reconciliation?
-
-**Answer:**
-Reconciliation is React's process of comparing old and new Virtual DOM and updating only the changed nodes in the real DOM.
-
----
-
-### Question 58: Why Do We Use useState and useEffect?
-
-- **useState** → Manages component state
-- **useEffect** → Handles side effects like API calls, subscriptions
-
----
-
-### Question 59: Relation Between useEffect and Class Lifecycle Methods
-
-| useEffect | Class Lifecycle |
-|-----------|-----------------|
-| Empty deps | componentDidMount |
-| With deps | componentDidUpdate |
-| Cleanup | componentWillUnmount |
-
----
-
-### Question 60: Other Ways to Manage State
-
-1. useReducer
-2. Context API
-3. Redux / Redux Toolkit
-
----
-
-### Question 61: Redux Toolkit vs Redux
-
-**Redux Toolkit advantages:**
-- Less boilerplate
-- Faster development
-- Official recommended approach
-
----
-
-### Question 62: How Context API Works
-
-**Answer:**
-Context allows passing global data without prop drilling using:
-1. createContext
-2. Provider
-3. useContext
-
----
-
-### Question 63: How to Optimize React App Performance
-
-**Answer:**
-1. Lazy loading
-2. Code splitting
-3. useMemo, useCallback
-4. CDN for assets
-5. Virtual DOM optimization
-
----
-
-### Question 64: If API Takes 5 Seconds, How Do You Improve UX?
-
-**Answer:**
-1. Loader
-2. Skeleton UI
-3. Retry option
-4. Background fetch
-5. Pagination & caching
-
----
-
-### Question 65: How to Handle 10,000+ Rows in Dashboard
-
-**Answer:**
-1. Pagination
-2. Virtualization
-3. Infinite scrolling
-4. Server-side filtering
-
----
-
-## Coding Problems
-
-### Question 66: Reverse a String Using reverse()
-
-```javascript
-str.split('').reverse().join('');
-```
-
----
-
-### Question 67: Find Second Largest Number in Array
-
-```javascript
-const arr = [10, 4, 25, 7];
-arr.sort((a,b) => b - a);
-console.log(arr[1]);
-```
-
----
-
-### Question 68: Remove Duplicates from an Array
-
-```javascript
+const arr = [1, 2, 2, 3];
 const unique = [...new Set(arr)];
 ```
 
-**Or without Set:**
-```javascript
-const result = [];
-for (let n of arr) {
-  if (!result.includes(n)) result.push(n);
-}
-```
-
----
-
-### Question 69: Basic Debounce Function
-
+### Question 51: Implementation of a simple Debounce function
 ```javascript
 function debounce(fn, delay) {
   let timer;
-  return function (...args) {
-    clearTimeout(timer);
+  return function(...args) {
+    if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       fn.apply(this, args);
     }, delay);
-  };
+  }
 }
 ```
-
----
-
-### Question 70: Can Debouncing Work Without setTimeout?
-
-**Answer:** No — setTimeout is required to control the delay.
 
 ---
 
 ## Code Examples
 
-### Counter with Functional Update
-
-```javascript
-import React, { useState } from "react";
+### Example 1: Simple Counter (Hooks)
+```jsx
+import React, { useState } from 'react';
 
 const Counter = () => {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div>
-      <h2>Count: {count}</h2>
-      <button onClick={() => setCount(prev => prev + 1)}>+</button>
-      <button onClick={() => setCount(prev => prev - 1)}>-</button>
-    </div>
-  );
-};
-
-export default Counter;
-```
-
-Test cases:
-- State update
-- Functional update
-- Re-render understanding
-
----
-
-### API Call with Axios + Loader + Error
-
-```javascript
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const AxiosAPI = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then(res => setUsers(res.data))
-      .catch(() => setError("API Failed"))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
-  return (
-    <ul>
-      {users.map(u => (
-        <li key={u.id}>{u.name}</li>
-      ))}
-    </ul>
-  );
-};
-
-export default AxiosAPI;
-```
-
----
-
-### Fetch + Promise API Call
-
-```javascript
-useEffect(() => {
-  fetch("https://jsonplaceholder.typicode.com/posts")
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.log(err));
-}, []);
-```
-
----
-
-### Debounced Search
-
-```javascript
-import React, { useState, useEffect } from "react";
-
-const DebounceSearch = () => {
-  const [text, setText] = useState("");
-  const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setQuery(text);
-      console.log("API Call:", text);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [text]);
-
-  return (
-    <input
-      value={text}
-      onChange={e => setText(e.target.value)}
-      placeholder="Search..."
-    />
-  );
-};
-
-export default DebounceSearch;
-```
-
----
-
-### Filter List with useMemo
-
-```javascript
-import React, { useMemo, useState } from "react";
-
-const names = ["Apple", "Mango", "Banana", "Orange"];
-
-const FilterList = () => {
-  const [search, setSearch] = useState("");
-
-  const filtered = useMemo(() => {
-    return names.filter(n =>
-      n.toLowerCase().includes(search.toLowerCase())
+    const [count, setCount] = useState(0);
+    return (
+        <div>
+            <p>Count: {count}</p>
+            <button onClick={() => setCount(c => c + 1)}>Increment</button>
+            <button onClick={() => setCount(c => c - 1)}>Decrement</button>
+        </div>
     );
-  }, [search]);
-
-  return (
-    <>
-      <input onChange={e => setSearch(e.target.value)} />
-      <ul>
-        {filtered.map(n => (
-          <li key={n}>{n}</li>
-        ))}
-      </ul>
-    </>
-  );
 };
-
-export default FilterList;
 ```
 
----
+### Example 2: API Fetch Hook
+```jsx
+import { useState, useEffect } from "react";
 
-### Controlled Input
+const useFetch = (url) => {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-```javascript
-const Controlled = () => {
-  const [name, setName] = useState("");
+    useEffect(() => {
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => setData(data))
+            .catch((err) => setError(err))
+            .finally(() => setLoading(false));
+    }, [url]);
 
-  return <input value={name} onChange={e => setName(e.target.value)} />;
+    return { data, loading, error };
 };
 ```
 
 ---
 
-### Uncontrolled Input
-
-```javascript
-import { useRef } from "react";
-
-const Uncontrolled = () => {
-  const inputRef = useRef(null);
-
-  const submit = () => alert(inputRef.current?.value);
-
-  return (
-    <>
-      <input ref={inputRef} />
-      <button onClick={submit}>Submit</button>
-    </>
-  );
-};
-```
-
----
-
-### Protected Route
-
-```javascript
-import { Navigate } from "react-router-dom";
-
-const ProtectedRoute = ({ isAuth, children }) => {
-  if (!isAuth) return <Navigate to="/login" />;
-  return children;
-};
-```
-
----
-
-### Prevent Unnecessary Re-render with React.memo
-
-```javascript
-const Child = React.memo(({ value }) => {
-  console.log("Rendered");
-  return <p>{value}</p>;
-});
-```
-
----
-
-### Virtualization Example (10,000 Rows)
-
-```javascript
-import { FixedSizeList as List } from "react-window";
-
-const BigList = () => (
-  <List height={400} itemCount={10000} itemSize={40} width={300}>
-    {({ index, style }) => (
-      <div style={style}>Row {index}</div>
-    )}
-  </List>
-);
-```
-
----
-
-### Redux Toolkit Basic Setup
-
-```javascript
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-
-const counterSlice = createSlice({
-  name: "counter",
-  initialState: { value: 0 },
-  reducers: {
-    increment: state => { state.value++; }
-  }
-});
-
-export const { increment } = counterSlice.actions;
-
-export const store = configureStore({
-  reducer: { counter: counterSlice.reducer }
-});
-```
-
----
-
-### JWT Token Handling (Front-End)
-
-```javascript
-localStorage.setItem("token", response.data.accessToken);
-
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
-  return config;
-});
-```
-
----
-
-### Lazy Loading Component
-
-```javascript
-import React, { Suspense } from "react";
-
-const LazyComp = React.lazy(() => import("./Profile"));
-
-function App() {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <LazyComp />
-    </Suspense>
-  );
-}
-```
-
----
-
-### Error Boundary
-
-```javascript
-class ErrorBoundary extends React.Component {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) return <h2>Something went wrong</h2>;
-    return this.props.children;
-  }
-}
-```
-
----
-
-### useCallback Interview Example
-
-```javascript
-const handleClick = useCallback(() => {
-  console.log("Clicked");
-}, []);
-```
-
----
-
-### useReducer Interview Example
-
-```javascript
-const reducer = (state, action) => {
-  if (action.type === "INC") return state + 1;
-  return state;
-};
-
-const [count, dispatch] = useReducer(reducer, 0);
-```
-
----
-
-## Interview Tips
-
-1. Always ask clarifying questions before answering
-2. Provide real-world examples for each concept
-3. Show code examples when applicable
-4. Explain both the problem and solution
-5. Mention performance implications
-6. Discuss trade-offs and best practices
-7. Stay updated with latest React features
-8. Practice coding problems regularly
-9. Understand concepts deeply, not just memorize
-10. Be ready to explain your design decisions
-
----
-
-**Good luck with your React interviews!**
