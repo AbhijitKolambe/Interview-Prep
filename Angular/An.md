@@ -720,3 +720,1485 @@ ngOnDestroy() {
 7. `ngAfterViewInit()`
 8. `ngAfterViewChecked()`
 9. `ngOnDestroy()`
+
+## 14. Data must be loaded before the page opens. How will you achieve this?
+
+If data must be loaded before the page opens, I will use Angular Route Resolver (Resolve Guard).
+Resolver ensures API call completes before route activates, so the component loads with ready data and avoids blank UI.
+
+### Best Approach: Route Resolver
+
+**Step 1: Create Resolver**
+```typescript
+import { Injectable } from '@angular/core';
+import { Resolve } from '@angular/router';
+import { Observable } from 'rxjs';
+import { UserService } from './user.service';
+
+@Injectable({ providedIn: 'root' })
+export class UserResolver implements Resolve<any> {
+  constructor(private userService: UserService) {}
+
+  resolve(): Observable<any> {
+    return this.userService.getUsers();
+  }
+}
+```
+
+**Step 2: Use Resolver in Routing**
+```typescript
+{
+  path: 'users',
+  component: UsersComponent,
+  resolve: { usersData: UserResolver }
+}
+```
+
+**Step 3: Access Data in Component**
+```typescript
+import { ActivatedRoute } from '@angular/router';
+
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+  this.users = this.route.snapshot.data['usersData'];
+}
+```
+
+**Interview Line (Simple)**
+
+I use Angular Resolver so route loads only after required API data is ready, ensuring better UX and no empty page flicker.
+
+## 15. How does an Error Interceptor work internally?
+
+**Answer:**
+
+An Error Interceptor is an Angular HttpInterceptor that sits between the component/service and the HttpClient request pipeline.
+
+**Internally what happens:**
+
+1. Component calls http.get()
+2. Request passes through all interceptors (request phase)
+3. Then request goes to server
+4. Response comes back through interceptors again (response phase)
+5. Error interceptor catches errors using RxJS catchError()
+
+**Example:**
+```typescript
+import { Injectable } from '@angular/core';
+import {
+  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+@Injectable()
+export class ErrorInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return next.handle(req).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // global handling
+        if (error.status === 401) {
+          // logout / redirect
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+}
+```
+
+**Interview line:**
+
+Error interceptor centralizes error handling for all API calls instead of repeating logic in every service.
+
+## 16. An API call fails randomly. How will you handle retries and errors?
+
+**Answer:**
+
+If the API fails randomly due to network issue / timeout / 5xx, I use RxJS retry strategy with a limit + delay.
+
+**Best practice:**
+
+- Retry only for retryable errors:
+  - 0 (network)
+  - 500, 502, 503, 504
+
+- Don't retry for:
+  - 400 validation errors
+  - 401 unauthorized (token issue)
+
+**Example:**
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { retry, catchError, throwError, timer } from 'rxjs';
+
+getData() {
+  return this.http.get('/api/data').pipe(
+    retry({
+      count: 3,
+      delay: (error, retryCount) => {
+        // retry only for server/network errors
+        if ([0, 500, 502, 503, 504].includes(error.status)) {
+          return timer(retryCount * 1000); // 1s, 2s, 3s
+        }
+        return throwError(() => error);
+      }
+    }),
+    catchError(err => {
+      // show toast / fallback UI / log to monitoring
+      return throwError(() => err);
+    })
+  );
+}
+```
+
+**Interview line:**
+
+I retry limited times with backoff for network/5xx, and for final failure I show proper message + log it.
+
+## 17. You need to attach an authorization token to every API request. How will you do it?
+
+**Answer:**
+
+I use an Auth Interceptor to automatically attach the token in request headers.
+This avoids adding headers manually in every API call.
+
+**Example:**
+```typescript
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const authReq = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+      return next.handle(authReq);
+    }
+
+    return next.handle(req);
+  }
+}
+```
+
+**Register Interceptor:**
+```typescript
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+]
+```
+
+**Interview line:**
+
+Interceptors are best for token injection because its centralized and consistent across all APIs.
+
+## 18. How do you cancel an HTTP request in Angular?
+
+**Answer:**
+
+Angular HTTP requests are Observable-based, so we can cancel them by unsubscribing.
+
+**Common ways:**
+
+### Unsubscribe using Subject (takeUntil)
+```typescript
+import { Subject, takeUntil } from 'rxjs';
+
+destroy$ = new Subject<void>();
+
+ngOnInit() {
+  this.http.get('/api/users')
+    .pipe(takeUntil(this.destroy$))
+    .subscribe();
+}
+
+ngOnDestroy() {
+  this.destroy$.next();
+  this.destroy$.complete();
+}
+```
+
+## 19. Cancel previous request (Search API)
+
+Use switchMap() so old request auto-cancels:
+
+```typescript
+this.searchInput.valueChanges.pipe(
+  switchMap(value => this.http.get(`/api/search?q=${value}`))
+).subscribe();
+```
+
+**Interview line:**
+
+I cancel requests using takeUntil or switchMap to avoid memory leaks and outdated API responses.
+
+## 20. How do you handle CORS errors in an Angular application?
+
+**Answer:**
+
+CORS is not an Angular issue, it is a browser security restriction.
+So it must be fixed on the backend server, not from frontend.
+
+**What I do:**
+
+**Fix on backend:**
+
+- Allow origin: Access-Control-Allow-Origin
+- Allow methods: GET, POST, PUT...
+- Allow headers: Authorization, Content-Type
+- Handle preflight OPTIONS
+
+**For local development:**
+
+Use Angular proxy config:
+
+**proxy.conf.json**
+```json
+{
+  "/api": {
+    "target": "https://backend.com",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+
+**Run:**
+```bash
+ng serve --proxy-config proxy.conf.json
+```
+
+**Interview line:**
+
+CORS must be solved at backend; for dev we use Angular proxy to bypass browser restriction.
+
+## 21. When should you implement custom HTTP interceptors?
+
+**Answer:**
+
+I implement interceptors when I need common behavior for all API calls.
+
+**Common real-world use cases:**
+
+- Attach auth token / refresh token
+- Global error handling (401, 403, 500)
+- Logging request/response time
+- Show/hide global loader
+- Add common headers (Content-Type, Accept)
+- API caching for GET requests
+- Modify request URL (base URL / versioning)
+
+**Interview line:**
+
+Interceptors are best for cross-cutting concerns like auth, error handling, loader, and logging.
+
+## 22. You need dynamic form fields (add/remove). How will you implement this?
+
+**Answer:**
+
+For dynamic fields like add/remove rows, I use FormArray in Reactive Forms.
+FormArray is designed for handling lists of controls/groups dynamically.
+
+### Example: Add/Remove Fields using FormArray
+
+**TS**
+
+```typescript
+import { FormBuilder, FormArray, Validators } from '@angular/forms';
+
+constructor(private fb: FormBuilder) {}
+
+form = this.fb.group({
+  skills: this.fb.array([])
+});
+
+get skills(): FormArray {
+  return this.form.get('skills') as FormArray;
+}
+
+addSkill() {
+  this.skills.push(this.fb.control('', Validators.required));
+}
+
+removeSkill(index: number) {
+  this.skills.removeAt(index);
+}
+```
+
+**HTML**
+
+```html
+<form [formGroup]="form">
+  <div formArrayName="skills">
+    <div *ngFor="let skill of skills.controls; let i=index">
+      <input [formControlName]="i" placeholder="Enter skill" />
+      <button type="button" (click)="removeSkill(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addSkill()">Add Skill</button>
+</form>
+```
+
+### This is used in real projects for:
+
+- Add multiple phone numbers
+- Add multiple addresses
+- Add products in invoice
+- Add education/experience blocks
+
+**Interview line:**
+
+For add/remove fields I use FormArray because it supports dynamic controls and validations cleanly.
+
+## 23. How do you apply custom validation across multiple form controls?
+
+**Answer:**
+
+For validation across multiple controls (example: password & confirm password, date range, min/max) I use a custom validator at FormGroup level.
+
+### Example: Password Match Validator (Group Validation)
+
+**TS**
+
+```typescript
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
+export function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+  const password = group.get('password')?.value;
+  const confirmPassword = group.get('confirmPassword')?.value;
+
+  if (!password || !confirmPassword) return null;
+
+  return password === confirmPassword ? null : { passwordMismatch: true };
+}
+```
+
+**Apply validator to FormGroup**
+```typescript
+form = this.fb.group({
+  password: ['', [Validators.required, Validators.minLength(6)]],
+  confirmPassword: ['', Validators.required]
+}, { validators: passwordMatchValidator });
+```
+
+**HTML Error**
+```html
+<div *ngIf="form.errors?.['passwordMismatch']">
+  Password and Confirm Password must match
+</div>
+```
+
+**Interview line:**
+
+For cross-field validation I use group-level custom validators, because single control validators can't compare values.
+
+## 24. How will you show validation errors only after form submission?
+
+**Answer:**
+
+I usually control this using a submitted flag.
+Errors should display only when:
+- user clicked submit OR
+- field is touched/dirty (optional)
+
+### Best Practice Approach
+
+**TS**
+
+```typescript
+submitted = false;
+
+onSubmit() {
+  this.submitted = true;
+
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
+  }
+
+  // API call here
+}
+```
+
+**HTML (Show error only after submit)**
+```html
+<input formControlName="email" placeholder="Email" />
+
+<div *ngIf="submitted && form.get('email')?.invalid">
+  <small *ngIf="form.get('email')?.errors?.['required']">Email is required</small>
+  <small *ngIf="form.get('email')?.errors?.['email']">Enter valid email</small>
+</div>
+```
+
+**Interview line:**
+
+I use a submitted flag + markAllAsTouched() so user sees validation messages only after clicking submit.
+
+## 25. You have multiple API calls that depend on each other. How will you handle them?
+
+**Answer:**
+
+If API calls are dependent (2nd call needs output of 1st), I use switchMap / concatMap so the next API runs only after previous succeeds.
+
+### Example (Dependent Calls)
+
+Scenario: Get user → then get user orders
+
+```typescript
+this.userService.getUserById(id).pipe(
+  switchMap(user => this.orderService.getOrdersByUserId(user.id))
+).subscribe({
+  next: orders => console.log(orders),
+  error: err => console.log(err)
+});
+```
+
+**When I use which:**
+
+- switchMap → latest request matters (ex: route change)
+- concatMap → must maintain order (ex: step-by-step operations)
+
+**If APIs are independent (run parallel):**
+
+Use forkJoin
+
+```typescript
+forkJoin({
+  profile: this.userService.getProfile(),
+  dashboard: this.dashboardService.getData()
+}).subscribe(res => {
+  console.log(res.profile, res.dashboard);
+});
+```
+
+**Interview line:**
+
+For dependent calls I use switchMap/concatMap, for parallel calls I use forkJoin.
+
+## 26. You want to avoid multiple API calls on every keystroke. What will you use?
+
+**Answer:**
+
+For search inputs, I use:
+- debounceTime() → wait user to stop typing
+- distinctUntilChanged() → ignore same value
+- switchMap() → cancel previous request
+
+### Example (Best Search Pattern)
+```typescript
+this.searchControl.valueChanges.pipe(
+  debounceTime(400),
+  distinctUntilChanged(),
+  switchMap(value => this.api.search(value))
+).subscribe(results => {
+  this.data = results;
+});
+```
+
+**Interview line:**
+
+I use debounceTime + distinctUntilChanged + switchMap to prevent unnecessary API calls and cancel old requests.
+
+## 27. What is the difference between switchMap and mergeMap in a real scenario?
+
+**Answer (Real world):**
+
+### switchMap (Cancels previous request)
+
+Used when only latest response matters
+- Example: Search suggestions, typeahead, route changes
+
+```typescript
+valueChanges.pipe(
+  switchMap(text => this.api.search(text))
+)
+```
+
+If user types quickly, old API calls get cancelled and only latest is processed.
+
+### mergeMap (Runs all requests in parallel)
+
+Used when you want all requests to complete
+- Example: Upload multiple files, call API for each item
+
+```typescript
+from(files).pipe(
+  mergeMap(file => this.api.upload(file))
+)
+```
+
+It will not cancel previous calls, all run concurrently.
+
+**Simple Interview Summary:**
+
+- switchMap → latest wins, cancels previous
+- mergeMap → all run, no cancellation, parallel
+
+## 28. What will you do if an observable throws an error?
+
+**Answer:**
+
+If an observable throws error, it stops the stream unless we handle it.
+So I use catchError() to handle errors properly.
+
+### Common ways I handle it:
+
+**1. Handle error and show message**
+```typescript
+this.api.getData().pipe(
+  catchError(err => {
+    this.toast.error("Something went wrong");
+    return throwError(() => err);
+  })
+).subscribe();
+```
+
+**2. Return fallback value (so UI doesn't break)**
+```typescript
+this.api.getData().pipe(
+  catchError(err => of([])) // fallback empty array
+).subscribe(data => {
+  this.list = data;
+});
+```
+
+**3. Retry if temporary failure**
+```typescript
+this.api.getData().pipe(
+  retry(2),
+  catchError(err => of(null))
+).subscribe();
+```
+
+**Interview line:**
+
+I handle observable errors using catchError, sometimes retry for temporary failures, or return fallback values to keep UI stable.
+
+## 29. When would a service be enough instead of NgRx?
+
+**Answer:**
+
+A normal Angular Service + RxJS (BehaviorSubject/ReplaySubject) is enough when the app state is small/medium, and you don't need heavy store features.
+
+### Service is enough when:
+
+- State is simple (ex: user profile, theme, selected tab)
+- Few components need the data
+- No complex side effects
+- No requirement for time-travel debugging
+- Team wants fast development and less boilerplate
+
+**Example:**
+
+- Logged-in user info
+- Cart count badge
+- Filter selection
+- UI state (sidebar open/close)
+
+**Interview line:**
+
+If state is limited and doesn't need actions/reducers/effects, I prefer service + RxJS because it's simpler and faster to maintain.
+
+## 30. How will you maintain application state after page refresh?
+
+**Answer:**
+
+On refresh, memory state (service/NgRx store) resets.
+So I persist important state using storage and rehydrate it when app loads.
+
+### Common ways:
+
+**1. LocalStorage / SessionStorage**
+
+Store token, user info, settings, small data
+
+```typescript
+localStorage.setItem('user', JSON.stringify(user));
+```
+
+On app init:
+
+```typescript
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+```
+
+**2. NgRx Store Persistence**
+
+Use libraries like:
+
+- ngrx-store-localstorage (persist store slices)
+
+**3. Backend as source of truth**
+
+After refresh:
+
+- token from storage
+- call API /me to get user + permissions again
+
+**Interview line:**
+
+I persist required state in localStorage/sessionStorage and restore it on app init. For secure/critical state I re-fetch from backend.
+
+## 31. How do you share state between lazy-loaded modules?
+
+**Answer:**
+
+To share state between lazy-loaded modules, I keep the state in a singleton service provided at root, or use NgRx store at app level.
+
+### Best way: Shared Service in root
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AppStateService {
+  private dataSubject = new BehaviorSubject<any>(null);
+  data$ = this.dataSubject.asObservable();
+
+  setData(data: any) {
+    this.dataSubject.next(data);
+  }
+}
+```
+
+Now any lazy module component can subscribe to data$.
+
+**Important Note:**
+
+- Don't provide the same service inside lazy module providers because it creates multiple instances, and state won't be shared.
+
+**If app is big:**
+
+- Use NgRx Store globally (AppModule/root) Lazy modules can just select from store.
+
+**Interview line:**
+
+To share state across lazy-loaded modules I use root-level singleton service or NgRx store. I avoid providing the service inside lazy modules to prevent multiple instances.
+
+## 32. How will you prevent XSS attacks in Angular?
+
+**Answer:**
+
+XSS happens when attacker injects malicious script into UI (example: `<script>alert()</script>`).
+In Angular, I prevent XSS by:
+
+- Never using [innerHTML] with untrusted content
+- Use Angular data binding like {{value}} because Angular auto-escapes it
+- Validate + sanitize user input on backend also
+- Avoid directly manipulating DOM (document.getElementById, element.innerHTML)
+- Use Content Security Policy (CSP) in production
+- If HTML must be shown, sanitize it properly
+
+**Interview line:**
+
+Angular interpolation is safe by default, but risky areas are innerHTML and bypassing sanitization.
+
+## 33. Where will you store JWT tokens securely?
+
+**Answer:**
+
+Best secure approach is storing JWT in HttpOnly Secure cookies, because JavaScript cannot access them → reduces XSS token theft.
+
+**Options:**
+
+### HttpOnly Cookie (Most secure)
+
+- Not accessible from JS
+- Works well with backend session style
+
+### localStorage / sessionStorage (Less secure)
+
+- Easy to implement
+- But if XSS happens, token can be stolen
+
+**My real-world approach:**
+
+- If app is security-sensitive → HttpOnly cookie
+- If only frontend handles auth → store in memory + refresh token strategy
+
+**Interview line:**
+
+Most secure storage is HttpOnly cookie; localStorage is simpler but vulnerable to XSS.
+
+## 34. How do you protect routes from unauthorized access?
+
+**Answer:**
+
+I protect routes using Route Guards (CanActivate, CanMatch) and check auth state/token.
+
+**Example (Auth Guard)**
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AuthGuard {
+  constructor(private router: Router, private auth: AuthService) {}
+
+  canActivate(): boolean {
+    if (this.auth.isLoggedIn()) return true;
+
+    this.router.navigate(['/login']);
+    return false;
+  }
+}
+```
+
+**Apply in routes**
+```typescript
+{
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [AuthGuard]
+}
+```
+
+**Interview line:**
+
+I use guards to block unauthorized routes and redirect to login.
+
+## 35. How does Angular provide security against XSS attacks?
+
+**Answer:**
+
+Angular provides XSS protection mainly through automatic sanitization + escaping.
+
+**Angular protects by:**
+
+- Escapes values in interpolation: `{{ userInput }}` - It converts unsafe characters into safe text.
+
+- Sanitizes dangerous values for:
+  - [innerHTML]
+  - URLs
+  - styles
+  - resource URLs
+
+**Interview line:**
+
+Angular automatically sanitizes HTML, URLs, and styles, so script injection doesn't execute easily.
+
+## 36. Explain CSRF protection in Angular.
+
+**Answer:**
+
+CSRF happens when attacker tricks a logged-in user's browser to send requests to a trusted site (cookies auto attached).
+
+**Angular CSRF Protection:**
+
+Angular supports XSRF token mechanism:
+
+1. Backend sends an XSRF token cookie
+2. Angular reads it and sends it in a header (example: X-XSRF-TOKEN)
+3. Backend verifies header token matches cookie token
+
+Angular does this automatically with HttpClient if cookie name matches defaults.
+
+**Interview line:**
+
+CSRF is mainly for cookie-based auth; Angular sends XSRF token header automatically when configured.
+
+## 37. When would you use DomSanitizer and why should it be used cautiously?
+
+**Answer:**
+
+I use DomSanitizer only when I must render trusted HTML or trusted URLs, like:
+
+- rendering HTML from CMS
+- embedding safe iframe URLs
+- showing formatted rich text
+
+**Why cautious?**
+
+Because methods like:
+- `bypassSecurityTrustHtml()`
+- `bypassSecurityTrustResourceUrl()`
+
+Tell Angular: trust this content. So if input is not trusted, it can cause XSS.
+
+**Interview line:**
+
+DomSanitizer bypass methods can open security holes, so I use them only for trusted backend-generated content.
+
+## 38. What's the difference between storing tokens in localStorage vs HttpOnly cookies?
+
+### localStorage
+
+**Pros:**
+- Easy to implement
+- Token accessible anywhere in app
+
+**Cons:**
+- Vulnerable to XSS (JS can read it)
+- Manual attach token in headers
+
+### HttpOnly Cookies
+
+**Pros:**
+- Not accessible by JS → safer against XSS
+- Automatically sent with requests
+
+**Cons:**
+- Need CSRF protection (because cookies auto attach)
+- Backend setup required (SameSite, Secure, HttpOnly)
+
+**Interview conclusion line:**
+
+localStorage is simpler but XSS-prone; HttpOnly cookies are more secure but need CSRF handling.
+
+## 39. How will you implement global error handling?
+
+**Answer:**
+
+In Angular, for global runtime error handling (UI errors, JS exceptions, template errors), I implement a GlobalErrorHandler using Angular's built-in ErrorHandler.
+
+### Steps:
+
+1. Create custom error handler
+2. Register it in providers
+3. Show user-friendly message + log to server
+
+**Example:**
+```typescript
+import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  constructor(private injector: Injector) {}
+
+  handleError(error: any): void {
+    const http = this.injector.get(HttpClient);
+
+    console.error('Global Error:', error);
+
+    // log to server
+    http.post('/api/log-error', {
+      message: error?.message || error.toString(),
+      stack: error?.stack || null
+    }).subscribe();
+
+    // optional: show toast
+    // this.injector.get(ToastrService).error('Something went wrong');
+  }
+}
+```
+
+**Register it:**
+```typescript
+providers: [
+  { provide: ErrorHandler, useClass: GlobalErrorHandler }
+]
+```
+
+**Interview line:**
+
+I use Angular ErrorHandler for runtime errors and interceptors for API errors.
+
+## 40. How do you log frontend errors to a server?
+
+**Answer:**
+
+I log errors using:
+- GlobalErrorHandler for runtime errors
+- HttpInterceptor for API errors
+
+Then send logs to backend with details like:
+
+- error message
+- stack trace
+- URL
+- user info (if allowed)
+- browser/device
+
+**Example payload:**
+```typescript
+http.post('/api/log-error', {
+  message,
+  stack,
+  route: window.location.href,
+  time: new Date()
+});
+```
+
+**In real projects I use tools:**
+
+- Sentry
+- Datadog RUM
+- New Relic
+- Firebase Crashlytics / Performance
+
+**Interview line:**
+
+I send structured logs to server or use Sentry for production error tracking.
+
+## 41. What's the difference between handling runtime errors vs API errors?
+
+### Runtime Errors
+
+Happen in frontend code:
+
+- undefined access
+- template binding errors
+- JS exceptions
+- component crashes
+
+**Handled using:**
+- ErrorHandler
+- try/catch (rare)
+- error boundary-like patterns
+
+### API Errors
+
+Happen during HTTP calls:
+
+- 401, 403, 404, 500
+- timeout / network failure
+
+**Handled using:**
+- HttpInterceptor
+- catchError() in service
+- retry logic
+
+**Interview line:**
+
+Runtime errors are app code issues handled by ErrorHandler; API errors are server/network issues handled by interceptors + RxJS.
+
+## 42. How do you debug a specific Angular component?
+
+**Answer:**
+
+I debug a component by checking:
+
+- Inputs data coming correctly or not
+- Lifecycle hooks (ngOnInit, ngOnChanges)
+- Template bindings
+- API subscription
+- Change detection issues
+- Console + breakpoints
+
+**What I do:**
+
+- Put console.log() in:
+  - ngOnInit()
+  - ngOnChanges()
+  - subscribe callback
+
+- Use Chrome DevTools:
+  - Sources → breakpoints
+  - Network → API response
+  - Console → errors
+
+**Interview line:**
+
+I debug component by verifying inputs, lifecycle, API response, and template binding step-by-step.
+
+## 43. What tools do you use for debugging (Chrome DevTools, Angular DevTools)?
+
+**Answer:**
+
+### Chrome DevTools
+
+- Console → errors/logs
+- Network → API calls + headers + response
+- Sources → breakpoints, step-through
+- Performance → slow rendering / long tasks
+- Application → localStorage/session/cookies
+
+### Angular DevTools
+
+- Inspect component tree
+- Check @Input values
+- Detect change detection runs
+- View router state (helpful)
+- Debug performance of components
+
+**Interview line:**
+
+Chrome DevTools for network/runtime debugging, Angular DevTools for component tree + change detection debugging.
+
+## 44. How would you debug a component that's not rendering data correctly?
+
+**Answer (Practical steps):**
+
+If UI is not showing data, I debug in this order:
+
+**Step 1: Check API response**
+
+- Open Network tab
+- Verify response is correct and not empty
+- Check status code (200/401/500)
+
+**Step 2: Check subscription is running**
+```typescript
+this.api.getData().subscribe(res => {
+  console.log("API Data:", res);
+  this.data = res;
+});
+```
+
+**Step 3: Check template binding**
+
+Example: if data is object but used as array in HTML → it won't render.
+
+**Step 4: Check async issues**
+
+If data comes async, use safe navigation:
+
+```html
+{{ user?.name }}
+```
+
+**Step 5: Check OnPush change detection**
+
+If component uses OnPush and data mutated, UI won't update.
+
+Fix by:
+- updating reference (immutable) `this.data = [...this.data];`
+- or `ChangeDetectorRef.markForCheck()`
+
+**Step 6: Check *ngIf conditions**
+
+Sometimes UI hidden due to wrong condition:
+
+```html
+<div *ngIf="data?.length > 0">...</div>
+```
+
+**Step 7: Check errors in console**
+
+Many times one template error stops rendering.
+
+**Interview line:**
+
+I check API → subscription → binding → OnPush/change detection → ngIf → console errors. This gives quick root cause.
+
+## 45. How do you plan and execute an Angular migration across major versions?
+
+**Answer (Interview Style):**
+
+When migrating Angular across major versions, I follow a step-by-step upgrade plan to avoid breaking the application.
+
+### My migration plan:
+
+**1. Check current state**
+
+- Angular version, Node version, TypeScript version
+- Check dependencies + third-party libraries
+
+**2. Read official Angular update guide**
+
+- Use Angular Update Guide for recommended path
+
+**3. Upgrade gradually (major version by major version)**
+
+Example: 9 → 10 → 11 → 12 → 13
+This reduces risk instead of jumping directly.
+
+**4. Run Angular CLI update**
+
+```bash
+ng update @angular/core @angular/cli
+```
+
+**5. Fix build issues**
+
+- TypeScript errors
+- RxJS changes
+- Deprecations
+
+**6. Run unit + e2e tests**
+
+```bash
+ng test
+ng e2e
+```
+
+**7. Manual regression testing**
+
+- Login flows
+- Critical pages
+- Forms + payments
+
+**8. Deploy to staging first**
+
+- Monitor errors/logs
+- Then release to production
+
+**Interview line:**
+
+I upgrade version-by-version, validate dependencies, run tests, and do staging rollout to ensure smooth migration.
+
+## 46. What are the key breaking changes from Angular 9 to Angular 13?
+
+**Answer (High-level but interview relevant):**
+
+Angular 9 to 13 includes multiple major updates mainly around Ivy, TypeScript, and Node support.
+
+### Key breaking changes (common ones):
+
+**1. Ivy becomes default (Angular 9)**
+
+- Better build + faster compilation
+- Some libraries not compatible initially
+
+**2. TypeScript version upgrades**
+
+- Angular 9 uses older TS, Angular 13 requires newer TS
+- So many TS strict errors may appear after upgrade.
+
+**3. Node.js version requirements changed**
+
+- Angular 13 requires newer Node version
+- Old Node versions stop working.
+
+**4. View Engine support removed (Angular 13)**
+
+- Angular 13 fully relies on Ivy
+- Any old libraries built only for View Engine will break
+
+**5. RxJS / build changes**
+
+- RxJS updates may affect imports/operators usage
+- Build pipeline became faster and stricter
+
+**Interview line:**
+
+Major changes from 9 to 13 are Ivy adoption, removal of View Engine, TypeScript/Node upgrades, and stricter builds.
+
+## 47. How do you handle third-party library incompatibilities during migration?
+
+**Answer:**
+
+This is a very common issue. My approach:
+
+### Steps I follow:
+
+- Check library compatibility (verify library supports the new Angular version)
+- Upgrade the library version: `npm i library-name@latest`
+- Replace unsupported libraries if not maintained, use better alternatives
+  - Example: old UI libs → Angular Material / PrimeNG
+  - Example: old chart libs → ngx-charts / chart.js wrapper
+- Temporary workaround if library breaks build but needed urgently:
+  - Use compatible older Angular version temporarily
+  - Plan replacement in next sprint
+- Use ngcc (older migrations) - In older versions Angular compatibility compiler helped, but in Angular 13+ Ivy is default.
+
+**Interview line:**
+
+I handle incompatible libraries by upgrading them first; if not supported, I replace them with maintained alternatives.
+
+## 48. What's your testing strategy after a major Angular upgrade?
+
+**Answer:**
+
+After upgrade, I follow a layered testing strategy:
+
+### Testing strategy:
+
+- **Unit Testing (Jasmine/Karma / Jest)**
+  - Components, services, pipes
+  - `ng test`
+
+- **Integration testing**
+  - Feature flows: login, search, forms, dashboard
+
+- **E2E testing (Cypress / Protractor older apps)**
+  - Full UI journey tests
+  - `ng e2e`
+
+- **Manual QA regression**
+  - Most critical user flows
+
+- **Cross-browser testing**
+
+- **Performance testing**
+  - Lighthouse score check
+  - Large list screens, lazy loaded modules
+
+**Interview line:**
+
+I run unit + e2e tests, do regression testing on critical flows, and verify performance after upgrade.
+
+## 49. How do you ensure no regressions were introduced?
+
+**Answer:**
+
+To ensure no regressions:
+
+### Steps I do:
+
+- Run complete automated test suite (Unit + e2e)
+- Compare key screens before & after
+- UI snapshot comparison (if available)
+- Verify core features
+- Monitor runtime errors (Use tools like Sentry in staging/production)
+- Check bundle size + performance (Ensure upgrade didn't increase load time)
+- Feature flag / phased rollout:
+  - Deploy to staging → UAT → production
+  - Release in small batches if possible
+- Code review + checklist:
+  - Make sure no deprecated code remains
+  - Validate all interceptors/guards working
+
+**Interview line:**
+
+I ensure no regressions using automated tests, staging validation, monitoring tools, and performance checks.
+
+## 50. How do you identify performance bottlenecks in Angular applications? What tools did you use to identify the performance score?
+
+**Answer (Interview Style):**
+
+First I try to understand where the slowness is happening → is it initial load, API delay, change detection, rendering large DOM, or bundle size.
+Then I measure it using browser + Angular tools and optimize step by step.
+
+### Tools I use:
+
+**Chrome DevTools**
+- Performance tab → find long tasks, scripting time, rendering time, layout shifts
+- Network tab → API time, payload size, waterfall
+- Lighthouse → performance score + suggestions
+
+**Angular DevTools**
+- Check change detection cycles
+- Detect components re-rendering unnecessarily
+
+**Web Vitals / Real metrics**
+- LCP, CLS, INP (user experience)
+- Sometimes use Google PageSpeed Insights
+
+### How I identify bottleneck:
+
+- If main thread busy → too much JS / change detection
+- If DOM huge → list rendering issue
+- If bundle heavy → build optimization + lazy load
+- If API slow → caching / pagination / debounce
+
+## 51. How does OnPush change detection impact parent and child components?
+
+**Answer:**
+
+OnPush makes Angular run change detection only when required, instead of checking every time.
+
+### Default Strategy:
+
+Angular checks component when:
+- any event happens
+- async tasks
+- timer / promise
+- input changes
+- basically many triggers
+
+### OnPush Strategy:
+
+Angular checks component only when:
+- @Input reference changes (new object/array reference)
+- event happens inside component
+- async pipe emits
+- manually triggered using markForCheck() or detectChanges()
+
+### Parent → Child impact:
+
+If parent updates an object like this (mutating):
+```typescript
+this.user.name = "new";
+```
+Child will NOT update with OnPush.
+
+But if parent replaces object reference:
+```typescript
+this.user = { ...this.user, name: "new" };
+```
+Child will update.
+
+**Interview line:**
+
+OnPush works best with immutable data patterns and improves performance by reducing unnecessary checks.
+
+## 52. What tools do you use to measure real-world web performance?
+
+**Answer:**
+
+For real-world performance, I prefer field data + user-based metrics, not only Lighthouse.
+
+### Tools:
+
+- Chrome User Experience Report (CrUX)
+- Google PageSpeed Insights (lab + real users data)
+- Web Vitals (LCP, CLS, INP, FCP, TTFB)
+- Firebase Performance Monitoring (if project uses Firebase)
+- Sentry Performance / New Relic / Datadog (in production monitoring)
+- Lighthouse (good for lab testing)
+
+**Interview line:**
+
+Lighthouse is good for testing, but for actual users I trust Web Vitals + monitoring tools.
+
+## 53. An Angular page is very slow when rendering a large list. How will you optimize it?
+
+**Answer:**
+
+If a large list is slow, the main problem is usually too many DOM elements + change detection cost.
+
+### My optimization steps:
+
+**1. Use Virtual Scroll (Best Solution)**
+
+Instead of rendering 5000 rows, render only visible rows.
+
+```html
+<cdk-virtual-scroll-viewport itemSize="50" class="viewport">
+  <div *cdkVirtualFor="let item of items">{{item.name}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+**2. Use trackBy in *ngFor**
+
+Prevents DOM recreation.
+
+```html
+<div *ngFor="let item of items; trackBy: trackById">
+  {{ item.name }}
+</div>
+```
+
+```typescript
+trackById(index: number, item: any) {
+  return item.id;
+}
+```
+
+**3. Use OnPush**
+
+For list item components:
+
+```typescript
+changeDetection: ChangeDetectionStrategy.OnPush
+```
+
+**4. Pagination / Infinite scroll**
+
+Load data in chunks (50/100 at a time)
+
+**5. Reduce heavy template logic**
+
+Avoid calling functions directly inside HTML:
+```html
+{{ getName(item) }}
+```
+Instead compute once in TS.
+
+**6. Use pure pipes / memoization**
+
+For repeated calculations
+
+**7. Optimize images and UI**
+
+- Lazy load images
+- Reduce DOM nesting
+
+**Interview line:**
+
+My first choice is Virtual Scroll + trackBy + OnPush, it gives immediate performance boost.
+
+## 54. When would you use ChangeDetectionStrategy.OnPush?
+
+**Answer:**
+
+I use OnPush when:
+- component is presentational / reusable UI component
+- data comes from @Input / Observables
+- we follow immutable updates
+- performance is important (large lists, dashboards)
+
+### Example:
+
+- table rows component
+- cards list
+- reusable button/form components
+- heavy UI screens
+
+**Interview line:**
+
+OnPush is perfect when data changes are predictable and we want to avoid extra change detection cycles.
+
+## 55. How does trackBy improve performance in *ngFor?
+
+**Answer:**
+
+Without trackBy, Angular uses object reference and index, so when list changes it may destroy and recreate DOM nodes, even if items are same.
+
+With trackBy, Angular identifies items uniquely using id, so it:
+- updates only changed items
+- keeps existing DOM nodes
+- reduces re-rendering and improves speed
+
+### Example:
+
+```typescript
+trackById(index: number, item: any) {
+  return item.id;
+}
+```
+
+**Interview line:**
+
+trackBy is very useful in lists where data updates frequently (like live data, search, filter).
+
+## 56. How do you reduce Angular bundle size?
+
+**Answer:**
+
+To reduce bundle size, I focus on removing unused code and splitting bundles.
+
+### Best ways:
+
+**1. Lazy loading modules/routes**
+
+Load features only when needed.
+
+```typescript
+{
+  path: 'admin',
+  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+}
+```
+
+**2. Build in production mode**
+```bash
+ng build --configuration production
+```
+
+**3. Remove unused libraries**
+
+Example: avoid importing full lodash
+```typescript
+import debounce from 'lodash/debounce';
+```
+
+**4. Use Angular standalone components (modern apps)**
+
+Reduces module overhead.
+
+**5. Tree-shaking + ESBuild (Angular 16+)**
+
+Angular automatically does this well, but ensure dependencies support it.
+
+**6. Optimize images/fonts**
+
+- use compressed images
+- limit font weights
+- use modern formats (webp)
+
+**7. Use source-map only for debugging**
+
+Disable in production builds.
+
+**8. Analyze bundle**
+
+Use:
+```bash
+ng build --stats-json
+npx webpack-bundle-analyzer dist/**/stats.json
+```
+
+**Interview line:**
+
+Biggest improvements usually come from lazy loading + removing heavy libraries + optimizing assets.
+
