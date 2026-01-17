@@ -721,7 +721,915 @@ ngOnDestroy() {
 8. `ngAfterViewChecked()`
 9. `ngOnDestroy()`
 
-## 14. Data must be loaded before the page opens. How will you achieve this?
+
+
+
+
+## 14. Latest Angular Version (as of Jan 2026)
+
+The latest stable Angular version is Angular 21, released in November 2025.
+
+### Quick Version Timeline (Major Releases)
+
+| Version | Approx Release | Major Focus |
+| :--- | :--- | :--- |
+| Angular 13 | Nov 2021 | Ivy only, modern bundling & CLI upgrades |
+| Angular 14 | Jun 2022 | Standalone components, typed forms |
+| Angular 15 | Nov 2022 | Stable standalone APIs, directive composition |
+| Angular 16 | May 2023 | Signals (reactivity), better SSR/Hydration |
+| Angular 17 | Nov 2023 | New template control flow syntax, improved build tools |
+| Angular 18 | May 2024 | Zoneless experimental change detection, SSR improvements |
+| Angular 19 | Nov 2024 | Standalone by default, new resource APIs, HMR improved |
+| Angular 20 | May 2025 | Continued zoneless & signals integration |
+| Angular 21 | Nov 2025 | Signals forms, zoneless default, ARIA accessibility |
+
+### Detailed Differences (Angular 13 → Angular 21)
+
+#### Angular 13 (What You’re On Now)
+*   **Complete Ivy adoption**: View Engine removed → faster build & smaller bundles.
+*   **No IE11 support**: modern browser features only.
+*   **Persistent build cache**: by default → faster CLI builds.
+*   **Updated TypeScript 4.4 and RxJS 7.4 support**.
+*   **Angular Package Format (APF) updated**: no legacy metadata.
+
+> **Takeaway (for interview):** Angular 13 focused on performance, modern standards, and build system improvements.
+
+#### Angular 14
+*   **Standalone components introduced**: components, directives, and pipes can work without NgModules.
+*   **Typed reactive forms**: stricter type safety in forms.
+
+> **Interview point:** Angular 14 began simplifying architecture and making forms type-safe.
+
+#### Angular 15
+*   **Stable standalone APIs** (fully supported).
+*   **Better directive composition** and cleaner modular patterns.
+
+> **Interview:** You can build Angular apps without NgModules more confidently with Angular 15.
+
+#### Angular 16
+*   **Introduced Signals**: a reactive primitive (alternative to heavy RxJS).
+*   **SSR hydration & improved CLI tooling**: with esbuild/Vite support.
+
+> **Interview:** Signals bring modern reactivity similar to Solid/Vue, making change detection faster.
+
+#### Angular 17
+*   **New control-flow syntax**: in templates (e.g., `@if`, `@for`) for cleaner logic.
+*   **Enhanced build performance** and developer experience.
+
+> **Interview:** Angular’s template language became more expressive and easier to read.
+
+#### Angular 18
+*   **Experimental zoneless change detection** (no zone.js).
+*   **Better SSR** (server-side rendering) and debugging support.
+
+> **Interview:** Zoneless means Angular can stop wrapping every async event for better performance.
+
+#### Angular 19
+*   **Standalone default**: standalone components are default, encouraging modular apps.
+*   **New `resource()` API**: to handle data more naturally.
+*   **Hot Module Replacement (HMR)**: improvements.
+
+> **Interview:** Angular continues to shift away from legacy NgModules and embraces modularity by default.
+
+#### Angular 20
+*   **Further improvements** around zoneless architecture and Signals.
+
+> **Interview:** Angular keeps optimizing reactivity and performance.
+
+#### Angular 21 (Latest Stable)
+*   **Experimental Signal Forms**: reactive forms based on Signals (simpler & cleaner).
+*   **Zoneless by default** for new projects → better change detection.
+*   **Angular ARIA**: accessibility-focused package.
+*   **Vitest integration by default**: replacing Karma for faster tests.
+*   **New AI-friendly CLI tooling (MCP Server)**: integrates LLMs for smarter code assistance.
+
+> **Interview:** Angular 21 moves toward modern reactivity (Signals), zoneless apps, accessibility first, and better developer tooling.
+
+## 15. What is Standalone Component in Angular?
+
+A Standalone Component is an Angular component that does not need to be declared inside any `NgModule` (`AppModule`, `FeatureModule` etc).
+
+Instead, the component becomes self-contained and it directly manages its own dependencies like:
+*   other components
+*   directives (`ngIf`, `ngFor`)
+*   pipes (`date`, `async`)
+*   Angular Material modules
+*   services (via providers)
+
+### Why Standalone Component introduced?
+
+Earlier (Angular 13 and before), every component had to be:
+1.  Created
+2.  Declared in module
+3.  Dependencies imported in module
+4.  Exported if needed
+
+That created too much module boilerplate. So Angular introduced standalone to:
+*   Reduce code
+*   Make app simpler
+*   Make lazy loading easier
+*   Improve performance & build optimization
+*   Make Angular more modern like React/Vue style
+
+### Angular 13 vs Standalone (Difference)
+
+**Angular 13 (Module Based):**
+You must declare component in module:
+
+```typescript
+// app.module.ts
+@NgModule({
+  declarations: [HomeComponent],
+  imports: [BrowserModule, CommonModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+**Standalone Component (No Module Needed):**
+
+```typescript
+// home.component.ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <h2>Home Works!</h2>
+    <p *ngIf="isLoggedIn">Welcome</p>
+  `
+})
+export class HomeComponent {
+  isLoggedIn = true;
+}
+```
+
+> Here `standalone: true` makes it standalone. `imports: [CommonModule]` is required for `*ngIf`, `*ngFor`.
+
+### How Standalone Component Works?
+
+Standalone component directly imports dependencies inside itself.
+
+**Example: Using ngIf and ngFor**
+
+```typescript
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <h3>User List</h3>
+    <ul>
+      <li *ngFor="let user of users">{{user}}</li>
+    </ul>
+  `
+})
+export class UsersComponent {
+  users = ['A', 'B', 'C'];
+}
+```
+
+### Standalone Component Routing (Lazy Loading)
+
+This is a very important interview topic.
+
+**Old way (Module lazy loading):**
+```typescript
+{
+  path: 'admin',
+  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+}
+```
+
+**New Standalone lazy loading:**
+```typescript
+{
+  path: 'admin',
+  loadComponent: () =>
+    import('./admin/admin.component').then(c => c.AdminComponent)
+}
+```
+
+*   Much easier
+*   Faster load
+*   No module needed
+
+### Bootstrapping App without AppModule
+
+In new Angular versions you can start app without `AppModule`.
+
+```typescript
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent);
+```
+
+### How to use Services in Standalone?
+
+You can provide services in:
+
+1.  **Root level (recommended):**
+    ```typescript
+    @Injectable({ providedIn: 'root' })
+    export class UserService {}
+    ```
+
+2.  **Component level:**
+    ```typescript
+    @Component({
+      standalone: true,
+      providers: [UserService]
+    })
+    export class HomeComponent {}
+    ```
+
+### Standalone Component + Angular Material Example
+
+```typescript
+import { MatButtonModule } from '@angular/material/button';
+
+@Component({
+  selector: 'app-btn',
+  standalone: true,
+  imports: [MatButtonModule],
+  template: `<button mat-raised-button>Click</button>`
+})
+export class BtnComponent {}
+```
+
+### Key Benefits (Interview Points)
+*   No NgModules required
+*   Less boilerplate code
+*   Better lazy loading
+*   Easy to maintain large apps
+*   Faster compilation & tree shaking
+*   Dependencies are clear inside component itself
+*   More modern architecture
+
+## 16. What is a Signal in Angular?
+
+A Signal is a special reactive variable that stores a value and notifies Angular automatically when the value changes. So UI updates happen automatically without manual change detection.
+
+**Example:**
+```typescript
+import { signal } from '@angular/core';
+
+count = signal(0);
+
+increment() {
+  this.count.set(this.count() + 1);
+}
+```
+
+**In HTML:**
+```html
+<h1>{{ count() }}</h1>
+<button (click)="increment()">+</button>
+```
+
+> **Important:** In template, signal value is accessed like a function: `count()`
+
+### Why Angular Introduced Signals?
+
+Earlier Angular had mainly:
+*   `@Input()` + `@Output()`
+*   RxJS Observables
+*   Zone.js based change detection
+
+**Problems:**
+*   Too much RxJS for simple state
+*   Hard to manage subscriptions
+*   Performance issues in large apps
+
+**Signals solve:**
+*   Easy state handling
+*   No subscriptions needed
+*   Better performance
+*   Works great with OnPush
+
+### Types of Signals in Angular
+
+**1) Writable Signal**
+
+You can update it directly using `.set()` or `.update()`
+
+```typescript
+name = signal('Abhijit');
+
+changeName() {
+  this.name.set('Rahul');
+}
+
+// .update()
+count.update(v => v + 1);
+```
+
+**2) Computed Signal**
+
+Computed signal depends on other signals. It auto recalculates when dependency changes.
+
+```typescript
+import { computed, signal } from '@angular/core';
+
+price = signal(100);
+qty = signal(2);
+
+total = computed(() => this.price() * this.qty());
+```
+
+**Template:**
+```html
+<p>Total: {{ total() }}</p>
+```
+
+> `computed` is read-only (you cannot set it).
+
+**3) Effect**
+
+Effect runs automatically whenever dependent signals change. Used for side effects like API call, logging, localStorage.
+
+```typescript
+import { effect, signal } from '@angular/core';
+
+count = signal(0);
+
+constructor() {
+  effect(() => {
+    console.log("Count changed:", this.count());
+  });
+}
+```
+
+> `effect()` should not be used for UI display directly. It’s for side operations.
+
+## 17. What is @ViewChild in Angular?
+
+`@ViewChild` is a decorator used to get a reference of an element / directive / component that is present inside the same component’s template (HTML).
+
+It helps when you want to:
+*   Access DOM element (input, div, etc.)
+*   Call methods of a child component
+*   Read template reference variable value
+*   Access Angular directives like NgForm, MatPaginator, etc.
+
+**Example: Access an input element using @ViewChild**
+
+**HTML**
+```html
+<input #myInput type="text" />
+<button (click)="focusInput()">Focus</button>
+```
+
+**TS**
+```typescript
+import { Component, ElementRef, ViewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html'
+})
+export class DemoComponent {
+  @ViewChild('myInput') myInput!: ElementRef;
+
+  focusInput() {
+    this.myInput.nativeElement.focus();
+  }
+}
+```
+
+**When @ViewChild value is available?**
+In `ngAfterViewInit()` lifecycle hook (because view is initialized then).
+
+```typescript
+ngAfterViewInit() {
+  console.log(this.myInput);
+}
+```
+
+## 18. What is @ViewChildren in Angular?
+
+`@ViewChildren` is used when you have multiple elements/components with same selector or template reference variable and you want all references as a list. It returns a `QueryList`.
+
+**Example: Multiple inputs**
+
+**HTML**
+```html
+<input #box type="text" value="One">
+<input #box type="text" value="Two">
+<input #box type="text" value="Three">
+
+<button (click)="printAll()">Print</button>
+```
+
+**TS**
+```typescript
+import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html'
+})
+export class DemoComponent {
+  @ViewChildren('box') boxes!: QueryList<ElementRef>;
+
+  printAll() {
+    this.boxes.forEach((b) => console.log(b.nativeElement.value));
+  }
+}
+```
+
+## 19. How to take reference using Template Variable in Angular?
+
+Template reference variable is created using `#`.
+
+**Example:**
+```html
+<input #username type="text">
+<button (click)="print(username.value)">Print</button>
+```
+
+**TS:**
+```typescript
+print(val: string) {
+  console.log(val);
+}
+```
+
+So template variable is used to:
+*   Get input value
+*   Pass element reference to function
+*   Connect with `@ViewChild` / `@ViewChildren`
+
+## 20. What is a Decorator in Angular?
+
+Decorator is a special TypeScript feature (metadata) used to tell Angular:
+*   What a class is
+*   What a property does
+*   What a method does
+*   How Angular should treat it
+
+Angular uses decorators heavily.
+
+**Common Angular Decorators:**
+*   `@Component()`: Used to create a component
+*   `@NgModule()`: Used to define a module
+*   `@Injectable()`: Used to define service class for dependency injection
+*   `@Input()`: Receive data from parent to child
+*   `@Output()`: Send data from child to parent
+*   `@ViewChild()` / `@ViewChildren()`: Get template reference
+*   `@HostListener()`: Listen events like window scroll
+
+
+## 21. What are Angular Directives?
+
+Angular Directives are used to change the behavior or appearance of DOM elements in Angular.
+
+Angular directives are mainly 3 types:
+
+### 1) Component Directives (Component)
+
+A Component is also a directive with its own:
+*   HTML template
+*   CSS
+*   TS logic
+
+**Example:**
+```typescript
+@Component({
+  selector: 'app-header',
+  template: `<h1>Header</h1>`
+})
+export class HeaderComponent {}
+```
+
+**Usage:**
+```html
+<app-header></app-header>
+```
+
+### 2) Structural Directives
+
+Structural directives change the DOM structure.
+Means they can add/remove elements from UI.
+
+They are written using `*`
+
+**Common Structural Directives**
+
+**a) *ngIf**
+Used to show/hide element based on condition
+
+```html
+<p *ngIf="isLoggedIn">Welcome</p>
+```
+
+**b) *ngFor**
+Used to loop data
+
+```html
+<li *ngFor="let item of items">{{ item }}</li>
+```
+
+**c) *ngSwitch**
+Used for multiple conditions
+
+```html
+<div [ngSwitch]="role">
+  <p *ngSwitchCase="'admin'">Admin</p>
+  <p *ngSwitchCase="'user'">User</p>
+  <p *ngSwitchDefault>Guest</p>
+</div>
+```
+
+> **Important point:** Structural directives work internally using `<ng-template>`.
+
+### 3) Attribute Directives
+
+Attribute directives change the style/behavior of an existing element.
+They do NOT remove/add elements, only modify them.
+
+**Common Attribute Directives**
+
+**a) ngClass**
+Add/remove CSS classes dynamically
+
+```html
+<p [ngClass]="{'active': isActive, 'inactive': !isActive}">
+  Hello
+</p>
+```
+
+**b) ngStyle**
+Apply inline styles dynamically
+
+```html
+<p [ngStyle]="{'color': colorName, 'font-size.px': fontSize}">
+  Styled Text
+</p>
+```
+
+**c) ngModel (Forms)**
+Two-way data binding
+
+```html
+<input [(ngModel)]="name">
+<p>{{ name }}</p>
+```
+
+### Custom Directive in Angular (Interview Important)
+
+**Example: Create a directive to highlight text**
+
+**Command:**
+```bash
+ng generate directive highlight
+```
+
+**highlight.directive.ts**
+```typescript
+import { Directive, ElementRef, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.el.nativeElement.style.backgroundColor = 'yellow';
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+}
+```
+
+**Usage:**
+```html
+<p appHighlight>Hover me</p>
+```
+
+### Difference: Structural vs Attribute Directives (Interview)
+
+| Structural Directives | Attribute Directives |
+| :--- | :--- |
+| Change DOM structure | Change element behavior/style |
+| Add/remove elements | Do not remove/add element |
+| Use `*` symbol | No `*` symbol |
+| Examples: `*ngIf`, `*ngFor` | Examples: `ngClass`, `ngStyle` |
+
+
+## 22. Parent to Child and Child to Parent data handling on click (2-way communication)
+
+You said you have only 2 components: Parent and Child. So how to send data on click?
+
+### Case A: Parent to Child using @Input()
+
+**Parent HTML:**
+```html
+<app-child [userName]="name"></app-child>
+<button (click)="changeName()">Change Name</button>
+```
+
+**Parent TS:**
+```typescript
+name = 'Abhijit';
+
+changeName() {
+  this.name = 'New Name';
+}
+```
+
+**Child TS:**
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<h2>{{ userName }}</h2>`
+})
+export class ChildComponent {
+  @Input() userName!: string;
+}
+```
+
+### Case B: Child to Parent using @Output() and EventEmitter
+
+**Child HTML:**
+```html
+<button (click)="sendData()">Send Data</button>
+```
+
+**Child TS:**
+```typescript
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html'
+})
+export class ChildComponent {
+  @Output() messageEvent = new EventEmitter<string>();
+
+  sendData() {
+    this.messageEvent.emit('Hello Parent, data from Child');
+  }
+}
+```
+
+**Parent HTML:**
+```html
+<app-child (messageEvent)="receiveData($event)"></app-child>
+<p>{{ childMsg }}</p>
+```
+
+**Parent TS:**
+```typescript
+childMsg = '';
+
+receiveData(msg: string) {
+  this.childMsg = msg;
+}
+```
+
+## 23. Angular Subject: Where to subscribe and emit
+
+This is common interview question.
+
+**You subscribe where you need value:**
+In component that wants to receive updates (example: Parent or Child).
+
+**You emit where event happens:**
+On click, API response, input change etc.
+
+## 24. Difference between Subject and BehaviorSubject
+
+### Subject
+*   It is both Observable + Observer.
+*   You can `next()` to emit values.
+*   Subscribers will receive values **only after subscription**.
+*   It does **not** store old value.
+
+**Example:**
+```typescript
+import { Subject } from 'rxjs';
+
+const sub = new Subject<number>();
+
+sub.subscribe(val => console.log('A:', val));
+
+sub.next(1);
+sub.next(2);
+
+sub.subscribe(val => console.log('B:', val));
+
+sub.next(3);
+```
+
+**Output:**
+```
+A: 1
+A: 2
+A: 3
+B: 3
+```
+> Because B subscribed late, it missed 1 and 2.
+
+### BehaviorSubject
+*   It always requires an **initial value**.
+*   It **stores latest value**.
+*   New subscriber immediately gets **last emitted value**.
+
+**Example:**
+```typescript
+import { BehaviorSubject } from 'rxjs';
+
+const bs = new BehaviorSubject<number>(0);
+
+bs.subscribe(val => console.log('A:', val));
+
+bs.next(1);
+
+bs.subscribe(val => console.log('B:', val));
+
+bs.next(2);
+```
+
+**Output:**
+```
+A: 0
+A: 1
+B: 1
+A: 2
+B: 2
+```
+
+**Main Difference in one line:**
+*   **Subject:** no initial value, no last value memory.
+*   **BehaviorSubject:** has initial value, remembers latest value.
+
+## 25. What is ReplaySubject?
+
+`ReplaySubject` stores previous values and replays them to new subscribers. You can control how many values to store using buffer size.
+
+**Example:**
+```typescript
+import { ReplaySubject } from 'rxjs';
+
+const rs = new ReplaySubject<number>(2); // store last 2 values
+
+rs.next(10);
+rs.next(20);
+rs.next(30);
+
+rs.subscribe(val => console.log('New Subscriber:', val));
+```
+
+**Output:**
+```
+New Subscriber: 20
+New Subscriber: 30
+```
+
+**So ReplaySubject is useful when:**
+*   You want new subscribers to get past data also.
+*   You want caching kind of behavior.
+
+## 26. Parent-Child communication using Subject (service based)
+
+Best approach when:
+*   Components are not direct parent-child.
+*   You want shared communication.
+
+**Step 1: Create service**
+```typescript
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private dataSubject = new Subject<string>();
+  data$ = this.dataSubject.asObservable();
+
+  sendData(msg: string) {
+    this.dataSubject.next(msg);
+  }
+}
+```
+
+**Step 2: Emit from Child on click**
+```typescript
+import { Component } from '@angular/core';
+import { DataService } from '../data.service';
+
+@Component({
+  selector: 'app-child',
+  template: `<button (click)="send()">Send</button>`
+})
+export class ChildComponent {
+  constructor(private dataService: DataService) {}
+
+  send() {
+    this.dataService.sendData('Hello from child using Subject');
+  }
+}
+```
+
+**Step 3: Subscribe in Parent**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+
+@Component({
+  selector: 'app-parent',
+  template: `<p>{{ msg }}</p>`
+})
+export class ParentComponent implements OnInit {
+  msg = '';
+
+  constructor(private dataService: DataService) {}
+
+  ngOnInit() {
+    this.dataService.data$.subscribe((res) => {
+      this.msg = res;
+    });
+  }
+}
+```
+
+## 27. Show Even/Odd on Button Click in Angular
+
+**Requirement:**
+*   On click show even numbers
+*   On click show odd numbers
+
+**Example Code:**
+
+**HTML**
+```html
+<button (click)="showEven()">Show Even</button>
+<button (click)="showOdd()">Show Odd</button>
+
+<p>Result: {{ result.join(', ') }}</p>
+```
+
+**TS**
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-even-odd',
+  templateUrl: './even-odd.component.html'
+})
+export class EvenOddComponent {
+  numbers = [1,2,3,4,5,6,7,8,9,10];
+  result: number[] = [];
+
+  showEven() {
+    this.result = this.numbers.filter(n => n % 2 === 0);
+  }
+
+  showOdd() {
+    this.result = this.numbers.filter(n => n % 2 !== 0);
+  }
+}
+```
+
+**Output:**
+*   Show Even → 2, 4, 6, 8, 10
+*   Show Odd → 1, 3, 5, 7, 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 28. Data must be loaded before the page opens. How will you achieve this?
 
 If data must be loaded before the page opens, I will use Angular Route Resolver (Resolve Guard).
 Resolver ensures API call completes before route activates, so the component loads with ready data and avoids blank UI.
@@ -769,7 +1677,7 @@ ngOnInit() {
 
 I use Angular Resolver so route loads only after required API data is ready, ensuring better UX and no empty page flicker.
 
-## 15. How does an Error Interceptor work internally?
+## 29. How does an Error Interceptor work internally?
 
 **Answer:**
 
@@ -812,7 +1720,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
 Error interceptor centralizes error handling for all API calls instead of repeating logic in every service.
 
-## 16. An API call fails randomly. How will you handle retries and errors?
+## 30. An API call fails randomly. How will you handle retries and errors?
 
 **Answer:**
 
@@ -857,7 +1765,7 @@ getData() {
 
 I retry limited times with backoff for network/5xx, and for final failure I show proper message + log it.
 
-## 17. You need to attach an authorization token to every API request. How will you do it?
+## 31. You need to attach an authorization token to every API request. How will you do it?
 
 **Answer:**
 
@@ -894,47 +1802,48 @@ providers: [
 
 Interceptors are best for token injection because its centralized and consistent across all APIs.
 
-## 18. How do you cancel an HTTP request in Angular?
 
-**Answer:**
 
-Angular HTTP requests are Observable-based, so we can cancel them by unsubscribing.
+## 32. Why we need to cancel previous API calls?
 
-**Common ways:**
+In search/autocomplete scenarios, user types fast like:
 
-### Unsubscribe using Subject (takeUntil)
-```typescript
-import { Subject, takeUntil } from 'rxjs';
+a → an → ang → angu → angular
 
-destroy$ = new Subject<void>();
+If we call API for every keystroke:
 
-ngOnInit() {
-  this.http.get('/api/users')
-    .pipe(takeUntil(this.destroy$))
-    .subscribe();
-}
+Multiple HTTP calls run in parallel
 
-ngOnDestroy() {
-  this.destroy$.next();
-  this.destroy$.complete();
-}
-```
+Old response may come late
 
-## 19. Cancel previous request (Search API)
+UI may show wrong/outdated data
 
-Use switchMap() so old request auto-cancels:
+Extra load on backend
 
-```typescript
+Possible memory leaks if subscriptions not handled properly
+
+So we must cancel old request and keep only latest one.
+
+* Best Solution: switchMap() (Auto-cancel old request)
+* Example (Interview Standard Code)
 this.searchInput.valueChanges.pipe(
+  debounceTime(300),
+  distinctUntilChanged(),
   switchMap(value => this.http.get(`/api/search?q=${value}`))
-).subscribe();
-```
+).subscribe(result => {
+  console.log(result);
+});
 
-**Interview line:**
+### What switchMap() does internally?
 
-I cancel requests using takeUntil or switchMap to avoid memory leaks and outdated API responses.
+When a new value comes, switchMap():
+* unsubscribes from previous Observable
+* cancels the previous HTTP request
+* subscribes only to the latest one
 
-## 20. How do you handle CORS errors in an Angular application?
+So only latest request response will be used.
+
+## 33. How do you handle CORS errors in an Angular application?
 
 **Answer:**
 
@@ -974,7 +1883,7 @@ ng serve --proxy-config proxy.conf.json
 
 CORS must be solved at backend; for dev we use Angular proxy to bypass browser restriction.
 
-## 21. When should you implement custom HTTP interceptors?
+## 34. When should you implement custom HTTP interceptors?
 
 **Answer:**
 
@@ -994,7 +1903,7 @@ I implement interceptors when I need common behavior for all API calls.
 
 Interceptors are best for cross-cutting concerns like auth, error handling, loader, and logging.
 
-## 22. You need dynamic form fields (add/remove). How will you implement this?
+## 35. You need dynamic form fields (add/remove). How will you implement this?
 
 **Answer:**
 
@@ -1053,7 +1962,7 @@ removeSkill(index: number) {
 
 For add/remove fields I use FormArray because it supports dynamic controls and validations cleanly.
 
-## 23. How do you apply custom validation across multiple form controls?
+## 36. How do you apply custom validation across multiple form controls?
 
 **Answer:**
 
@@ -1095,7 +2004,7 @@ form = this.fb.group({
 
 For cross-field validation I use group-level custom validators, because single control validators can't compare values.
 
-## 24. How will you show validation errors only after form submission?
+## 37. How will you show validation errors only after form submission?
 
 **Answer:**
 
@@ -1137,7 +2046,7 @@ onSubmit() {
 
 I use a submitted flag + markAllAsTouched() so user sees validation messages only after clicking submit.
 
-## 25. You have multiple API calls that depend on each other. How will you handle them?
+## 38. You have multiple API calls that depend on each other. How will you handle them?
 
 **Answer:**
 
@@ -1178,7 +2087,7 @@ forkJoin({
 
 For dependent calls I use switchMap/concatMap, for parallel calls I use forkJoin.
 
-## 26. You want to avoid multiple API calls on every keystroke. What will you use?
+## 39. You want to avoid multiple API calls on every keystroke. What will you use?
 
 **Answer:**
 
@@ -1202,7 +2111,7 @@ this.searchControl.valueChanges.pipe(
 
 I use debounceTime + distinctUntilChanged + switchMap to prevent unnecessary API calls and cancel old requests.
 
-## 27. What is the difference between switchMap and mergeMap in a real scenario?
+## 40. What is the difference between switchMap and mergeMap in a real scenario?
 
 **Answer (Real world):**
 
@@ -1237,7 +2146,7 @@ It will not cancel previous calls, all run concurrently.
 - switchMap → latest wins, cancels previous
 - mergeMap → all run, no cancellation, parallel
 
-## 28. What will you do if an observable throws an error?
+## 41. What will you do if an observable throws an error?
 
 **Answer:**
 
@@ -1277,7 +2186,7 @@ this.api.getData().pipe(
 
 I handle observable errors using catchError, sometimes retry for temporary failures, or return fallback values to keep UI stable.
 
-## 29. When would a service be enough instead of NgRx?
+## 42. When would a service be enough instead of NgRx?
 
 **Answer:**
 
@@ -1302,7 +2211,7 @@ A normal Angular Service + RxJS (BehaviorSubject/ReplaySubject) is enough when t
 
 If state is limited and doesn't need actions/reducers/effects, I prefer service + RxJS because it's simpler and faster to maintain.
 
-## 30. How will you maintain application state after page refresh?
+## 43. How will you maintain application state after page refresh?
 
 **Answer:**
 
@@ -1342,7 +2251,7 @@ After refresh:
 
 I persist required state in localStorage/sessionStorage and restore it on app init. For secure/critical state I re-fetch from backend.
 
-## 31. How do you share state between lazy-loaded modules?
+## 44. How do you share state between lazy-loaded modules?
 
 **Answer:**
 
@@ -1375,7 +2284,7 @@ Now any lazy module component can subscribe to data$.
 
 To share state across lazy-loaded modules I use root-level singleton service or NgRx store. I avoid providing the service inside lazy modules to prevent multiple instances.
 
-## 32. How will you prevent XSS attacks in Angular?
+## 45. How will you prevent XSS attacks in Angular?
 
 **Answer:**
 
@@ -1393,7 +2302,7 @@ In Angular, I prevent XSS by:
 
 Angular interpolation is safe by default, but risky areas are innerHTML and bypassing sanitization.
 
-## 33. Where will you store JWT tokens securely?
+## 46. Where will you store JWT tokens securely?
 
 **Answer:**
 
@@ -1420,7 +2329,7 @@ Best secure approach is storing JWT in HttpOnly Secure cookies, because JavaScri
 
 Most secure storage is HttpOnly cookie; localStorage is simpler but vulnerable to XSS.
 
-## 34. How do you protect routes from unauthorized access?
+## 47. How do you protect routes from unauthorized access?
 
 **Answer:**
 
@@ -1454,7 +2363,7 @@ export class AuthGuard {
 
 I use guards to block unauthorized routes and redirect to login.
 
-## 35. How does Angular provide security against XSS attacks?
+## 48. How does Angular provide security against XSS attacks?
 
 **Answer:**
 
@@ -1474,7 +2383,7 @@ Angular provides XSS protection mainly through automatic sanitization + escaping
 
 Angular automatically sanitizes HTML, URLs, and styles, so script injection doesn't execute easily.
 
-## 36. Explain CSRF protection in Angular.
+## 49. Explain CSRF protection in Angular.
 
 **Answer:**
 
@@ -1494,7 +2403,7 @@ Angular does this automatically with HttpClient if cookie name matches defaults.
 
 CSRF is mainly for cookie-based auth; Angular sends XSRF token header automatically when configured.
 
-## 37. When would you use DomSanitizer and why should it be used cautiously?
+## 50. When would you use DomSanitizer and why should it be used cautiously?
 
 **Answer:**
 
@@ -1516,7 +2425,7 @@ Tell Angular: trust this content. So if input is not trusted, it can cause XSS.
 
 DomSanitizer bypass methods can open security holes, so I use them only for trusted backend-generated content.
 
-## 38. What's the difference between storing tokens in localStorage vs HttpOnly cookies?
+## 51. What's the difference between storing tokens in localStorage vs HttpOnly cookies?
 
 ### localStorage
 
@@ -1542,7 +2451,7 @@ DomSanitizer bypass methods can open security holes, so I use them only for trus
 
 localStorage is simpler but XSS-prone; HttpOnly cookies are more secure but need CSRF handling.
 
-## 39. How will you implement global error handling?
+## 52. How will you implement global error handling?
 
 **Answer:**
 
@@ -1591,7 +2500,7 @@ providers: [
 
 I use Angular ErrorHandler for runtime errors and interceptors for API errors.
 
-## 40. How do you log frontend errors to a server?
+## 53. How do you log frontend errors to a server?
 
 **Answer:**
 
@@ -1628,7 +2537,7 @@ http.post('/api/log-error', {
 
 I send structured logs to server or use Sentry for production error tracking.
 
-## 41. What's the difference between handling runtime errors vs API errors?
+## 54. What's the difference between handling runtime errors vs API errors?
 
 ### Runtime Errors
 
@@ -1660,7 +2569,7 @@ Happen during HTTP calls:
 
 Runtime errors are app code issues handled by ErrorHandler; API errors are server/network issues handled by interceptors + RxJS.
 
-## 42. How do you debug a specific Angular component?
+## 55. How do you debug a specific Angular component?
 
 **Answer:**
 
@@ -1689,7 +2598,7 @@ I debug a component by checking:
 
 I debug component by verifying inputs, lifecycle, API response, and template binding step-by-step.
 
-## 43. What tools do you use for debugging (Chrome DevTools, Angular DevTools)?
+## 56. What tools do you use for debugging (Chrome DevTools, Angular DevTools)?
 
 **Answer:**
 
@@ -1713,7 +2622,7 @@ I debug component by verifying inputs, lifecycle, API response, and template bin
 
 Chrome DevTools for network/runtime debugging, Angular DevTools for component tree + change detection debugging.
 
-## 44. How would you debug a component that's not rendering data correctly?
+## 57. How would you debug a component that's not rendering data correctly?
 
 **Answer (Practical steps):**
 
@@ -1769,7 +2678,7 @@ Many times one template error stops rendering.
 
 I check API → subscription → binding → OnPush/change detection → ngIf → console errors. This gives quick root cause.
 
-## 45. How do you plan and execute an Angular migration across major versions?
+## 58. How do you plan and execute an Angular migration across major versions?
 
 **Answer (Interview Style):**
 
@@ -1825,7 +2734,7 @@ ng e2e
 
 I upgrade version-by-version, validate dependencies, run tests, and do staging rollout to ensure smooth migration.
 
-## 46. What are the key breaking changes from Angular 9 to Angular 13?
+## 59. What are the key breaking changes from Angular 9 to Angular 13?
 
 **Answer (High-level but interview relevant):**
 
@@ -1862,7 +2771,7 @@ Angular 9 to 13 includes multiple major updates mainly around Ivy, TypeScript, a
 
 Major changes from 9 to 13 are Ivy adoption, removal of View Engine, TypeScript/Node upgrades, and stricter builds.
 
-## 47. How do you handle third-party library incompatibilities during migration?
+## 60. How do you handle third-party library incompatibilities during migration?
 
 **Answer:**
 
@@ -1884,7 +2793,7 @@ This is a very common issue. My approach:
 
 I handle incompatible libraries by upgrading them first; if not supported, I replace them with maintained alternatives.
 
-## 48. What's your testing strategy after a major Angular upgrade?
+## 61. What's your testing strategy after a major Angular upgrade?
 
 **Answer:**
 
@@ -1916,7 +2825,7 @@ After upgrade, I follow a layered testing strategy:
 
 I run unit + e2e tests, do regression testing on critical flows, and verify performance after upgrade.
 
-## 49. How do you ensure no regressions were introduced?
+## 62. How do you ensure no regressions were introduced?
 
 **Answer:**
 
@@ -1941,7 +2850,7 @@ To ensure no regressions:
 
 I ensure no regressions using automated tests, staging validation, monitoring tools, and performance checks.
 
-## 50. How do you identify performance bottlenecks in Angular applications? What tools did you use to identify the performance score?
+## 63. How do you identify performance bottlenecks in Angular applications? What tools did you use to identify the performance score?
 
 **Answer (Interview Style):**
 
@@ -1970,7 +2879,7 @@ Then I measure it using browser + Angular tools and optimize step by step.
 - If bundle heavy → build optimization + lazy load
 - If API slow → caching / pagination / debounce
 
-## 51. How does OnPush change detection impact parent and child components?
+## 64. How does OnPush change detection impact parent and child components?
 
 **Answer:**
 
@@ -2011,7 +2920,7 @@ Child will update.
 
 OnPush works best with immutable data patterns and improves performance by reducing unnecessary checks.
 
-## 52. What tools do you use to measure real-world web performance?
+## 65. What tools do you use to measure real-world web performance?
 
 **Answer:**
 
@@ -2030,7 +2939,7 @@ For real-world performance, I prefer field data + user-based metrics, not only L
 
 Lighthouse is good for testing, but for actual users I trust Web Vitals + monitoring tools.
 
-## 53. An Angular page is very slow when rendering a large list. How will you optimize it?
+## 66. An Angular page is very slow when rendering a large list. How will you optimize it?
 
 **Answer:**
 
@@ -2097,7 +3006,7 @@ For repeated calculations
 
 My first choice is Virtual Scroll + trackBy + OnPush, it gives immediate performance boost.
 
-## 54. When would you use ChangeDetectionStrategy.OnPush?
+## 67. When would you use ChangeDetectionStrategy.OnPush?
 
 **Answer:**
 
@@ -2118,7 +3027,7 @@ I use OnPush when:
 
 OnPush is perfect when data changes are predictable and we want to avoid extra change detection cycles.
 
-## 55. How does trackBy improve performance in *ngFor?
+## 68. How does trackBy improve performance in *ngFor?
 
 **Answer:**
 
@@ -2141,7 +3050,7 @@ trackById(index: number, item: any) {
 
 trackBy is very useful in lists where data updates frequently (like live data, search, filter).
 
-## 56. How do you reduce Angular bundle size?
+## 69. How do you reduce Angular bundle size?
 
 **Answer:**
 
