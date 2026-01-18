@@ -1,0 +1,22 @@
+<h4 class="mb-3">Reusable Component Demo</h4>
+<p>These cards are all instances of the same <code>app-reusable-card</code> component, but with different content
+    projected into them.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <app-reusable-card title="Projected Content #1" footer="Footer Info A">
+            <p>This is simple paragraph text passed into the card.</p>
+            <button class="btn btn-primary btn-sm">Action Button</button>
+        </app-reusable-card>
+    </div>
+
+    <div class="col-md-6">
+        <app-reusable-card title="Projected Content #2" footer="Last updated: Just now">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">List Item 1</li>
+                <li class="list-group-item">List Item 2</li>
+                <li class="list-group-item">List Item 3</li>
+            </ul>
+        </app-reusable-card>
+    </div>
+</div>

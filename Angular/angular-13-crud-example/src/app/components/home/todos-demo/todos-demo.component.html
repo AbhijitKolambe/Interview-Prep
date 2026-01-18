@@ -1,0 +1,6 @@
+<h3>Todos List</h3>
+<div class="list-group">
+    <div class="list-group-item" *ngFor="let todo of todos; let i = index">
+        {{ i + 1 }}. {{ todo.title }} - <strong>{{ todo.completed ? 'Completed' : 'Pending' }}</strong>
+    </div>
+</div>

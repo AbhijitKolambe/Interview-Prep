@@ -1,0 +1,19 @@
+<div class="category-child-container">
+    <h4>Category Child Component</h4>
+
+    <!-- 1. Normal OnChange Function Input -->
+    <div class="mb-3">
+        <label for="descInput" class="form-label">Category Description (Normal Change Event):</label>
+        <input type="text" class="form-control" id="descInput" (change)="onDescriptionChange($event)"
+            placeholder="Type and hit enter or blur...">
+        <div class="text-muted mt-1">Value: {{ categoryDescription }}</div>
+    </div>
+
+    <!-- 2. ngModel 2-way Data Binding Input -->
+    <div class="mb-3">
+        <label for="nameInput" class="form-label">Category Name ([(ngModel)]):</label>
+        <input type="text" class="form-control" id="nameInput" [(ngModel)]="categoryName"
+            placeholder="Type something...">
+        <div class="text-muted mt-1">Value: {{ categoryName }}</div>
+    </div>
+</div>

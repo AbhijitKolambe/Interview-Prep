@@ -1,0 +1,22 @@
+<div class="card mt-3 mb-3">
+    <div class="card-body">
+        <h4>Directive Examples</h4>
+
+        <h5>Built-in Directives</h5>
+        <button class="btn btn-sm btn-primary mb-2" (click)="isVisible = !isVisible">Toggle Visibility (*ngIf)</button>
+        <div *ngIf="isVisible" class="alert alert-info">This text is visible only when isVisible is true.</div>
+
+        <div [ngClass]="{'text-success': isActive, 'text-danger': !isActive}" class="mt-2">
+            This text changes color based on isActive (ngClass).
+            <button class="btn btn-sm btn-secondary ms-2" (click)="isActive = !isActive">Toggle Class</button>
+        </div>
+
+        <div [ngStyle]="{'font-weight': isActive ? 'bold' : 'normal', 'font-size.px': 20}" class="mt-2">
+            This text changes style based on isActive (ngStyle).
+        </div>
+
+        <h5 class="mt-3">Custom Directive (Highlight)</h5>
+        <p appHighlight>Hover over me to see the default highlight color (yellow).</p>
+        <p [appHighlight]="'cyan'">Hover over me to see a custom highlight color (cyan).</p>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="card mt-3 mb-3">
+    <div class="card-body">
+        <h4>Input/Output Examples</h4>
+
+        <div class="mb-3">
+            <label class="form-label">Data to send to Child:</label>
+            <input type="text" class="form-control" [(ngModel)]="dataToChild">
+        </div>
+
+        <p>Message received from Child: <strong>{{ messageFromChild || 'Waiting for event...' }}</strong></p>
+
+        <!-- Child Component Usage -->
+        <app-child [parentData]="dataToChild" myValue='123' (childEvent)="handleChildEvent($event)">
+        </app-child>
+    </div>
+</div>

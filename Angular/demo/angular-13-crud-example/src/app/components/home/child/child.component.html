@@ -1,0 +1,9 @@
+<div class="child-box">
+    <h6>Child Component (@Input/@Output Demo)</h6>
+    <p>Received from Parent: <span class="badge bg-primary">{{ parentData || 'No data yet' }}</span></p>
+    <span class="input-group-text">myValue: {{myValue}}</span>
+    <div class="input-group input-group-sm mb-3">
+        <span class="input-group-text">Action:</span>
+        <button class="btn btn-info" (click)="sendMessageToParent()">Emit Event to Parent</button>
+    </div>
+</div>

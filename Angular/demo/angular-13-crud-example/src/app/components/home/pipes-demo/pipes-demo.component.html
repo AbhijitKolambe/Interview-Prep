@@ -1,0 +1,15 @@
+<div class="card mt-3 mb-3">
+    <div class="card-body">
+        <h4>Pipe Examples</h4>
+
+        <h5>Built-in Pipes</h5>
+        <p><strong>Original:</strong> {{ message }}</p>
+        <p><strong>Uppercase Pipe:</strong> {{ message | uppercase }}</p>
+        <p><strong>Lowercase Pipe:</strong> {{ message | lowercase }}</p>
+        <p><strong>Date Pipe:</strong> {{ today | date:'fullDate' }}</p>
+        <p><strong>Currency Pipe:</strong> {{ price | currency:'USD' }}</p>
+
+        <h5>Custom Pipe (Reverse)</h5>
+        <p><strong>Reverse Pipe:</strong> {{ message | reverse }}</p>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+<hr>
+
+<!-- Navigation Buttons -->
+<div class="btn-group mb-3" role="group" aria-label="Demo Navigation">
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'pipes'"
+        (click)="setActiveSection('pipes')">Pipes</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'directives'"
+        (click)="setActiveSection('directives')">Directives</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'io'"
+        (click)="setActiveSection('io')">Input/Output</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'reusable'"
+        (click)="setActiveSection('reusable')">Reusable Comp</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'viewchild'"
+        (click)="setActiveSection('viewchild')">View Child/Children</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'todos'"
+        (click)="setActiveSection('todos')">Todos List</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'communication'"
+        (click)="setActiveSection('communication')">Communication</button>
+    <button type="button" class="btn btn-outline-primary" [class.active]="activeSection === 'category'"
+        (click)="setActiveSection('category')">Category</button>
+</div>
+
+<!-- REUSABLE COMPONENT DEMO SECTION -->
+<!-- REUSABLE COMPONENT DEMO SECTION -->
+<div *ngIf="activeSection === 'reusable'">
+    <app-reusable-demo></app-reusable-demo>
+</div>
+
+<!-- PIPE DEMO SECTION -->
+<!-- PIPE DEMO SECTION -->
+<div *ngIf="activeSection === 'pipes'">
+    <app-pipes-demo></app-pipes-demo>
+</div>
+
+<!-- DIRECTIVE DEMO SECTION -->
+<!-- DIRECTIVE DEMO SECTION -->
+<div *ngIf="activeSection === 'directives'">
+    <app-directives-demo></app-directives-demo>
+</div>
+
+<!-- INPUT/OUTPUT DEMO SECTION -->
+<!-- INPUT/OUTPUT DEMO SECTION -->
+<div *ngIf="activeSection === 'io'">
+    <app-io-demo></app-io-demo>
+</div>
+
+
+<!-- VIEW CHILD / VIEW CHILDREN DEMO SECTION -->
+<!-- VIEW CHILD / VIEW CHILDREN DEMO SECTION -->
+<div *ngIf="activeSection === 'viewchild'">
+    <app-view-child-demo></app-view-child-demo>
+</div>
+
+<!-- TODOS LIST SECTION -->
+<!-- TODOS LIST SECTION -->
+<div *ngIf="activeSection === 'todos'">
+    <app-todos-demo></app-todos-demo>
+</div>
+
+<!-- COMMUNICATION DEMO SECTION -->
+<div *ngIf="activeSection === 'communication'">
+    <app-communication-demo></app-communication-demo>
+</div>
+
+<!-- CATEGORY DEMO SECTION -->
+<div *ngIf="activeSection === 'category'" class="mt-3">
+    <h3>Category Demo</h3>
+    <!-- Home Component Input Handling Request -->
+    <div class="mb-3 p-3 border bg-light">
+        <h5>Home Component Level Input</h5>
+        <div class="mb-2">
+            <label>Category Handle Input:</label>
+            <input type="text" class="form-control" [(ngModel)]="homeCategoryInput"
+                placeholder="Enter category in Home...">
+            <small class="text-muted">Value in Home: {{ homeCategoryInput }}</small>
+        </div>
+    </div>
+
+    <!-- New Child Component as requested -->
+    <app-category-child></app-category-child>
+</div>
