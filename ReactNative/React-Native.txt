@@ -45,31 +45,4 @@ sytem desgin
 
 
 
- const usePrivousState () {
-     const [prevCount,setPrevCount] = useState(0)
-       const [count,setCount] = useState(0)
-     
-     useEffect(()=>{
-         setPrevCount((prev)=> prev)
-        
-     },[count])
-     
-     const counter = ()=>{
-         setCount((prev)=> prev+1)
-     }
-     
-     return {
-         prevCount,
-         count,
-         counter
-     }
-     
- }
  
- how to 
-
-
-
-
-
- clousere memory storage thing
