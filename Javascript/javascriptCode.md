@@ -12,6 +12,7 @@
 9. [Find Second Largest Number](#9-find-second-largest-number)
 10. [Find Smallest Number](#10-find-smallest-number)
 11. [Find Second Smallest Number](#11-find-second-smallest-number)
+12. [Find Largest and Smallest Numbers](#12-find-largest-and-smallest-numbers)
 13. [Sort String (Manual Array Sort)](#13-sort-string-manual-array-sort)
 14. [Sort String (Manual String Sort with substring)](#14-sort-string-manual-string-sort-with-substring)
 15. [Sort String (Manual Sort with Custom Substring)](#15-sort-string-manual-sort-with-custom-substring)
@@ -23,11 +24,12 @@
 21. [Find Frequency of Elements in Array](#21-find-frequency-of-elements-in-array)
 22. [Check Prime and Even Number](#22-check-prime-and-even-number)
 23. [Remove Falsy Values from Array](#23-remove-falsy-values-from-array)
+24. [Predict Output: Pre-increment vs Post-increment](#24-predict-output-pre-increment-vs-post-increment)
+25. [Generate Random Hex Color](#25-generate-random-hex-color)
+26. [Hoisting with Var](#26-hoisting-with-var)
+27. [Hoisting with Let (Temporal Dead Zone)](#27-hoisting-with-let-temporal-dead-zone)
 
 ---
-<br>
-<br>
-<br>
 
 ## 1. Create Counter (Closure)
 
@@ -52,9 +54,6 @@ counter1(); // 3
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 2. Debounce Function
 
@@ -94,9 +93,6 @@ debouncedSearch("React"); // Only this runs after 500ms
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 3. Throttle Function
 
@@ -136,9 +132,6 @@ throttledScroll(); // runs only once per second
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 4. Reverse a String
 
@@ -157,9 +150,6 @@ console.log(b); // tijihbA
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 5. Flatten a Nested Array
 
@@ -185,9 +175,6 @@ console.log(r); // [1, 2, 3, 4, 5, 7, 8, 9]
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 6. Remove Duplicates from an Array
 
@@ -217,7 +204,7 @@ for (let n of c) {
 }
 console.log(result);
 
-// Method 4: Using for...of loop
+// Method 4: Manual check loop
 const arr = [1, 2, 3, 2, 4, 1, 5];
 let uniqueArr = [];
 
@@ -237,13 +224,9 @@ for (let i = 0; i < arr.length; i++) {
 }
 
 console.log(uniqueArr); // [1, 2, 3, 4, 5]
-
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 7. Count Occurrences of Items
 
@@ -293,9 +276,6 @@ console.log(result);
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 8. Find Largest Number
 
@@ -314,14 +294,9 @@ for (let i = 0; i < arr.length; i++) {
 }
 
 console.log("Largest:", largest); // 25
-
- 
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 9. Find Second Largest Number
 
@@ -351,9 +326,6 @@ if (secondLargest === -Infinity) {
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 10. Find Smallest Number
 
@@ -375,9 +347,6 @@ console.log("Smallest:", smallest); // 4
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 11. Find Second Smallest Number
 
@@ -407,9 +376,6 @@ if (secondSmallest === Infinity) {
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 12. Find Largest and Smallest Numbers
 
@@ -431,20 +397,7 @@ console.log("Largest:", largest);   // -3
 console.log("Smallest:", smallest); // -20
 ```
 
-
-
-
-
-
-
-
-
-
-
 ---
-<br>
-<br>
-<br>
 
 ## 13. Sort String (Manual Array Sort)
 
@@ -478,9 +431,6 @@ console.log("Ascending order:", sortedStr);
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 14. Sort String (Manual String Sort with substring)
 
@@ -504,9 +454,6 @@ console.log("Ascending order:", str);
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 15. Sort String (Manual Sort with Custom Substring)
 
@@ -538,9 +485,6 @@ console.log("Ascending order:", str);
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 16. Check if Object is Empty
 
@@ -560,9 +504,6 @@ console.log(isObjEmpty(object));      // false
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 17. setTimeout Loop (Closure Trap)
 
@@ -586,9 +527,6 @@ for (var i = 0; i < 3; i++) {
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 18. Scope and Hoisting (Global Variable)
 
@@ -605,16 +543,7 @@ let a; // Declared in outer scope
 fetch(); // 5
 ```
 
-
-
-
-
-
-
 ---
-<br>
-<br>
-<br>
 
 ## 19. Sort Array (Bubble Sort)
 
@@ -639,9 +568,6 @@ console.log(arr); // [1, 2, 5, 6, 9]
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 20. Count Character Occurrence in String
 
@@ -664,9 +590,6 @@ console.log(charCount("hello")); // { h: 1, e: 1, l: 2, o: 1 }
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 21. Find Frequency of Elements in Array
 
@@ -688,9 +611,6 @@ console.log(frequency([1, 2, 2, 3, 3, 3])); // { '1': 1, '2': 2, '3': 3 }
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 22. Check Prime and Even Number
 
@@ -719,9 +639,6 @@ console.log(isEven(4));  // true
 ```
 
 ---
-<br>
-<br>
-<br>
 
 ## 23. Remove Falsy Values from Array
 
@@ -742,57 +659,58 @@ function removeFalsy(arr) {
 console.log(removeFalsy([0, 1, false, 2, "", 3])); // [1, 2, 3]
 ```
 
+---
 
+## 24. Predict Output: Pre-increment vs Post-increment
 
+**Description:**
+Understanding operator precedence and behavior between pre-increment (`++a`) and post-increment (`a++`).
 
+```javascript
 let a = 1;
 
+// const b = ++a (2) + a++ (2 -> a becomes 3)
 const b = ++a  + a++;
 
-console.log(b,'----')
+console.log(b); // 4
+console.log(a); // 3
+```
 
+---
 
+## 25. Generate Random Hex Color
 
+**Description:**
+Generating a random hexadecimal color code.
 
-
+```javascript
 function getRandomHexColor() {
   return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
 }
 
 console.log(getRandomHexColor()); // e.g. #3fa2cc
+```
 
+---
 
+## 26. Hoisting with Var
 
+**Description:**
+Demonstrating that variables declared with `var` are hoisted and initialized with `undefined`.
 
+```javascript
+console.log(a); // undefined
+var a = 1;
+```
 
-console.log(a,'----')
+---
 
-var a  = 1;
+## 27. Hoisting with Let (Temporal Dead Zone)
 
-output - undefined ----
+**Description:**
+Demonstrating that variables declared with `let` are hoisted but are in the Temporal Dead Zone (TDZ) and cannot be accessed before declaration.
 
-
-
-
-console.log(a,'----')
-
-let a  = 1;
-
-ouput - ERROR!
-/tmp/kQPOlrkK5w/main.js:3
-console.log(a,'----')
-            ^
-
-ReferenceError: Cannot access 'a' before initialization
-    at Object.<anonymous> (/tmp/kQPOlrkK5w/main.js:3:13)
-    at Module._compile (node:internal/modules/cjs/loader:1706:14)
-    at Object..js (node:internal/modules/cjs/loader:1839:10)
-    at Module.load (node:internal/modules/cjs/loader:1441:32)
-    at Function._load (node:internal/modules/cjs/loader:1263:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
-    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
-    at node:internal/main/run_main_module:36:49
-
-Node.js v22.21.1
-
+```javascript
+console.log(a); // ReferenceError: Cannot access 'a' before initialization
+let a = 1;
+```
