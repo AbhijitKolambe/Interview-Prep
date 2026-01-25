@@ -741,3 +741,58 @@ function removeFalsy(arr) {
 
 console.log(removeFalsy([0, 1, false, 2, "", 3])); // [1, 2, 3]
 ```
+
+
+
+
+let a = 1;
+
+const b = ++a  + a++;
+
+console.log(b,'----')
+
+
+
+
+
+function getRandomHexColor() {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+}
+
+console.log(getRandomHexColor()); // e.g. #3fa2cc
+
+
+
+
+
+console.log(a,'----')
+
+var a  = 1;
+
+output - undefined ----
+
+
+
+
+console.log(a,'----')
+
+let a  = 1;
+
+ouput - ERROR!
+/tmp/kQPOlrkK5w/main.js:3
+console.log(a,'----')
+            ^
+
+ReferenceError: Cannot access 'a' before initialization
+    at Object.<anonymous> (/tmp/kQPOlrkK5w/main.js:3:13)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.21.1
+

@@ -1,32 +1,27 @@
 # JavaScript Interview Guide
 
 ## Table of Contents
-1. [Synchronous vs Asynchronous JavaScript (with Examples)](#1-synchronous-vs-asynchronous-javascript-with-examples)
-2. [var vs let vs const](#2-var-vs-let-vs-const)
-3. [What is Hoisting?](#3-what-is-hoisting)
-4. [What is Memory Allocation?](#4-what-is-memory-allocation)
-5. [What is "this" in JavaScript?](#5-what-is-this-in-javascript)
-6. [What is a Closure?](#6-what-is-a-closure)
-7. [What is the Event Loop?](#7-what-is-the-event-loop)
-8. [What is a Callback Function?](#8-what-is-a-callback-function)
-9. [Promises in JavaScript](#9-promises-in-javascript)
-10. [Callbacks vs Promises vs Async/Await](#10-callbacks-vs-promises-vs-asyncawait)
-11. [Event Loop with Callbacks](#11-event-loop-with-callbacks)
-12. [What is Event Propagation?](#12-what-is-event-propagation)
-13. [What is Event Delegation?](#13-what-is-event-delegation)
-14. [ES6 Features](#14-es6-features)
-15. [Spread Operator vs Rest Operator](#15-spread-operator-vs-rest-operator)
-
-
-
+1. [Synchronous vs Asynchronous JavaScript (with Examples)](#synchronous-vs-asynchronous-javascript-with-examples)
+2. [var vs let vs const](#var-vs-let-vs-const)
+3. [What is Hoisting?](#what-is-hoisting)
+4. [What is Memory Allocation?](#what-is-memory-allocation)
+5. [What is "this" in JavaScript?](#what-is-this-in-javascript)
+6. [What is a Closure?](#what-is-a-closure)
+7. [What is the Event Loop?](#what-is-the-event-loop)
+8. [What is a Callback Function?](#what-is-a-callback-function)
+9. [Promises in JavaScript](#promises-in-javascript)
+10. [Callbacks vs Promises vs Async/Await](#callbacks-vs-promises-vs-asyncawait)
+11. [Event Loop with Callbacks](#event-loop-with-callbacks)
+12. [What is Event Propagation?](#what-is-event-propagation)
+13. [What is Event Delegation?](#what-is-event-delegation)
+14. [ES6 Features](#es6-features)
+15. [Spread Operator vs Rest Operator](#spread-operator-vs-rest-operator)
+16. [Difference Between null and undefined](#difference-between-null-and-undefined)
+17. [Shallow Copy vs Deep Copy](#shallow-copy-vs-deep-copy)
 
 ---
-<br>
-<br>
-<br>
 
 ## 1. Synchronous vs Asynchronous JavaScript (with Examples)
-
 JavaScript is single-threaded, meaning it executes one task at a time.
 However, JavaScript can still handle non-blocking, asynchronous operations using the event loop, callback queue, and microtask queue.
 
@@ -245,13 +240,10 @@ Data received
 * Improves user experience
 * Enables modern dynamic web apps
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 2. var vs let vs const
-
 ### Scope Differences
 
 | Feature | var | let | const |
@@ -288,13 +280,10 @@ function test() {
 - `var` leaks outside loop.
 - `let` is confined to loop block.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 3. What is Hoisting?
-
 Hoisting is a JavaScript behavior where variable and function declarations are moved to the top of their scope during the compilation phase, before code execution.
 
 Hoisting is JavaScript’s default behavior of moving declarations to the top of their scope before execution, allowing functions and `var` variables to be used **before** they are defined.
@@ -391,13 +380,10 @@ Time between entering scope and variable declaration. Applies to `let`, `const`,
 - Arrow functions are not hoisted like function declarations.
 - `let` and `const` prevent unsafe access via TDZ.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 4. What is Memory Allocation?
-
 Memory allocation in JavaScript is the process of reserving memory for variables, functions, and objects, and later releasing it when no longer needed.
 JavaScript handles memory automatically using a garbage collector.
 
@@ -443,13 +429,10 @@ JavaScript uses the **Mark-and-Sweep** algorithm.
 - Unremoved Event Listeners.
 - Global Variables.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 5. What is "this" in JavaScript?
-
 `this` is a special keyword in JavaScript that refers to the execution context of a function.
 Its value is not fixed at definition time; it is determined at runtime, based on how a function is called.
 
@@ -580,13 +563,10 @@ car.show(); // BMW
 - Arrow functions cannot be used as constructors.
 - `bind()` returns a new function, it does not execute immediately.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 6. What is a Closure?
-
 A closure is created when a function remembers and continues to access variables from its lexical scope, even after the outer function has finished execution.
 
 In simple words: **A function bundled with its surrounding state (scope) is called a closure.**
@@ -693,10 +673,6 @@ for (let i = 0; i < 3; i++) {
 
 ### Closure Output-Based Questions
 
----
-<br>
-<br>
-<br>
 
 #### Question 1
 ```javascript
@@ -713,10 +689,6 @@ fn();
 **Output:** `10`
 **Explanation:** `inner()` forms a closure over `x`.
 
----
-<br>
-<br>
-<br>
 
 #### Question 2
 ```javascript
@@ -743,10 +715,6 @@ b();
 ```
 **Explanation:** Each call to `outer()` creates a separate closure with its own `count`.
 
----
-<br>
-<br>
-<br>
 
 #### Question 3 (Common Trap)
 ```javascript
@@ -757,10 +725,6 @@ for (var i = 0; i < 3; i++) {
 **Output:** `3 3 3`
 **Why:** `var` is function-scoped. All callbacks share the same `i` reference.
 
----
-<br>
-<br>
-<br>
 
 #### Question 4 (Fix)
 ```javascript
@@ -771,10 +735,6 @@ for (let i = 0; i < 3; i++) {
 **Output:** `0 1 2`
 **Why:** `let` creates a new binding per iteration.
 
----
-<br>
-<br>
-<br>
 
 #### Question 5
 ```javascript
@@ -820,8 +780,10 @@ const fn = hugeData();
 | Memory | Temporary | Persistent |
 | Purpose | Resolve identifiers | Preserve state |
 
-## 7. What is the Event Loop?
 
+---
+
+## 7. What is the Event Loop?
 Event Loop is a core JavaScript mechanism that allows asynchronous, non-blocking execution in a single-threaded language by continuously monitoring the Call Stack, Microtask Queue, and Callback (Task) Queue, and deciding when and what to execute next.
 
 ### Key Components
@@ -869,13 +831,10 @@ logD();
 
 For interactive learning, visit: [JS Visualizer](https://www.jsv9000.app/)
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 8. What is a Callback Function?
-
 A callback function is a function that is passed as an argument to another function and is executed later, usually after a task is completed.
 
 ### Basic Callback Example
@@ -983,13 +942,10 @@ setTimeout(() => {
 
 **Solution:** Use Promises or Async/Await.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 9. Promises in JavaScript
-
 A **Promise** is an object representing the eventual completion or failure of an asynchronous operation.
 
 ### Promise Methods
@@ -1021,13 +977,10 @@ Resolves with the **first fulfilled** promise. Rejects only if **all** fail.
 | `Promise.any` | First resolves | All reject | Fallback APIs |
 | `Promise.allSettled` | All settle | Never | Show all results |
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 10. Callbacks vs Promises vs Async/Await
-
 ### Callback
 **Definition:** A function passed to another function and executed later.
 
@@ -1088,13 +1041,10 @@ async function fetchData() {
 | Chaining | Nested | `.then()` | Sequential |
 | Debugging | Hard | Medium | Easy |
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 11. Event Loop with Callbacks
-
 The event loop allows JavaScript to perform non-blocking asynchronous operations.
 
 ### Execution Order Priority
@@ -1135,13 +1085,10 @@ promise
 timeout
 ```
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 12. What is Event Propagation?
-
 Event propagation describes the order in which events travel through the DOM tree when an event occurs.
 ![Event Propagation](./images/eventpropogation.png)
 There are three phases:
@@ -1207,13 +1154,10 @@ Prevents default browser behavior (e.g., submitting a form, following a link) bu
 | Use case | Rare | Common |
 | Enable | `addEventListener(..., true)` | Default |
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 13. What is Event Delegation?
-
 Event delegation is a technique where a **single event listener** is attached to a **parent element** instead of adding listeners to multiple child elements. It leverages **event bubbling**.
 
 ![Event Delegation](./images/eventDeligation.png)
@@ -1258,13 +1202,10 @@ list.addEventListener('click', (e) => {
 - `event.target`: Element that triggered event.
 - `event.currentTarget`: Element with listener.
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 14. ES6 Features
-
 Major features introduced in ECMAScript 2015 (ES6).
 
 ### 1. let and const
@@ -1344,13 +1285,10 @@ export default function test() {}
 import test from './test';
 ```
 
+
 ---
-<br>
-<br>
-<br>
 
 ## 15. Spread Operator vs Rest Operator
-
 Both use `...` but work in opposite directions.
 
 ### Spread Operator (...)
@@ -1376,3 +1314,241 @@ Both use `...` but work in opposite directions.
 | Used in | Function calls, arrays, objects | Function params, destructuring |
 | Direction | Unpacking | Packing |
 | Output | Individual elements | Array or object |
+
+
+---
+
+## 16. Difference Between null and undefined
+### 1. undefined
+Means a variable has been declared but not assigned a value.
+It is the default value given by JavaScript.
+Indicates absence of value automatically.
+
+```javascript
+let a;
+console.log(a); // undefined
+```
+
+**When you get undefined:**
+*   Variable declared but not initialized
+*   Function does not return a value
+*   Accessing a non-existing object property
+*   Missing function parameters
+
+```javascript
+function test() {}
+console.log(test()); // undefined
+```
+
+
+
+### 2. null
+Means intentional absence of a value.
+Assigned explicitly by the developer.
+Represents an empty or cleared value.
+
+```javascript
+let b = null;
+console.log(b); // null
+```
+
+**When to use null:**
+*   Resetting a variable
+*   Representing "no value" intentionally
+*   Clearing object references
+
+```javascript
+let user = { name: "Abhi" };
+user = null; // intentional reset
+```
+
+## Key Differences (Interview Table)
+
+| Feature | undefined | null |
+| :--- | :--- | :--- |
+| Meaning | Value not assigned | Intentional empty value |
+| Assigned by | JavaScript | Developer |
+| Type | undefined | object (JS bug) |
+| Use case | Uninitialized state | Explicit reset |
+| Equality (==) | Equal to null | Equal to undefined |
+| Strict equality (===) | Not equal | Not equal |
+
+```javascript
+null == undefined   // true
+null === undefined  // false
+```
+
+## Important Interview Points
+
+*   `typeof undefined` -> "undefined"
+*   `typeof null` -> "object" (this is a well-known JavaScript bug)
+*   Prefer null when you want to explicitly say "no value"
+*   Avoid manually assigning undefined
+
+
+---
+
+## 17. Shallow Copy vs Deep Copy
+### What is a Shallow Copy?
+
+A shallow copy copies only the first level of an object/array.
+If the object has nested objects, they are copied by reference, not value.
+
+Changes in nested data affect both original & copied object.
+
+### Shallow Copy Example
+
+```javascript
+let obj1 = {
+  name: "Abhi",
+  address: {
+    city: "Pune"
+  }
+};
+
+let obj2 = { ...obj1 }; // shallow copy
+
+obj2.address.city = "Mumbai";
+
+console.log(obj1.address.city); // Mumbai
+console.log(obj2.address.city); // Mumbai
+```
+
+**Why?**
+*   name -> copied by value
+*   address -> copied by reference
+
+### Shallow Copy Methods (Interview List)
+*   Spread operator `{...obj}`
+*   `Object.assign()`
+*   Array spread `[...arr]`
+*   `Array.slice()`
+
+### What is a Deep Copy?
+
+A deep copy creates a completely independent copy, including all nested objects.
+Changes in copied object DO NOT affect original.
+
+### Deep Copy Example (JSON method)
+
+```javascript
+let obj1 = {
+  name: "Abhi",
+  address: {
+    city: "Pune"
+  }
+};
+
+let obj2 = JSON.parse(JSON.stringify(obj1));
+
+obj2.address.city = "Mumbai";
+
+console.log(obj1.address.city); // Pune
+console.log(obj2.address.city); // Mumbai
+```
+
+### Limitation of JSON Deep Copy (Interview Trap)
+
+Does NOT support:
+*   Functions
+*   undefined
+*   Date
+*   Map, Set
+*   Circular references
+
+```javascript
+let obj = {
+  date: new Date(),
+  sayHi: function() {}
+};
+
+JSON.parse(JSON.stringify(obj)); // data loss
+```
+
+### Shallow Copy Example (Array)
+
+```javascript
+let arr1 = [1, 2, [3, 4]];
+
+let arr2 = [...arr1]; // shallow copy
+
+arr2[2][0] = 99;
+
+console.log(arr1); // [1, 2, [99, 4]]
+console.log(arr2); // [1, 2, [99, 4]]
+```
+
+**Explanation (Interview)**
+*   1, 2 -> copied by value
+*   [3,4] -> copied by reference
+*   Change in nested array affects original
+
+### Other Shallow Copy Ways (Array)
+
+```javascript
+let arr2 = arr1.slice();
+
+let arr2 = Array.from(arr1);
+```
+
+All are shallow copies.
+
+### Deep Copy with Array
+
+A deep copy creates a completely independent array, including nested arrays.
+
+### Deep Copy Example (JSON method)
+
+```javascript
+let arr1 = [1, 2, [3, 4]];
+
+let arr2 = JSON.parse(JSON.stringify(arr1));
+
+arr2[2][0] = 99;
+
+console.log(arr1); // [1, 2, [3, 4]]
+console.log(arr2); // [1, 2, [99, 4]]
+```
+
+### JSON Deep Copy Limitation (Interview Trap)
+
+```javascript
+let arr = [1, undefined, function(){}, new Date()];
+
+let copy = JSON.parse(JSON.stringify(arr));
+
+console.log(copy); // [1, null, null, "2026-01-12T..."]
+```
+
+### Custom Deep Copy (Interview-Perfect)
+
+```javascript
+function deepCopy(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+
+  let copy = Array.isArray(obj) ? [] : {};
+
+  for (let key in obj) {
+    copy[key] = deepCopy(obj[key]);
+  }
+
+  return copy;
+}
+```
+
+Usage:
+```javascript
+let newObj = deepCopy(oldObj);
+```
+
+### Shallow vs Deep Copy (Comparison Table)
+
+| Feature | Shallow Copy | Deep Copy |
+| :--- | :--- | :--- |
+| Nested object | Shared reference | Fully copied |
+| Performance | Fast | Slower |
+| Memory | Low | Higher |
+| Use case | Flat objects | Complex objects |
+
