@@ -18,7 +18,7 @@ export class StocksComponent implements OnInit {
 
   displayedData: StockInfo[] = [];
   totalItems = 250000;
-  pageSize = 50;
+  pageSize = 500;
   currentPage = 1;
   totalPages = 0;
   isLoading = false;
