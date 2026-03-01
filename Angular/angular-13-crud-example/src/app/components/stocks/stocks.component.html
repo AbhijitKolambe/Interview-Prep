@@ -1,0 +1,78 @@
+<div class="container mt-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Real-time Stocks Market Data</h2>
+        <button class="btn btn-outline-secondary" routerLink="/home">&larr; Back to Home</button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Mock Stock Data (2.5 Lakh Records)</h5>
+            <span class="badge bg-light text-primary">Page {{currentPage}} of {{totalPages}}</span>
+        </div>
+
+        <div class="card-body p-0">
+            <div *ngIf="isLoading" class="p-5 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Fetching Page {{currentPage}}...</p>
+            </div>
+
+            <div class="table-responsive" *ngIf="!isLoading">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Symbol</th>
+                            <th>Price</th>
+                            <th>Change</th>
+                            <th>Volume</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let stock of displayedData">
+                            <td>{{ stock.id }}</td>
+                            <td class="font-weight-bold">{{ stock.symbol }}</td>
+                            <td>${{ stock.price | number:'1.2-2' }}</td>
+                            <td [ngClass]="{'text-success': stock.change >= 0, 'text-danger': stock.change < 0}">
+                                {{ stock.change > 0 ? '+' : '' }}{{ stock.change | number:'1.2-2' }}
+                            </td>
+                            <td>{{ stock.volume | number }}</td>
+                        </tr>
+                        <tr *ngIf="displayedData.length === 0">
+                            <td colspan="5" class="text-center p-3">No data available.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <span class="me-2 text-muted">Go to page:</span>
+                <input type="number" class="form-control form-control-sm" style="width: 80px" [value]="currentPage"
+                    (change)="goToPage($event)" min="1" [max]="totalPages">
+            </div>
+
+            <nav aria-label="Table pagination">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <button class="page-link" (click)="loadPage(1)">&laquo; First</button>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <button class="page-link" (click)="prevPage()">Previous</button>
+                    </li>
+                    <li class="page-item active">
+                        <span class="page-link">{{currentPage}}</span>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <button class="page-link" (click)="nextPage()">Next</button>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <button class="page-link" (click)="loadPage(totalPages)">Last &raquo;</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

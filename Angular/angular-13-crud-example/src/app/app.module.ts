@@ -20,6 +20,7 @@ import { CommunicationDemoComponent } from './components/home/communication-demo
 import { SenderComponent } from './components/home/communication-demo/sender/sender.component';
 import { ReceiverComponent } from './components/home/communication-demo/receiver/receiver.component';
 import { CategoryChildComponent } from './components/home/category-child/category-child.component';
+import { StocksComponent } from './components/stocks/stocks.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CategoryChildComponent } from './components/home/category-child/categor
     CommunicationDemoComponent,
     SenderComponent,
     ReceiverComponent,
-    CategoryChildComponent
+    CategoryChildComponent,
+    StocksComponent
   ],
   imports: [
     BrowserModule,
