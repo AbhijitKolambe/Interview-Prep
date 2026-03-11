@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AgGridModule } from 'ag-grid-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +22,7 @@ import { SenderComponent } from './components/home/communication-demo/sender/sen
 import { ReceiverComponent } from './components/home/communication-demo/receiver/receiver.component';
 import { CategoryChildComponent } from './components/home/category-child/category-child.component';
 import { StocksComponent } from './components/stocks/stocks.component';
+import { AgGridDemoComponent } from './components/ag-grid-demo/ag-grid-demo.component';
 
 @NgModule({
   declarations: [
@@ -40,13 +42,15 @@ import { StocksComponent } from './components/stocks/stocks.component';
     SenderComponent,
     ReceiverComponent,
     CategoryChildComponent,
-    StocksComponent
+    StocksComponent,
+    AgGridDemoComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AgGridModule.withComponents([])
   ],
   providers: [],
   bootstrap: [AppComponent]
