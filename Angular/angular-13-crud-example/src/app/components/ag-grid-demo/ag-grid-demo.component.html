@@ -1,10 +1,115 @@
-<div style="margin-bottom:10px;">
-    <input type="text" placeholder="Search..." (input)="onSearch($event)" />
+<h3 class="mt-2 mb-3">Ag-Grid 5 Examples Demo</h3>
 
-    <button (click)="addRow()">Add</button>
-    <button (click)="deleteRow()">Delete</button>
+<!-- Navigation Buttons to switch between different Grid Examples -->
+<div class="btn-group mb-4" role="group">
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'basic'" (click)="setActiveGrid('basic')">1.
+        Basic Grid</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'inlineEdit'"
+        (click)="setActiveGrid('inlineEdit')">2. Inline Edit</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'cellPopup'"
+        (click)="setActiveGrid('cellPopup')">3. Cell Popup Modal</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'pagination'"
+        (click)="setActiveGrid('pagination')">4. Pagination</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'customRender'"
+        (click)="setActiveGrid('customRender')">5. Custom Render</button>
 </div>
 
-<ag-grid-angular class="ag-theme-alpine" style="width:100%; height:500px;" [rowData]="rowData" [columnDefs]="columnDefs"
-    [defaultColDef]="defaultColDef" rowSelection="multiple" (gridReady)="onGridReady($event)">
-</ag-grid-angular>
+<!-- ========================================== -->
+<!-- 1. BASIC GRID (Your previous example) -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'basic'">
+    <h4>1. Basic Grid with Add/Delete & Nested Table</h4>
+    <div style="margin-bottom:10px;">
+        <input type="text" placeholder="Search basic grid..." (input)="onSearch($event)" />
+        <button class="btn btn-sm btn-success ms-2" (click)="addRow()">Add Row</button>
+        <button class="btn btn-sm btn-danger ms-2" (click)="deleteRow()">Delete Row</button>
+    </div>
+
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="rowData"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" rowSelection="multiple"
+        (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+
+    <hr class="mt-4 mb-4" />
+
+    <div>
+        <button class="btn btn-info mb-3" (click)="toggleNestedTable()">
+            {{ showNestedTable ? 'Hide' : 'Show' }} Nested Data Table
+        </button>
+    </div>
+
+    <div *ngIf="showNestedTable" class="nested-table-container">
+        <h4>Nested Group Data Example</h4>
+        <table class="table table-bordered" style="width: 100%;">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <ng-container *ngFor="let group of nestedData">
+                <tbody>
+                    <tr class="table-secondary" style="background-color: #d1ecf1;">
+                        <td colspan="4" class="text-center font-weight-bold" style="color: #0c5460;">
+                            <strong>{{ group.groupName }} Department</strong> ({{ group.employees.length }} Employees)
+                        </td>
+                    </tr>
+                    <tr *ngFor="let emp of group.employees">
+                        <td>{{ emp.id }}</td>
+                        <td>{{ emp.name }}</td>
+                        <td>{{ emp.role }}</td>
+                        <td>{{ emp.city }}</td>
+                    </tr>
+                </tbody>
+            </ng-container>
+        </table>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 2. INLINE EDITABLE GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'inlineEdit'">
+    <h4>2. Inline Editable Grid</h4>
+    <p>Double-click on the blue cells to edit them directly. Notice how 'Status' gives you a predefined Dropdown!</p>
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="inlineEditRowData"
+        [columnDefs]="inlineEditColumnDefs" [defaultColDef]="{ flex: 1, sortable: true, filter: true }">
+    </ag-grid-angular>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. CELL CLICK POPUP (MODAL) GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'cellPopup'">
+    <h4>3. Cell Click Popup Example</h4>
+    <p>Click on the 'Change Dept' link in the action column. It will trigger a popup (browser prompt) to change the
+        user's department dynamically.</p>
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="popupRowData"
+        [columnDefs]="popupColumnDefs" [defaultColDef]="{ flex: 1 }" (cellClicked)="onPopupCellClicked($event)">
+    </ag-grid-angular>
+</div>
+
+<!-- ========================================== -->
+<!-- 4. PAGINATION GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'pagination'">
+    <h4>4. Pagination Grid Example</h4>
+    <p>Large datasets can be paginated easily. Here we have 25 rows, paginated by 5 per page.</p>
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="paginationRowData"
+        [columnDefs]="paginationColumnDefs" [defaultColDef]="{ flex: 1, filter: true }" [pagination]="true"
+        [paginationPageSize]="5">
+    </ag-grid-angular>
+</div>
+
+<!-- ========================================== -->
+<!-- 5. CUSTOM CELL RENDERER GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'customRender'">
+    <h4>5. Custom Cell Renderer Exampe</h4>
+    <p>Inject raw HTML or custom Angular Components inside rows! Here we are rendering a dynamic CSS progress bar.</p>
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="customRowData"
+        [columnDefs]="customColumnDefs" [defaultColDef]="{ flex: 1 }">
+    </ag-grid-angular>
+</div>

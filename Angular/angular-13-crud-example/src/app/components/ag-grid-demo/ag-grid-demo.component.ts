@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GridApi } from 'ag-grid-community';
-
+import { StatusFilterComponent } from './status-filter/status-filter.component';
 @Component({
   selector: 'app-ag-grid-demo',
   templateUrl: './ag-grid-demo.component.html',
@@ -8,55 +8,32 @@ import { GridApi } from 'ag-grid-community';
 })
 export class AgGridDemoComponent implements OnInit {
 
+  // State to handle which demo is currently visible
+  // Possible values: 'basic', 'inlineEdit', 'cellPopup', 'pagination', 'customRender'
+  activeGrid: string = 'basic';
+
+  constructor() { }
+
+  ngOnInit(): void { }
+
+  setActiveGrid(gridName: string) {
+    this.activeGrid = gridName;
+  }
+
+  // ==========================================
+  // EXAMPLE 1: BASIC GRID DATA & LOGIC 
+  // ==========================================
   gridApi!: GridApi;
 
   columnDefs = [
-    {
-      headerName: '',
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
-      width: 50,
-      filter: false
-    },
-    {
-      headerName: 'ID',
-      field: 'id',
-      sortable: true,
-      filter: 'agNumberColumnFilter'
-    },
-    {
-      headerName: 'Name',
-      field: 'name',
-      sortable: true,
-      filter: 'agTextColumnFilter'
-    },
-    {
-      headerName: 'Email',
-      field: 'email',
-      sortable: true,
-      filter: 'agTextColumnFilter'
-    },
-    {
-      headerName: 'Age',
-      field: 'age',
-      sortable: true,
-      filter: 'agNumberColumnFilter'
-    },
-    {
-      headerName: 'Actions',
-      cellRenderer: (params: any) => {
-        return `
-          <button class="edit-btn">Edit</button>
-        `;
-      }
-    }
+    { headerName: '', checkboxSelection: true, headerCheckboxSelection: true, width: 50, filter: false },
+    { headerName: 'ID', field: 'id', sortable: true, filter: 'agNumberColumnFilter' },
+    { headerName: 'Name', field: 'name', sortable: true, filter: 'agTextColumnFilter' },
+    { headerName: 'Email', field: 'email', sortable: true, filter: 'agTextColumnFilter' },
+    { headerName: 'Age', field: 'age', sortable: true, filter: 'agNumberColumnFilter' }
   ];
 
-  defaultColDef = {
-    flex: 1,
-    filter: true,
-    floatingFilter: true
-  };
+  defaultColDef = { flex: 1, filter: true, floatingFilter: true };
 
   rowData = [
     { id: 1, name: 'Abhijit', email: 'abhijit@mail.com', age: 25 },
@@ -64,33 +41,139 @@ export class AgGridDemoComponent implements OnInit {
     { id: 3, name: 'Priya', email: 'priya@mail.com', age: 23 }
   ];
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-  }
-
-  onSearch(event: any) {
-    const value = event.target.value;
-    this.gridApi.setQuickFilter(value);
-  }
-
-  addRow() {
-    const newRow = {
-      id: Date.now(),
-      name: 'New User',
-      email: 'new@mail.com',
-      age: 20
-    };
-
-    this.rowData = [...this.rowData, newRow];
-  }
-
+  onGridReady(params: any) { this.gridApi = params.api; }
+  onSearch(event: any) { this.gridApi.setQuickFilter(event.target.value); }
+  addRow() { this.rowData = [...this.rowData, { id: Date.now(), name: 'New User', email: 'new@mail.com', age: 20 }]; }
   deleteRow() {
     const selected = this.gridApi.getSelectedRows();
     this.rowData = this.rowData.filter(r => !selected.includes(r));
   }
+
+  // Basic Grid associated Nested Table State
+  showNestedTable = false;
+  nestedData = [
+    {
+      groupName: 'Engineering',
+      employees: [
+        { id: 101, name: 'Amit', role: 'Frontend Developer', city: 'Pune' },
+        { id: 102, name: 'Sneha', role: 'Backend Developer', city: 'Mumbai' }
+      ]
+    },
+    {
+      groupName: 'Product & Design',
+      employees: [
+        { id: 201, name: 'Kiran', role: 'UI/UX Designer', city: 'Mumbai' },
+        { id: 202, name: 'Neha', role: 'Product Manager', city: 'Pune' }
+      ]
+    }
+  ];
+  toggleNestedTable() { this.showNestedTable = !this.showNestedTable; }
+
+
+  // ==========================================
+  // EXAMPLE 2: INLINE EDITABLE GRID 
+  // ==========================================
+  // Note: setting 'editable: true' allows native inline editing in ag-grid.
+  inlineEditColumnDefs = [
+    { headerName: 'ID', field: 'id', editable: false }, // usually IDs shouldn't be edited
+    { headerName: 'Task Name', field: 'task', editable: true, cellStyle: { 'background-color': '#e8f4f8' } },
+    {
+      headerName: 'Status',
+      field: 'status',
+      editable: true,
+      // cellEditor specifies we want ag-grid's native dropdown UI editor
+      cellEditor: 'agSelectCellEditor',
+      cellEditorParams: { values: ['To Do', 'In Progress', 'Done'] },
+      cellStyle: { 'background-color': '#e8f4f8' },
+      filter: StatusFilterComponent // Attach our custom Angular DroDpown Filter
+    }
+  ];
+  inlineEditRowData = [
+    { id: 1, task: 'Implement Redux Store', status: 'To Do' },
+    { id: 2, task: 'Fix Login Bug', status: 'In Progress' },
+    { id: 3, task: 'Setup CI/CD Pipeline', status: 'Done' }
+  ];
+
+
+  // ==========================================
+  // EXAMPLE 3: CELL CLICK POPUP (MODAL)
+  // ==========================================
+  popupColumnDefs = [
+    { headerName: 'Employee', field: 'name' },
+    { headerName: 'Current Department', field: 'dept' },
+    {
+      headerName: 'Action (Click Me)',
+      field: 'action',
+      cellStyle: { 'color': '#0d6efd', 'text-decoration': 'underline', 'cursor': 'pointer', 'font-weight': 'bold' },
+      valueGetter: () => 'Change Dept' // Fakes a column that just says 'Change Dept' on all rows
+    }
+  ];
+  popupRowData = [
+    { name: 'Abhijit', dept: 'Engineering' },
+    { name: 'Rahul', dept: 'Human Resources' },
+    { name: 'Priya', dept: 'Marketing' }
+  ];
+
+  // Function triggered via (cellClicked)="onPopupCellClicked($event)" in HTML
+  onPopupCellClicked(event: any) {
+    if (event.colDef.field === 'action') {
+      // For demonstration, use a native Browser prompt. 
+      // In reality, you'd open an Angular Material Dialog / Bootstrap Modal here!
+      const newDept = window.prompt("Enter new department for " + event.data.name + ":", event.data.dept);
+
+      // If user typed something and pressed "OK", update the grid data via AG Grid's node API
+      if (newDept && newDept !== event.data.dept) {
+        event.node.setDataValue('dept', newDept);
+      }
+    }
+  }
+
+
+  // ==========================================
+  // EXAMPLE 4: PAGINATION GRID
+  // ==========================================
+  paginationColumnDefs = [
+    { headerName: 'Emp ID', field: 'employeeId' },
+    { headerName: 'Employee Name', field: 'name' }
+  ];
+  // Generate 25 fake rows dynamically using Array.from for our pagination demo
+  paginationRowData = Array.from({ length: 25 }, (_, i) => ({
+    employeeId: 1000 + i,
+    name: 'Auto-Generated Employee ' + (i + 1)
+  }));
+
+
+  // ==========================================
+  // EXAMPLE 5: CUSTOM CELL RENDERER
+  // ==========================================
+  customColumnDefs = [
+    { headerName: 'Project Name', field: 'project' },
+    {
+      headerName: 'Progress Status',
+      field: 'progress',
+      // Instead of relying on Angular Component classes, 
+      // you can return direct HTML templates matching the specific cell value!
+      cellRenderer: (params: any) => {
+        const percent = params.value;
+        const color = percent === 100 ? '#4caf50' : (percent > 40 ? '#2196f3' : '#f44336'); // red, blue, green based on progress
+
+        return `
+          <div style="width: 100%; position: relative;">
+            <div style="width: 100%; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 10px; height: 18px;">
+              <div style="width: ${percent}%; background-color: ${color}; height: 100%;"></div>
+            </div>
+            <span style="position: absolute; top: 0px; left: 45%; font-size: 11px; font-weight: bold; color: ${percent > 50 ? '#fff' : '#000'}; 
+                         mix-blend-mode: difference;">${percent}%</span>
+          </div>
+        `;
+      }
+    }
+  ];
+  customRowData = [
+    { project: 'CRM Migration', progress: 75 },
+    { project: 'Database Upgrade', progress: 15 },
+    { project: 'UI Refresh', progress: 100 },
+    { project: 'Add Payment Gateway', progress: 45 }
+  ];
+
 }

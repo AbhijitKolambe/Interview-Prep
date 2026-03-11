@@ -23,6 +23,7 @@ import { ReceiverComponent } from './components/home/communication-demo/receiver
 import { CategoryChildComponent } from './components/home/category-child/category-child.component';
 import { StocksComponent } from './components/stocks/stocks.component';
 import { AgGridDemoComponent } from './components/ag-grid-demo/ag-grid-demo.component';
+import { StatusFilterComponent } from './components/ag-grid-demo/status-filter/status-filter.component';
 
 @NgModule({
   declarations: [
@@ -43,14 +44,15 @@ import { AgGridDemoComponent } from './components/ag-grid-demo/ag-grid-demo.comp
     ReceiverComponent,
     CategoryChildComponent,
     StocksComponent,
-    AgGridDemoComponent
+    AgGridDemoComponent,
+    StatusFilterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    AgGridModule.withComponents([])
+    AgGridModule.withComponents([StatusFilterComponent])
   ],
   providers: [],
   bootstrap: [AppComponent]
