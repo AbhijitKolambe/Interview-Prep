@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GridApi } from 'ag-grid-community';
+import 'ag-grid-enterprise';
 import { StatusFilterComponent } from './status-filter/status-filter.component';
 @Component({
   selector: 'app-ag-grid-demo',
@@ -114,17 +115,46 @@ export class AgGridDemoComponent implements OnInit {
     { name: 'Priya', dept: 'Marketing' }
   ];
 
+  // Internal state for our Custom Modal
+  isModalOpen: boolean = false;
+  selectedEmployeeNode: any = null; // Store AG-Grid node reference
+  selectedEmployeeName: string = '';
+  editDepartmentValue: string = '';
+  popupTop: string = '0px';
+  popupLeft: string = '0px';
+
   // Function triggered via (cellClicked)="onPopupCellClicked($event)" in HTML
   onPopupCellClicked(event: any) {
     if (event.colDef.field === 'action') {
-      // For demonstration, use a native Browser prompt. 
-      // In reality, you'd open an Angular Material Dialog / Bootstrap Modal here!
-      const newDept = window.prompt("Enter new department for " + event.data.name + ":", event.data.dept);
+      const mouseEvent = event.event as MouseEvent;
 
-      // If user typed something and pressed "OK", update the grid data via AG Grid's node API
-      if (newDept && newDept !== event.data.dept) {
-        event.node.setDataValue('dept', newDept);
-      }
+      // Calculate popup position natively relative to browser window
+      // We add a minor 10px offset so the mouse doesn't cover the popup entirely
+      this.popupTop = (mouseEvent.clientY + 10) + 'px';
+      this.popupLeft = (mouseEvent.clientX + 10) + 'px';
+
+      // 1. Save data into state
+      this.selectedEmployeeNode = event.node;
+      this.selectedEmployeeName = event.data.name;
+      this.editDepartmentValue = event.data.dept;
+      // 2. Open Modal
+      this.isModalOpen = true;
+    }
+  }
+
+  // Closes the custom modal without saving
+  closeModal() {
+    this.isModalOpen = false;
+    this.selectedEmployeeNode = null;
+  }
+
+  // Saves the custom modal data back into AG-Grid
+  saveModalChanges() {
+    if (this.selectedEmployeeNode) {
+      // 3. Update the Grid node dynamically
+      this.selectedEmployeeNode.setDataValue('dept', this.editDepartmentValue);
+      // 4. Close the modal
+      this.closeModal();
     }
   }
 
@@ -175,5 +205,50 @@ export class AgGridDemoComponent implements OnInit {
     { project: 'UI Refresh', progress: 100 },
     { project: 'Add Payment Gateway', progress: 45 }
   ];
+
+  // ==========================================
+  // EXAMPLE 6: MASTER/DETAIL ACCORDION
+  // ==========================================
+  masterColumnDefs = [
+    { headerName: 'Department', field: 'department', cellRenderer: 'agGroupCellRenderer' },
+    { headerName: 'Manager', field: 'manager' }
+  ];
+
+  masterRowData = [
+    {
+      id: "dept-1",
+      department: 'Engineering',
+      manager: 'Rakesh Patil',
+      // Inner Detail Records:
+      employees: [
+        { id: 101, name: 'Amit', role: 'Frontend Developer', city: 'Pune' },
+        { id: 102, name: 'Sneha', role: 'Backend Developer', city: 'Mumbai' }
+      ]
+    },
+    {
+      id: "dept-2",
+      department: 'Design',
+      manager: 'Priya Singh',
+      employees: [
+        { id: 201, name: 'Kiran', role: 'UI/UX Designer', city: 'Mumbai' }
+      ]
+    }
+  ];
+
+  detailCellRendererParams = {
+    detailGridOptions: {
+      columnDefs: [
+        { headerName: 'Emp ID', field: 'id' },
+        { headerName: 'Name', field: 'name' },
+        { headerName: 'Role', field: 'role' },
+        { headerName: 'City', field: 'city' }
+      ],
+      defaultColDef: { flex: 1 }
+    },
+    // Tells the AG-Grid Master what array of data to pass into the inner grid!
+    getDetailRowData: (params: any) => {
+      params.successCallback(params.data.employees);
+    }
+  };
 
 }

@@ -12,6 +12,8 @@
         (click)="setActiveGrid('pagination')">4. Pagination</button>
     <button class="btn btn-outline-primary" [class.active]="activeGrid === 'customRender'"
         (click)="setActiveGrid('customRender')">5. Custom Render</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'masterDetail'"
+        (click)="setActiveGrid('masterDetail')">6. Master-Detail</button>
 </div>
 
 <!-- ========================================== -->
@@ -84,11 +86,42 @@
 <!-- ========================================== -->
 <div *ngIf="activeGrid === 'cellPopup'">
     <h4>3. Cell Click Popup Example</h4>
-    <p>Click on the 'Change Dept' link in the action column. It will trigger a popup (browser prompt) to change the
-        user's department dynamically.</p>
+    <p>Click on the 'Change Dept' link in the action column. It will officially open our Custom Angular Modal for
+        dynamic data modification!</p>
     <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="popupRowData"
         [columnDefs]="popupColumnDefs" [defaultColDef]="{ flex: 1 }" (cellClicked)="onPopupCellClicked($event)">
     </ag-grid-angular>
+
+    <!-- Custom Popup overlay (transparent to capture outside clicks) -->
+    <div *ngIf="isModalOpen"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: transparent; z-index: 1040;"
+        (click)="closeModal()"></div>
+
+    <!-- Floating Context Menu Box using dynamic [style.top] and [style.left] -->
+    <div *ngIf="isModalOpen" [style.top]="popupTop" [style.left]="popupLeft"
+        style="position: fixed; background: white; border: 1px solid #ddd; border-radius: 4px; width: 260px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1050;">
+
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="mb-0" style="font-size: 14px;"><strong>Edit Dept:</strong> <span class="text-primary">{{
+                    selectedEmployeeName }}</span></h6>
+            <button type="button" class="btn-close" aria-label="Close" style="font-size: 10px;"
+                (click)="closeModal()"></button>
+        </div>
+
+        <div class="mb-2">
+            <select class="form-select form-select-sm" [(ngModel)]="editDepartmentValue">
+                <option value="Engineering">Engineering</option>
+                <option value="Human Resources">Human Resources</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Sales">Sales</option>
+                <option value="Operations">Operations</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-sm btn-primary" (click)="saveModalChanges()">Save</button>
+        </div>
+    </div>
 </div>
 
 <!-- ========================================== -->
@@ -111,5 +144,18 @@
     <p>Inject raw HTML or custom Angular Components inside rows! Here we are rendering a dynamic CSS progress bar.</p>
     <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:400px;" [rowData]="customRowData"
         [columnDefs]="customColumnDefs" [defaultColDef]="{ flex: 1 }">
+    </ag-grid-angular>
+</div>
+
+<!-- ========================================== -->
+<!-- 6. MASTER DETAILS (ACCORDION) GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'masterDetail'">
+    <h4>6. Master-Detail (Accordion Nested) Data Example</h4>
+    <p>Using AG Grid Enterprise feature: Double click or press the expand Arrow on the left to see embedded inner Grid
+        data per row!</p>
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:450px;" [rowData]="masterRowData"
+        [columnDefs]="masterColumnDefs" [masterDetail]="true" [detailCellRendererParams]="detailCellRendererParams"
+        [defaultColDef]="{ flex: 1, filter: true }">
     </ag-grid-angular>
 </div>
