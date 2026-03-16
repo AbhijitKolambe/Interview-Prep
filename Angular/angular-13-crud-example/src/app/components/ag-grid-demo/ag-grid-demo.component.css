@@ -1,0 +1,27 @@
+/* Decrease the overall width of the column menu dropdown */
+::ng-deep .legacy-menu-grid .ag-menu {
+  min-width: 160px !important;
+  width: auto !important;
+}
+
+/* Make the individual menu options smaller in height */
+::ng-deep .legacy-menu-grid .ag-menu-option {
+  height: 30px !important;
+  line-height: 30px !important;
+  min-height: 30px !important;
+}
+
+/* Decrease the font size of the text within the menu */
+::ng-deep .legacy-menu-grid .ag-menu-option-text {
+  font-size: 12px !important;
+}
+
+/* Adjust the icon sizes inside the menu (like checkmarks) */
+::ng-deep .legacy-menu-grid .ag-menu-option-icon {
+  font-size: 12px !important;
+}
+
+/* Decrease the size of the 3-dots (hamburger/vertical menu) icon on the column header */
+::ng-deep .legacy-menu-grid .ag-header-cell-menu-button .ag-icon {
+  font-size: 14px !important;
+}

@@ -251,4 +251,29 @@ export class AgGridDemoComponent implements OnInit {
     }
   };
 
+  // ==========================================
+  // EXAMPLE 7: LEGACY COLUMN MENU
+  // ==========================================
+  legacyMenuColumnDefs = [
+    { field: 'name', filter: true },
+    { field: 'age', filter: true },
+    { field: 'country', filter: true }
+  ];
+
+  legacyMenuDefaultColDef = {
+    sortable: true,
+    filter: true,
+    resizable: true
+  };
+
+  legacyMenuRowData = [
+    { name: 'John', age: 25, country: 'USA' },
+    { name: 'Raj', age: 30, country: 'India' },
+    { name: 'Anna', age: 28, country: 'UK' }
+  ];
+
+  legacyMenuGridOptions: any = {
+    columnMenu: 'legacy'
+  };
+
 }
