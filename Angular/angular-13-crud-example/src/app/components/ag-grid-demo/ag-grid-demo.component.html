@@ -16,6 +16,8 @@
         (click)="setActiveGrid('masterDetail')">6. Master-Detail</button>
     <button class="btn btn-outline-primary" [class.active]="activeGrid === 'legacyMenu'"
         (click)="setActiveGrid('legacyMenu')">7. Legacy Column Menu</button>
+    <button class="btn btn-outline-primary" [class.active]="activeGrid === 'columnVisibility'"
+        (click)="setActiveGrid('columnVisibility')">8. Dropdown Visibility</button>
 </div>
 
 <!-- ========================================== -->
@@ -173,5 +175,46 @@
         [rowData]="legacyMenuRowData"
         [columnDefs]="legacyMenuColumnDefs" 
         [defaultColDef]="legacyMenuDefaultColDef">
+    </ag-grid-angular>
+</div>
+
+<!-- ========================================== -->
+<!-- 8. COLUMN VISIBILITY DROPDOWN GRID -->
+<!-- ========================================== -->
+<div *ngIf="activeGrid === 'columnVisibility'">
+    <h4>8. Column Visibility Custom Dropdown Example</h4>
+    <p>Select columns from the custom dropdown below to show or hide them dynamically from the 15 available columns. If you select 5 columns, only those 5 will be shown!</p>
+    
+    <div style="position: relative;">
+        <!-- Dropdown Button -->
+        <button class="btn btn-secondary dropdown-toggle mb-3" type="button" (click)="toggleDropdown()">
+            Select Columns to Show/Hide
+        </button>
+
+        <!-- Dropdown Backdrop to close on out-click -->
+        <div *ngIf="isDropdownOpen" 
+             style="position: fixed; top:0; left:0; width:100vw; height:100vh; z-index: 999;" 
+             (click)="closeDropdown()">
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div *ngIf="isDropdownOpen" class="dropdown-menu show p-3 shadow" 
+             style="position: absolute; top: 40px; left: 0; max-height: 400px; overflow-y: auto; z-index: 1000; display: block; min-width: 250px;">
+            <div class="form-check mb-2" *ngFor="let col of allColumns">
+                <input class="form-check-input" type="checkbox" [id]="col.field"
+                       [checked]="col.visible" (change)="toggleColumn(col.field)">
+                <label class="form-check-label" style="cursor: pointer;" [for]="col.field">
+                    {{ col.headerName }}
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <ag-grid-angular class="ag-theme-alpine" style="width:100%; height:500px;" 
+        [rowData]="visibilityRowData"
+        [columnDefs]="visibilityColumnDefs" 
+        [defaultColDef]="{ filter: true, resizable: true }"
+        (gridReady)="onVisibilityGridReady($event)"
+        (firstDataRendered)="onVisibilityFirstDataRendered($event)">
     </ag-grid-angular>
 </div>

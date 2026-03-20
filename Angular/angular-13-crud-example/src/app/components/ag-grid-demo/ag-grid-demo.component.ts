@@ -276,4 +276,97 @@ export class AgGridDemoComponent implements OnInit {
     columnMenu: 'legacy'
   };
 
+  // ==========================================
+  // EXAMPLE 8: COLUMN VISIBILITY DROPDOWN
+  // ==========================================
+  visibilityGridApi!: GridApi;
+  visibilityColumnApi!: any;
+  isDropdownOpen: boolean = false;
+
+  allColumns = [
+    { headerName: 'ID', field: 'id', visible: true },
+    { headerName: 'First Name', field: 'firstName', visible: true },
+    { headerName: 'Last Name', field: 'lastName', visible: true },
+    { headerName: 'Age', field: 'age', visible: true },
+    { headerName: 'Gender', field: 'gender', visible: true },
+    { headerName: 'Country', field: 'country', visible: true },
+    { headerName: 'City', field: 'city', visible: true },
+    { headerName: 'Occupation', field: 'occupation', visible: true },
+    { headerName: 'Salary', field: 'salary', visible: true },
+    { headerName: 'Experience', field: 'experience', visible: true },
+    { headerName: 'Status', field: 'status', visible: true },
+    { headerName: 'Email', field: 'email', visible: true },
+    { headerName: 'Phone', field: 'phone', visible: true },
+    { headerName: 'Department', field: 'department', visible: true },
+    { headerName: 'Start Date', field: 'startDate', visible: true },
+    { headerName: 'A Very Long Column Header Name Example', field: 'longDescription', visible: true }
+  ];
+
+  visibilityColumnDefs = this.allColumns.map(col => ({
+    headerName: col.headerName,
+    field: col.field,
+    hide: !col.visible
+  }));
+
+  visibilityRowData = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
+    firstName: 'User' + (i + 1),
+    lastName: 'Name' + (i + 1),
+    age: 20 + (i % 30),
+    gender: i % 2 === 0 ? 'Male' : 'Female',
+    country: i % 3 === 0 ? 'India' : (i % 3 === 1 ? 'USA' : 'UK'),
+    city: 'City' + (i + 1),
+    occupation: 'Role ' + (i % 5 + 1),
+    salary: 50000 + (i * 1000),
+    experience: (i % 10 + 1) + ' Yrs',
+    status: i % 4 === 0 ? 'Inactive' : 'Active',
+    email: `user${i + 1}@test.com`,
+    phone: `98765432${i}`,
+    department: 'Dept ' + (i % 4 + 1),
+    startDate: `2023-${(i % 12) + 1}-01`,
+    longDescription: `This is some very, extremely long dynamic description text for user ${i + 1} purely to test the automatic column width resizing behavior.`
+  }));
+
+  onVisibilityGridReady(params: any) {
+    this.visibilityGridApi = params.api;
+    this.visibilityColumnApi = params.columnApi;
+  }
+
+  onVisibilityFirstDataRendered(params: any) {
+    this.autoSizeAll();
+  }
+
+  autoSizeAll() {
+    if (this.visibilityColumnApi) {
+      const allColumnIds: string[] = [];
+      const columns = this.visibilityColumnApi.getAllDisplayedColumns();
+      if (columns) {
+        columns.forEach((column: any) => {
+          allColumnIds.push(column.getColId());
+        });
+        this.visibilityColumnApi.autoSizeColumns(allColumnIds, false);
+      }
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown() {
+    this.isDropdownOpen = false;
+  }
+
+  toggleColumn(field: string) {
+    const col = this.allColumns.find(c => c.field === field);
+    if (col) {
+      col.visible = !col.visible;
+      if (this.visibilityColumnApi) {
+        this.visibilityColumnApi.setColumnVisible(field, col.visible);
+        // Wait for AG-Grid DOM to append the new column before calculating dimensions
+        setTimeout(() => this.autoSizeAll(), 150); 
+      }
+    }
+  }
+
 }
